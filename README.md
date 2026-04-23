@@ -8,7 +8,7 @@
 5. [Résolution des Problèmes](#résolution-des-problèmes)
 
 ---
-![الصفحة الرئيسية![Screenshot](./images/image.png)
+![desc](./images/image.png)
 ## 🔧 Prérequis
 
 Avant de commencer, assurez-vous d'avoir installé:
