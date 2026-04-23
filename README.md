@@ -601,10 +601,6 @@ npm run dev
 # http://localhost:5173
 ```
 
-**Comptes:**
-- Admin: admin@cooperative.com / admin123
-- Manager: manager@cooperative.com / manager123
 
----
 
 Bonne chance! 🚀
