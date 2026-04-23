@@ -1,0 +1,30 @@
+/* RTL Support */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+/* RTL adjustments */
+html[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+html[dir="rtl"] .ml-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .mr-2 {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .ml-2 {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+/* Add similar RTL adjustments for other margin/padding classes */
