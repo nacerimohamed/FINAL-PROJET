@@ -534,9 +534,7 @@ fixed-project/
 - Remplir le formulaire
 - Sauvegarder
 
-### 3. Se déconnecter et se connecter en tant que Manager
-- Se déconnecter
-- Se reconnecter avec: `manager@manager.com` / `manager123`
+
 
 ### 4. Créer un produit
 - Cliquer "Gestion des Produits"
