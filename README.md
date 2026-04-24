@@ -8,8 +8,7 @@
 5. [Résolution des Problèmes](#résolution-des-problèmes)
 
 ---
-![الصفحة الرئيسية](https://raw.githubusercontent.com/elmaatouquii/cooperatives-site/main/image.png
-)
+![desc](./images/image.png)
 ## 🔧 Prérequis
 
 Avant de commencer, assurez-vous d'avoir installé:
@@ -601,10 +600,6 @@ npm run dev
 # http://localhost:5173
 ```
 
-**Comptes:**
-- Admin: admin@cooperative.com / admin123
-- Manager: manager@cooperative.com / manager123
 
----
 
 Bonne chance! 🚀
