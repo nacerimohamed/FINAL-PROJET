@@ -1,9 +1,11 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { Chart, ArcElement, DoughnutController, Tooltip, Legend } from "chart.js";
+
+Chart.register(ArcElement, DoughnutController, Tooltip, Legend);
 
 // ============================================================
-// 1. CONSTANTES — SVG paths extraits de l'image de référence
+// 1. CONSTANTES
 // ============================================================
 
 const PROVINCES = [
@@ -37,8 +39,7 @@ const PROVINCES = [
     labelFr: "Ouarzazate",
     color: "#319c56",
     selectedColor: "#15803d",
-   d: "M 72.0,10.0 L 55.0,14.0 L 42.0,10.5 L 28.0,16.0 L 18.0,14.0 L 10.0,22.0 L 10.5,36.0 L 20.0,42.0 L 18.5,55.0 L 10.0,62.0 L 15.0,74.0 L 28.0,78.0 L 30.0,90.0 L 22.0,100.0 L 28.0,110.0 L 40.0,106.0 L 48.0,114.0 L 58.0,108.0 L 65.0,118.0 L 78.0,116.0 L 84.0,105.0 L 96.0,100.0 L 108.0,88.0 L 120.0,84.0 L 130.0,72.0 L 128.0,60.0 L 118.0,54.0 L 120.0,40.0 L 112.0,28.0 L 100.0,24.0 L 88.0,14.0 Z",
-  
+    d: "M 72.0,10.0 L 55.0,14.0 L 42.0,10.5 L 28.0,16.0 L 18.0,14.0 L 10.0,22.0 L 10.5,36.0 L 20.0,42.0 L 18.5,55.0 L 10.0,62.0 L 15.0,74.0 L 28.0,78.0 L 30.0,90.0 L 22.0,100.0 L 28.0,110.0 L 40.0,106.0 L 48.0,114.0 L 58.0,108.0 L 65.0,118.0 L 78.0,116.0 L 84.0,105.0 L 96.0,100.0 L 108.0,88.0 L 120.0,84.0 L 130.0,72.0 L 128.0,60.0 L 118.0,54.0 L 120.0,40.0 L 112.0,28.0 L 100.0,24.0 L 88.0,14.0 Z",
   },
   {
     id: "Errachidia",
@@ -46,14 +47,16 @@ const PROVINCES = [
     labelFr: "Errachidia",
     color: "#bbf7d0",
     selectedColor: "#15803d",
-   d: "M 72.0,10.0 L 58.0,10.5 L 46.0,16.0 L 34.0,14.0 L 22.0,20.0 L 10.0,18.0 L 10.5,32.0 L 18.0,40.0 L 14.0,52.0 L 10.0,64.0 L 18.0,76.0 L 30.0,80.0 L 32.0,94.0 L 22.0,108.0 L 10.0,118.0 L 10.5,132.0 L 26.0,128.0 L 40.0,118.0 L 52.0,124.0 L 62.0,116.0 L 76.0,120.0 L 90.0,112.0 L 100.0,98.0 L 110.0,90.0 L 118.0,78.0 L 116.0,64.0 L 104.0,56.0 L 102.0,42.0 L 110.0,32.0 L 108.0,20.0 L 96.0,14.0 Z",
+    d: "M 72.0,10.0 L 58.0,10.5 L 46.0,16.0 L 34.0,14.0 L 22.0,20.0 L 10.0,18.0 L 10.5,32.0 L 18.0,40.0 L 14.0,52.0 L 10.0,64.0 L 18.0,76.0 L 30.0,80.0 L 32.0,94.0 L 22.0,108.0 L 10.0,118.0 L 10.5,132.0 L 26.0,128.0 L 40.0,118.0 L 52.0,124.0 L 62.0,116.0 L 76.0,120.0 L 90.0,112.0 L 100.0,98.0 L 110.0,90.0 L 118.0,78.0 L 116.0,64.0 L 104.0,56.0 L 102.0,42.0 L 110.0,32.0 L 108.0,20.0 L 96.0,14.0 Z",
   },
 ];
+
+const CHART_COLORS = ["#0F6E56", "#1D9E75", "#5DCAA5", "#9FE1CB", "#C0DD97"];
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 // ============================================================
-// 2. COMPOSANTS UI (inchangés)
+// 2. COMPOSANTS UI
 // ============================================================
 
 const ModernCard = ({ children, className = "" }) => (
@@ -82,38 +85,238 @@ const ModernButton = ({ children, onClick, isActive, className = "" }) => (
   </button>
 );
 
-const ModernIcon = ({ children, className = "" }) => (
-  <div className={`relative overflow-hidden rounded-xl ${className}`}>
-    {children}
-  </div>
-);
+// ============================================================
+// 3. COMPOSANT DOUGHNUT CHART
+// ============================================================
+
+const CoopDoughnutChart = ({ statsData, selectedProvince, onProvinceClick }) => {
+  const canvasRef = useRef(null);
+  const chartRef  = useRef(null);
+
+  const total = statsData.reduce((s, d) => s + d.count, 0);
+
+  // Initialiser / mettre à jour le chart
+  useEffect(() => {
+    if (!canvasRef.current || !statsData.length) return;
+
+    const bgs = statsData.map((d, i) =>
+      selectedProvince && d.id !== selectedProvince
+        ? CHART_COLORS[i] + "55"
+        : CHART_COLORS[i]
+    );
+
+    if (chartRef.current) {
+      chartRef.current.data.datasets[0].data = statsData.map((d) => d.count);
+      chartRef.current.data.datasets[0].backgroundColor = bgs;
+      chartRef.current.update("active");
+      return;
+    }
+
+    chartRef.current = new Chart(canvasRef.current, {
+      type: "doughnut",
+      data: {
+        labels: statsData.map((d) => d.labelFr),
+        datasets: [{
+          data: statsData.map((d) => d.count),
+          backgroundColor: bgs,
+          borderColor: "#fff",
+          borderWidth: 2,
+          hoverBorderWidth: 3,
+          hoverOffset: 8,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "68%",
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                return ` ${ctx.parsed} coopératives (${pct}%)`;
+              },
+            },
+            backgroundColor: "#fff",
+            titleColor: "#1c2060",
+            bodyColor: "#6b7280",
+            borderColor: "#e5e7eb",
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+          },
+        },
+        onClick: (_, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            onProvinceClick(statsData[idx].id);
+          }
+        },
+        animation: { duration: 500, easing: "easeInOutQuart" },
+      },
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, [statsData]);
+
+  // Sync sélection sans recréer le chart
+  useEffect(() => {
+    if (!chartRef.current) return;
+    const bgs = statsData.map((d, i) =>
+      selectedProvince && d.id !== selectedProvince
+        ? CHART_COLORS[i] + "55"
+        : CHART_COLORS[i]
+    );
+    chartRef.current.data.datasets[0].backgroundColor = bgs;
+    chartRef.current.update("active");
+  }, [selectedProvince]);
+
+  const selectedData = statsData.find((d) => d.id === selectedProvince);
+
+  return (
+    <div
+      style={{
+        background: "#f8faf8",
+        borderRadius: 16,
+        padding: "14px 16px",
+        marginBottom: 16,
+        border: "1px solid #e5ede8",
+      }}
+    >
+      {/* Titre du chart */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        marginBottom: 12,
+      }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#166141", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          Répartition
+        </span>
+        <span style={{ fontSize: 11, color: "#6b7280" }}>
+          {selectedProvince
+            ? `${selectedData?.labelFr ?? selectedProvince} · ${selectedData?.count ?? 0} coopératives`
+            : total > 0
+              ? `${total} total`
+              : "Sélectionnez une province"
+          }
+        </span>
+      </div>
+
+      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+
+        {/* Canvas */}
+        <div style={{ position: "relative", width: 110, height: 110, flexShrink: 0 }}>
+          <canvas ref={canvasRef} />
+          {/* Label centre */}
+          <div style={{
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-50%,-50%)",
+            textAlign: "center", pointerEvents: "none",
+          }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#166141", lineHeight: 1 }}>
+              {selectedProvince
+                ? selectedData?.count ?? 0
+                : total > 0 ? total : "—"}
+            </div>
+            <div style={{ fontSize: 9, color: "#9ca3af", marginTop: 2 }}>
+              {selectedProvince ? selectedProvince : total > 0 ? "total" : "aucune donnée"}
+            </div>
+          </div>
+        </div>
+
+        {/* Légende compacte */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 5 }}>
+          {statsData.map((d, i) => {
+            const isActive = selectedProvince === d.id;
+            return (
+              <div
+                key={d.id}
+                onClick={() => onProvinceClick(d.id)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 7,
+                  cursor: "pointer", padding: "3px 6px",
+                  borderRadius: 6, transition: "background 0.15s",
+                  background: isActive ? "rgba(21,128,61,0.08)" : "transparent",
+                  opacity: selectedProvince && !isActive ? 0.5 : 1,
+                }}
+              >
+                <span style={{
+                  width: 8, height: 8, borderRadius: 2,
+                  background: CHART_COLORS[i], flexShrink: 0,
+                }} />
+                <span style={{ flex: 1, fontSize: 11, color: "#374151", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {d.labelFr}
+                </span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#166141", minWidth: 20, textAlign: "right" }}>
+                  {isActive ? d.count : "—"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </div>
+  );
+};
 
 // ============================================================
-// 3. COMPOSANT PRINCIPAL
+// 4. COMPOSANT PRINCIPAL
 // ============================================================
 
 const RegionMap = () => {
-  const [selected, setSelected]       = useState(null);
-  const [hovered, setHovered]         = useState(null);
+  const [selected,     setSelected]     = useState(null);
+  const [hovered,      setHovered]      = useState(null);
   const [cooperatives, setCooperatives] = useState([]);
-  const [loading, setLoading]         = useState(false);
-  const [error, setError]             = useState(null);
+  const [loading,      setLoading]      = useState(false);
+  const [error,        setError]        = useState(null);
+
+  // ← Initialisation avec count: 0, sans fallback ni by-ville API
+  const [statsData, setStatsData] = useState(
+    PROVINCES.map((p) => ({ ...p, count: 0 }))
+  );
 
   const token = localStorage.getItem("token");
 
+  // ── Click sur une province ──
   const handleProvinceClick = async (provinceId) => {
-    if (selected === provinceId) return;
+    // Désélection
+    if (selected === provinceId) {
+      setSelected(null);
+      setCooperatives([]);
+      // Reset chart à zéro
+      setStatsData(PROVINCES.map((p) => ({ ...p, count: 0 })));
+      return;
+    }
+
     setSelected(provinceId);
     setCooperatives([]);
     setError(null);
     setLoading(true);
+
     try {
       const res = await axios.get(
         `${API_URL}/api/admin/cooperatives?ville=${provinceId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = res.data.data ?? res.data ?? [];
-      setCooperatives(Array.isArray(data) ? data : []);
+      const coops = Array.isArray(data) ? data : [];
+
+      setCooperatives(coops);
+
+      // ← Mise à jour dynamique du Chart avec le vrai count depuis l'API
+      // La province sélectionnée reçoit coops.length, les autres restent à 0
+      setStatsData(
+        PROVINCES.map((p) => ({
+          ...p,
+          count: p.id === provinceId ? coops.length : 0,
+        }))
+      );
     } catch (err) {
       console.error(err);
       setError("Erreur lors du chargement des coopératives.");
@@ -138,21 +341,18 @@ const RegionMap = () => {
     <div className="mt-8 px-4">
       <ModernCard className="group">
 
-        {/* ── Bannière supérieure identique à l'image ── */}
+        {/* ── Bannière supérieure ── */}
         <div style={{
           background: "#166141",
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          padding: "10px 22px",
-          borderRadius: "16px 16px 0 0",
+          display: "flex", justifyContent: "flex-end", alignItems: "center",
+          padding: "10px 22px", borderRadius: "16px 16px 0 0",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{
               fontFamily: "'Cairo', 'Amiri', Arial, sans-serif",
               fontSize: 20, fontWeight: 700, color: "#fff", direction: "rtl",
             }}>
-             la région
+              la région
             </span>
             <span style={{ color: "#d1ce4f", fontSize: 24, fontWeight: 900, letterSpacing: "-3px", lineHeight: 1 }}>
               ///
@@ -163,14 +363,20 @@ const RegionMap = () => {
         {/* ── Contenu principal ── */}
         <div className="flex flex-col lg:flex-row">
 
-          {/* ── Carte : provinces côte à côte comme l'image ── */}
+          {/* ── Colonne gauche : Chart + Carte ── */}
           <div className="p-6 flex-shrink-0 w-full lg:w-auto">
+
+            {/* Doughnut Chart — toujours visible */}
+            <CoopDoughnutChart
+              statsData={statsData}
+              selectedProvince={selected}
+              onProvinceClick={handleProvinceClick}
+            />
+
+            {/* Carte provinces */}
             <div style={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "flex-end",
-              gap: 8,
-              padding: "8px 0 4px",
+              display: "flex", justifyContent: "space-around",
+              alignItems: "flex-end", gap: 8, padding: "8px 0 4px",
             }}>
               {PROVINCES.map((province) => (
                 <div
@@ -185,7 +391,6 @@ const RegionMap = () => {
                     transform: hovered === province.id || selected === province.id ? "scale(1.06)" : "scale(1)",
                   }}
                 >
-                  {/* Label arabe au-dessus */}
                   <span style={{
                     fontFamily: "'Cairo', 'Amiri', Arial, sans-serif",
                     fontSize: 14, fontWeight: 700, direction: "rtl",
@@ -198,7 +403,6 @@ const RegionMap = () => {
                     {province.label}
                   </span>
 
-                  {/* Forme SVG de la province (paths extraits de l'image) */}
                   <svg
                     viewBox="0 0 150 150"
                     xmlns="http://www.w3.org/2000/svg"
@@ -218,23 +422,27 @@ const RegionMap = () => {
               ))}
             </div>
 
-            {/* Légende boutons */}
+            {/* Boutons provinces */}
             <div className="mt-5 flex flex-wrap gap-2 justify-center">
               {PROVINCES.map((p) => (
-                <ModernButton key={p.id} onClick={() => handleProvinceClick(p.id)} isActive={selected === p.id}>
+                <ModernButton
+                  key={p.id}
+                  onClick={() => handleProvinceClick(p.id)}
+                  isActive={selected === p.id}
+                >
                   {p.labelFr}
                 </ModernButton>
               ))}
             </div>
           </div>
 
-          {/* Séparateur */}
+          {/* Séparateur vertical */}
           <div className="hidden lg:block relative">
             <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-stone-200 to-transparent" />
           </div>
           <div className="lg:hidden h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent mx-8" />
 
-          {/* ── Panneau latéral coopératives (logique inchangée) ── */}
+          {/* ── Panneau latéral coopératives ── */}
           <div className="flex-1 p-8">
             {!selected && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center">
@@ -273,7 +481,11 @@ const RegionMap = () => {
                     </div>
                   </div>
                   <button
-                    onClick={() => { setSelected(null); setCooperatives([]); }}
+                    onClick={() => {
+                      setSelected(null);
+                      setCooperatives([]);
+                      setStatsData(PROVINCES.map((p) => ({ ...p, count: 0 })));
+                    }}
                     className="p-2 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 transition-all duration-300 transform hover:scale-110 active:scale-95"
                     title="Désélectionner"
                   >
@@ -333,7 +545,7 @@ const RegionMap = () => {
                             <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-emerald-100 to-emerald-200 shadow-md group-hover:shadow-lg transition-all duration-300">
                               {coop.image ? (
                                 <img
-                                  src={`http://127.0.0.1:8000/${coop.image}`}
+                                  src={`${API_URL}/${coop.image}`}
                                   alt={coop.nom}
                                   className="w-full h-full object-cover"
                                   onError={(e) => (e.target.style.display = "none")}
@@ -394,6 +606,9 @@ const RegionMap = () => {
         @keyframes slideIn {
           from { opacity: 0; transform: translateX(-20px); }
           to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         .animate-fadeIn  { animation: fadeIn  0.5s ease-out; }
