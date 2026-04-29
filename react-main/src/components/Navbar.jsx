@@ -15,6 +15,9 @@ import {
   FiChevronLeft
 } from "react-icons/fi";
 
+// Logo image import
+import logoImage from "./image.png";
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -26,7 +29,6 @@ const Navbar = () => {
   const isRTL = i18n.language === 'ar';
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est connecté
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -37,12 +39,10 @@ const Navbar = () => {
       }
     }
 
-    // Effet de scroll
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    // Détection de la taille d'écran
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
@@ -60,7 +60,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Bloquer le scroll du body quand le menu mobile est ouvert
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -106,23 +105,29 @@ const Navbar = () => {
               className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-2 sm:space-x-3 group`}
               onClick={() => isMobile && setIsMobileMenuOpen(false)}
             >
+              {/* Logo image seulement, sans cercle ni background */}
               <div className="relative">
-                <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 via-green-600 to-green-700 rounded-xl sm:rounded-2xl flex items-center justify-center transform group-hover:scale-110 ${isRTL ? 'group-hover:-rotate-12' : 'group-hover:rotate-12'} transition-all duration-500 shadow-lg group-hover:shadow-2xl`}>
-                  <span className="text-base sm:text-xl animate-bounce">🌾</span>
-                </div>
-                <div className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-ping`}></div>
-                <div className={`absolute -bottom-1 ${isRTL ? '-right-1' : '-left-1'} w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full animate-pulse`}></div>
+                <img 
+                  src={logoImage} 
+                  alt="Logo" 
+                  className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 object-contain"
+                />
               </div>
               <div className="relative">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-green-700 via-green-600 to-green-500 bg-clip-text text-transparent animate-gradient">
-                  {t("navbar.title")}
-                </h1>
+                 <h1 className="text-lg sm:text-xl lg:text-2xl font-extrabold">
+                    <span className="bg-gradient-to-r from-green-700 via-green-600 to-green-500 bg-clip-text text-transparent animate-gradient">
+                      Agri
+                    </span>
+                     <span className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-400 bg-clip-text text-transparent animate-gradient">
+                       Market
+                    </span>
+                  </h1>
                 <p className="hidden sm:block text-xs text-gray-600 -mt-1 font-medium tracking-wide">{t("navbar.subtitle")}</p>
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-600 to-transparent group-hover:w-full transition-all duration-500"></div>
               </div>
             </Link>
 
-            {/* Desktop Menu - Hidden on mobile */}
+            {/* Desktop Menu */}
             <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-1 xl:space-x-2`}>
               {navLinks.map((link, index) => {
                 const Icon = link.icon;
@@ -148,9 +153,8 @@ const Navbar = () => {
               })}
             </div>
 
-            {/* Desktop Auth Buttons - Hidden on mobile */}
+            {/* Desktop Auth Buttons */}
             <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-2 xl:space-x-4`}>
-              {/* Language Switcher */}
               <div className="transform hover:scale-105 transition-transform duration-300">
                 <LanguageSwitcher />
               </div>
@@ -241,9 +245,11 @@ const Navbar = () => {
         {/* Mobile Menu Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b-2 border-green-200">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-xl sm:text-2xl animate-pulse">🌾</span>
-            </div>
+            <img 
+              src={logoImage} 
+              alt="Logo" 
+              className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+            />
             <div>
               <h2 className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-green-700 to-green-500 bg-clip-text text-transparent">
                 {t("navbar.title")}
