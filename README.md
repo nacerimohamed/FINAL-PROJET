@@ -36,7 +36,7 @@ mysql -V      # Doit afficher MySQL/MariaDB
 ```bash
 # Télécharger et extraire le ZIP
 unzip cooperative-market-fixed.zip
-cd fixed-project
+cd FINAL-PROJET
 ```
 
 ### Étape 2: Lancer le script d'installation
