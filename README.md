@@ -72,7 +72,7 @@ nano .env    # ou utilisez votre éditeur préféré
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=cooperative_market    # Nom de votre base de données
+DB_DATABASE=Nom-de-votre-base-de-données    # Nom de votre base de données
 DB_USERNAME=root                  # Votre utilisateur MySQL
 DB_PASSWORD=votre_mot_de_passe   # Votre mot de passe MySQL
 ```
