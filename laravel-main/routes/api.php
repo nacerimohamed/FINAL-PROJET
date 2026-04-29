@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
+
+
 // ===== PUBLIC ROUTES =====
 // Products (public access)
 Route::get('/products', [PublicProductController::class, 'index']);

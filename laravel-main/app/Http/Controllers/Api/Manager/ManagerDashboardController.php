@@ -15,4 +15,5 @@ class ManagerDashboardController extends Controller
             'message' => 'Bienvenue dans le dashboard manager'
         ]);
     }
+    
 }
