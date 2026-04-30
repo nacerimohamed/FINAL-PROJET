@@ -185,21 +185,41 @@ const ProductDetail = () => {
             </div>
 
             {/* Quantity */}
-            {product.quantity > 0 && (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={decrementQuantity}
-                  className="bg-green-100 hover:bg-green-200 text-green-700 w-10 h-10 rounded-lg font-bold transition transform hover:scale-110 shadow-sm"
-                  disabled={quantity <= 1}
-                >-</button>
-                <span className="text-2xl font-bold text-green-800 w-12 text-center">{quantity}</span>
-                <button
-                  onClick={incrementQuantity}
-                  className="bg-green-100 hover:bg-green-200 text-green-700 w-10 h-10 rounded-lg font-bold transition transform hover:scale-110 shadow-sm"
-                  disabled={quantity >= product.quantity}
-                >+</button>
-              </div>
-            )}
+          {product.quantity > 0 && (
+  <div className="flex items-center gap-3">
+
+    <div className="flex items-center border border-green-300 rounded-lg px-3 py-2 bg-white shadow-sm">
+      <input
+        type="number"
+        placeholder="Qty"
+        min="1"
+        max={product.quantity}
+        value={quantity}
+        onChange={(e) => {
+          let value = e.target.value;
+
+          if (value === "") {
+            setQuantity("");
+            return;
+          }
+
+          value = Number(value);
+
+          if (value < 1) value = 1;
+          if (value > product.quantity) value = product.quantity;
+
+          setQuantity(value);
+        }}
+        className="w-16 text-center outline-none text-green-800 font-bold"
+      />
+    </div>
+
+    <span className="text-sm text-green-600">
+      max: {product.quantity}
+    </span>
+
+  </div>
+)}
 
             {/* Total Price */}
             <div className="bg-green-50 rounded-xl p-4 shadow-inner">
