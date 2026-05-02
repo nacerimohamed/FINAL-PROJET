@@ -25,6 +25,7 @@ class ProductController extends Controller
                         'name' => $product->name,
                         'description' => $product->description,
                         'image' => $product->image,
+                        'category' => $product->category,
                         'price' => $product->price,
                         'quantity' => $product->quantity,
                         'cooperative_id' => $product->cooperative_id,
@@ -63,6 +64,7 @@ class ProductController extends Controller
                 'cooperative_id' => 'required|exists:cooperatives,id',
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
+                'category' => 'required|string|max:100',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
                 'price' => 'required|numeric|min:0',
                 'quantity' => 'required|integer|min:0',
@@ -83,15 +85,15 @@ class ProductController extends Controller
                 $image->move(public_path('uploads/products'), $imageName);
                 $imagePath = url('uploads/products/' . $imageName);
             }
-
-            $product = Product::create([
-                'cooperative_id' => $request->cooperative_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'image' => $imagePath,
-                'price' => $request->price,
-                'quantity' => $request->quantity,
-            ]);
+        $product = Product::create([
+    'cooperative_id' => $request->cooperative_id,
+    'name' => $request->name,
+    'description' => $request->description,
+    'category' => $request->category, // 👈 مهم
+    'image' => $imagePath,
+    'price' => $request->price,
+    'quantity' => $request->quantity,
+]);
 
             // Load the cooperative relationship
             $product->load('cooperative:id,nom,email,tele,whatsapp');
@@ -140,6 +142,7 @@ class ProductController extends Controller
                     'description' => $product->description,
                     'image' => $product->image,
                     'price' => $product->price,
+                    'category' => $product->category,
                     'quantity' => $product->quantity,
                     'cooperative_id' => $product->cooperative_id,
                     'cooperative' => [
@@ -171,6 +174,7 @@ class ProductController extends Controller
                 'cooperative_id' => 'sometimes|exists:cooperatives,id',
                 'name' => 'sometimes|string|max:255',
                 'description' => 'sometimes|nullable|string',
+                'category' => 'sometimes|string|max:100',
                 'image' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
                 'price' => 'sometimes|numeric|min:0',
                 'quantity' => 'sometimes|integer|min:0',

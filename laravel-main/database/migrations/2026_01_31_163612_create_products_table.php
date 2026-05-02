@@ -6,26 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-   public function up()
-{
-    Schema::create('products', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('cooperative_id')->constrained('cooperatives')->onDelete('cascade');
-        $table->string('name');
-        $table->text('description')->nullable();
-        $table->string('image')->nullable();
-        $table->decimal('price', 8, 2);
-        $table->integer('quantity')->default(0);
-        $table->timestamps();
-    });
-}
+    public function up()
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('cooperative_id')->constrained('cooperatives')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('category')->nullable();
+            $table->string('image')->nullable();
+            $table->decimal('price', 8, 2);
+            $table->integer('quantity')->default(0);
+            $table->timestamps();
+        });
+    }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

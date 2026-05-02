@@ -13,6 +13,7 @@ const ManagerProducts = () => {
     name: '',
     description: '',
     price: '',
+    category: '', 
     quantity: '',
     cooperative_id: '',
     image: ''
@@ -23,6 +24,7 @@ const ManagerProducts = () => {
 
   useEffect(() => {
     fetchProducts();
+    console.log("TOKEN:", localStorage.getItem('token'));
     fetchCooperatives();
   }, []);
 
@@ -85,7 +87,7 @@ const ManagerProducts = () => {
     if (!currentProduct.price || parseFloat(currentProduct.price) <= 0) newErrors.price = 'Valid price is required';
     if (!currentProduct.quantity || parseInt(currentProduct.quantity) < 0) newErrors.quantity = 'Valid quantity is required';
     if (!currentProduct.cooperative_id) newErrors.cooperative_id = 'Cooperative is required';
-    
+    if (!currentProduct.category) newErrors.category = 'Category is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -104,6 +106,7 @@ const ManagerProducts = () => {
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('name', currentProduct.name);
+      formData.append('category', currentProduct.category);
       formData.append('cooperative_id', currentProduct.cooperative_id);
       formData.append('price', currentProduct.price);
       formData.append('quantity', currentProduct.quantity);
@@ -146,12 +149,19 @@ const ManagerProducts = () => {
       name: product.name,
       description: product.description || '',
       price: product.price,
+      category: product.category || '',
       quantity: product.quantity,
       cooperative_id: product.cooperative_id,
       image: product.image || ''
     });
     setImageFile(null);
-    setImagePreview(product.image || null);
+   setImagePreview(
+  product.image
+    ? product.image.startsWith('http')
+      ? product.image
+      : `http://localhost:8000/storage/${product.image}`
+    : null
+);
     setEditMode(true);
     setShowModal(true);
   };
@@ -181,6 +191,7 @@ const ManagerProducts = () => {
       name: '',
       description: '',
       price: '',
+      category: '',
       quantity: '',
       cooperative_id: '',
       image: ''
@@ -437,7 +448,31 @@ const ManagerProducts = () => {
                     placeholder="Enter product description"
                   />
                 </div>
+ <div>
+  <label className="block font-semibold mb-2">
+    Catégorie *
+  </label>
 
+  <input
+  list="categories"
+  name="category"
+  value={currentProduct.category}
+  onChange={handleInputChange}
+  className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+  placeholder="Choisir ou écrire une catégorie"
+/>
+
+<datalist id="categories">
+  <option value="Amandes" />
+  <option value="Dattes" />
+  <option value="Miel" />
+  <option value="Huile d'argan" />
+  <option value="Safran" />
+</datalist>
+{errors.category && (
+  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.category}</p>
+)}
+</div>
                 {/* Price and Quantity */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                   <div>
