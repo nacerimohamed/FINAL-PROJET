@@ -11,7 +11,7 @@ class EasySeeder extends Seeder
     public function run()
     {
         echo " Ajout des utilisateurs...\n";
-        
+
         // أضف مستخدمين فقط
         DB::table('users')->insert([
             [
@@ -31,7 +31,7 @@ class EasySeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
-        
+
         echo "Utilisateurs ajoutés!\n";
         echo "Admin: admin@test.com / admin123\n";
         echo "Manager: manager@test.com / manager123\n";
