@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ManagerSidebar from "./ManagerSidebar";
+import managerLogo from "../../assets/manager_logo.png";
 
 // Mini sparkline SVG component
 const Sparkline = ({ color = "#22c55e", trend = "up" }) => {
@@ -143,17 +144,30 @@ const ManagerDashboard = () => {
           {/* Header */}
           <div className="mb-8 lg:mb-10">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-              <div>
-                <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Vue d'ensemble</p>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-tight">
-                  Tableau de bord{" "}
-                  <span className="text-emerald-600">Produits</span>
-                </h1>
-                <p className="text-sm text-gray-400 mt-1">
-                  {new Date().toLocaleDateString("fr-FR", {
-                    weekday: "long", year: "numeric", month: "long", day: "numeric",
-                  })}
-                </p>
+              <div className="flex items-center gap-4">
+                {/* Manager Logo */}
+                <div className="relative group/logo">
+                  <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400 via-green-500 to-teal-600 rounded-2xl opacity-60 group-hover/logo:opacity-100 blur-sm transition-all duration-500" />
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white group-hover/logo:scale-105 transition-transform duration-300">
+                    <img
+                      src={managerLogo}
+                      alt="Manager Logo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Vue d'ensemble</p>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-tight">
+                    Tableau de bord{" "}
+                    <span className="text-emerald-600">Produits</span>
+                  </h1>
+                  <p className="text-sm text-gray-400 mt-1">
+                    {new Date().toLocaleDateString("fr-FR", {
+                      weekday: "long", year: "numeric", month: "long", day: "numeric",
+                    })}
+                  </p>
+                </div>
               </div>
               <a
                 href="/manager/products"

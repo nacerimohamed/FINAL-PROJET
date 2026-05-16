@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import adminLogo from "../../assets/admin_logo.png";
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -83,8 +84,8 @@ const AdminSidebar = () => {
         {/* Header mobile avec bouton menu */}
         <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-green-800 to-green-700 text-white p-4 shadow-lg z-50 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-              <span className="text-2xl">🌾</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-green-500 shadow-sm bg-white">
+              <img src={adminLogo} alt="Admin" className="w-full h-full object-cover" />
             </div>
             <h2 className="text-xl font-bold">Admin Panel</h2>
           </div>
@@ -114,8 +115,8 @@ const AdminSidebar = () => {
           <div className="p-6 border-b border-green-600/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">🌾</span>
+                <div className="w-10 h-10 rounded-xl overflow-hidden border border-green-500 shadow-sm bg-white">
+                  <img src={adminLogo} alt="Admin" className="w-full h-full object-cover" />
                 </div>
                 <h2 className="text-xl font-bold">Admin Panel</h2>
               </div>
@@ -150,14 +151,8 @@ const AdminSidebar = () => {
             ))}
           </ul>
 
-          {/* User Info & Logout mobile */}
+          {/* Logout mobile */}
           <div className="p-6 border-t border-green-600/50">
-            <div className="mb-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl">
-              <p className="text-xs text-green-200 mb-1">Connecté en tant que</p>
-              <p className="font-semibold text-white truncate">
-                {JSON.parse(localStorage.getItem('user') || '{}')?.name || 'Administrateur'}
-              </p>
-            </div>
             <button
               onClick={handleLogout}
               className="group w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 font-semibold shadow-lg"
@@ -180,8 +175,8 @@ const AdminSidebar = () => {
       {/* Header */}
       <div className="p-6 border-b border-green-600/50">
         <div className="flex items-center space-x-3 mb-2">
-          <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-            <span className="text-2xl">🌾</span>
+          <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-green-500 shadow-lg bg-white">
+            <img src={adminLogo} alt="Admin" className="w-full h-full object-cover" />
           </div>
           <h2 className="text-xl lg:text-2xl font-bold">Admin Panel</h2>
         </div>
@@ -221,17 +216,8 @@ const AdminSidebar = () => {
         ))}
       </ul>
 
-      {/* User Info & Logout */}
+      {/* Logout */}
       <div className="p-6 border-t border-green-600/50">
-        <div className="mb-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl">
-          <p className="text-xs text-green-200 mb-1">Connecté en tant que</p>
-          <p className="font-semibold text-white truncate text-sm lg:text-base">
-            {JSON.parse(localStorage.getItem('user') || '{}')?.name || 'Administrateur'}
-          </p>
-          <p className="text-xs text-green-300/80 mt-1">
-            {JSON.parse(localStorage.getItem('user') || '{}')?.email || ''}
-          </p>
-        </div>
         <button
           onClick={handleLogout}
           className="group w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"

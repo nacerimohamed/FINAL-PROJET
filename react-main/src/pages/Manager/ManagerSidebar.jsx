@@ -8,6 +8,7 @@ import {
   FiMenu,
   FiX
 } from "react-icons/fi";
+import managerLogo from "../../assets/manager_logo.png";
 
 const ManagerSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -48,9 +49,11 @@ const ManagerSidebar = () => {
         {/* Header */}
         <div className="fixed top-0 left-0 right-0 bg-green-700 text-white px-4 py-3 z-50 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <span className="text-xl">🌾</span>
+            <div className="w-9 h-9 rounded-lg overflow-hidden border border-green-500 shadow-sm bg-white">
+              <img src={managerLogo} alt="Manager" className="w-full h-full object-cover" />
+            </div>
             <div>
-              <h2 className="font-bold">Coopérative</h2>
+              <h2 className="font-bold">Manager</h2>
               <p className="text-xs text-green-200">Espace Gestion</p>
             </div>
           </div>
@@ -142,7 +145,15 @@ const ManagerSidebar = () => {
     <div className="w-72 bg-green-800 text-white min-h-screen flex flex-col">
 
       <div className="p-6 border-b border-green-600">
-        <h2 className="text-xl font-bold">Coopérative</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-green-500 shadow-lg bg-white">
+            <img src={managerLogo} alt="Manager" className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">Manager</h2>
+            <p className="text-xs text-green-300">Espace Manager</p>
+          </div>
+        </div>
       </div>
 
       <ul className="p-4 space-y-2 flex-1">

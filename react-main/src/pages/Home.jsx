@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import AboutUs from "../components/AboutUs";
+import Testimonials from "../components/Testimonials";
+import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
+import Chatbot from "../components/Chatbot";
 import { useTranslation } from "react-i18next";
 
 // ─────────────────────────────────────────────────────────────
@@ -71,49 +75,54 @@ const Home = () => {
   const [featuredCooperatives, setFeaturedCooperatives] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ── Refs for the two card grids ──────────────────────────────
+  // ── Refs for the card grids + new sections ────────────────
   const productsGridRef = useRef(null);
   const cooperativesGridRef = useRef(null);
+  const aboutRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const faqRef = useRef(null);
 
   useEffect(() => {
     fetchFeaturedData();
   }, []);
 
   const fetchFeaturedData = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const [productsRes, cooperativesRes] = await Promise.all([
-      axios.get("http://localhost:8000/api/products/featured"),
-      axios.get("http://localhost:8000/api/cooperatives/featured"),
-    ]);
+      const [productsRes, cooperativesRes] = await Promise.all([
+        axios.get("http://localhost:8000/api/products/featured"),
+        axios.get("http://localhost:8000/api/cooperatives/featured"),
+      ]);
 
-    if (productsRes.data.success) {
-      setFeaturedProducts(productsRes.data.data.slice(0, 6)); // 👈 LIMIT 6
+      if (productsRes.data.success) {
+        setFeaturedProducts(productsRes.data.data.slice(0, 6)); // 👈 LIMIT 6
+      }
+
+      if (cooperativesRes.data.data) {
+        setFeaturedCooperatives(cooperativesRes.data.data.slice(0, 4)); // 👈 LIMIT 4
+      }
+
+    } catch (error) {
+      console.error("Error fetching featured data:", error);
+    } finally {
+      setLoading(false);
     }
-
-    if (cooperativesRes.data.data) {
-      setFeaturedCooperatives(cooperativesRes.data.data.slice(0, 4)); // 👈 LIMIT 4
-    }
-
-  } catch (error) {
-    console.error("Error fetching featured data:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   // ── Attach scroll-reveal observers after data has loaded ─────
   // We pass the grid refs so the hook only queries inside those
   // sections — keeps it scoped and efficient.
   useScrollReveal(productsGridRef, featuredProducts);
-useScrollReveal(cooperativesGridRef, featuredCooperatives);
+  useScrollReveal(cooperativesGridRef, featuredCooperatives);
+  useScrollReveal(aboutRef, null);
+  useScrollReveal(testimonialsRef, null);
+  useScrollReveal(faqRef, null);
 
   const getProductImage = (product) => {
     if (product.image && !product.image.startsWith("http")) {
-      return `http://localhost:8000${
-        product.image.startsWith("/") ? "" : "/"
-      }${product.image}`;
+      return `http://localhost:8000${product.image.startsWith("/") ? "" : "/"
+        }${product.image}`;
     }
     return (
       product.image ||
@@ -413,7 +422,29 @@ useScrollReveal(cooperativesGridRef, featuredCooperatives);
         </div>
       </section>
 
+      {/* ═══════════════════════════════════════════════════════
+          About Us Section (NEW)
+      ═══════════════════════════════════════════════════════ */}
+      <div ref={aboutRef}>
+        <AboutUs />
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          Testimonials Section (NEW)
+      ═══════════════════════════════════════════════════════ */}
+      <div ref={testimonialsRef}>
+        <Testimonials />
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          FAQ Section (NEW)
+      ═══════════════════════════════════════════════════════ */}
+      <div ref={faqRef}>
+        <FAQ />
+      </div>
+
       <Footer />
+      <Chatbot />
     </>
   );
 };

@@ -480,5 +480,56 @@
   "hours": "Lun-Ven : 9h-18h",
   "guarantee": "Réponse rapide garantie",
   "guaranteeText": "Nous nous engageons à vous répondre dans les 24 heures ouvrables"
-}
+},
+  "aboutUs": {
+    "badge": "À propos",
+    "title": "Qui sommes-nous ?",
+    "imageAlt": "Produits coopératifs marocains",
+    "cooperativesCount": "Coopératives partenaires",
+    "subtitle": "Une plateforme dédiée aux coopératives marocaines",
+    "description": "Notre plateforme aide les coopératives marocaines à promouvoir et gérer leurs produits locaux en ligne. Nous connectons les producteurs locaux directement aux consommateurs, en valorisant le savoir-faire artisanal et les produits du terroir marocain. Ensemble, nous construisons un écosystème digital qui soutient l'économie locale et le commerce équitable.",
+    "feature1Title": "Produits 100% locaux",
+    "feature1Desc": "Découvrez des produits authentiques directement issus des coopératives marocaines, garantissant qualité et traçabilité.",
+    "feature2Title": "Commerce équitable",
+    "feature2Desc": "Soutenez directement les producteurs locaux avec des prix justes et transparents, sans intermédiaires.",
+    "feature3Title": "Qualité certifiée",
+    "feature3Desc": "Tous nos produits respectent les normes de qualité et sont issus de méthodes de production traditionnelles et biologiques."
+  },
+  "testimonials": {
+    "badge": "Témoignages",
+    "title": "Ce que disent nos clients",
+    "subtitle": "Découvrez les expériences de nos clients satisfaits avec les produits des coopératives marocaines",
+    "review1Name": "Fatima Zahra",
+    "review1Location": "Casablanca, Maroc",
+    "review1Comment": "Des produits d'une qualité exceptionnelle ! L'huile d'argan est pure et le miel est délicieux. Je recommande vivement cette plateforme.",
+    "review2Name": "Ahmed Benjelloun",
+    "review2Location": "Rabat, Maroc",
+    "review2Comment": "Grâce à cette plateforme, j'ai découvert des coopératives incroyables. Les produits sont frais, naturels et livrés rapidement.",
+    "review3Name": "Khadija Moussaoui",
+    "review3Location": "Marrakech, Maroc",
+    "review3Comment": "Une expérience d'achat formidable. Les épices sont authentiques et les prix sont très raisonnables. Bravo !",
+    "review4Name": "Said El Amrani",
+    "review4Location": "Fès, Maroc",
+    "review4Comment": "Je suis impressionné par la diversité des produits. Le service client est excellent et la livraison est toujours à temps.",
+    "statClients": "Clients satisfaits",
+    "statCooperatives": "Coopératives",
+    "statProducts": "Produits disponibles",
+    "statSatisfaction": "Taux de satisfaction"
+  },
+  "faq": {
+    "title": "Questions Fréquentes",
+    "subtitle": "Trouvez rapidement les réponses à vos questions les plus courantes",
+    "q1": "Comment acheter des produits sur la plateforme ?",
+    "a1": "Parcourez notre catalogue de produits, sélectionnez ceux qui vous intéressent et contactez directement la coopérative via WhatsApp, email ou téléphone pour passer votre commande. Le processus est simple et direct.",
+    "q2": "Comment les coopératives gèrent-elles leurs produits ?",
+    "a2": "Chaque coopérative dispose d'un espace gestionnaire dédié où elle peut ajouter, modifier et gérer ses produits, ses photos, ses prix et ses stocks en toute autonomie.",
+    "q3": "La plateforme est-elle disponible en plusieurs langues ?",
+    "a3": "Oui ! Notre plateforme est disponible en français, arabe et anglais. Vous pouvez changer la langue à tout moment depuis le sélecteur de langue dans la barre de navigation.",
+    "q4": "Quel est l'objectif de cette plateforme ?",
+    "a4": "Notre objectif est de digitaliser et promouvoir les coopératives marocaines en leur offrant une vitrine en ligne moderne. Nous aidons à connecter les producteurs locaux avec les consommateurs tout en valorisant le patrimoine et le savoir-faire marocain.",
+    "q5": "Les produits sont-ils certifiés et de qualité ?",
+    "a5": "Absolument ! Nous travaillons uniquement avec des coopératives vérifiées. Les produits sont naturels, souvent biologiques, et issus de méthodes de production traditionnelles garantissant authenticité et qualité.",
+    "moreQuestions": "Vous avez d'autres questions ?",
+    "contactUs": "Contactez-nous"
+  }
 }
