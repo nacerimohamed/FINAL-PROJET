@@ -1,4 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
+import { 
+  FiHome, 
+  FiShoppingBag, 
+  FiUsers, 
+  FiMail, 
+  FiGlobe, 
+  FiArrowLeft, 
+  FiSend,
+  FiTruck,
+  FiTag,
+  FiSmile //
+} from "react-icons/fi";
+import { FaLeaf, FaTimes } from "react-icons/fa";
+import { RiDiscussLine, RiMessage3Line } from "react-icons/ri";
+import { BsBasket3, BsAward } from "react-icons/bs";
 
 // ── UI translations per language ────────────────────────────
 const UI = {
@@ -6,7 +21,7 @@ const UI = {
     headerTitle: "Assistant Coopératif",
     headerStatus: "En ligne",
     inputPlaceholder: "Écrivez votre message...",
-    welcomeTitle: "Bienvenue 👋",
+    welcomeTitle: "Bienvenue",
     welcomeSubtitle: "Assistant des coopératives de Drâa-Tafilalet",
     chooseLang: "Choisissez votre langue",
     back: "← Changer la langue",
@@ -15,7 +30,7 @@ const UI = {
     headerTitle: "Cooperative Assistant",
     headerStatus: "Online",
     inputPlaceholder: "Type your message...",
-    welcomeTitle: "Welcome 👋",
+    welcomeTitle: "Welcome",
     welcomeSubtitle: "Drâa-Tafilalet Cooperatives Assistant",
     chooseLang: "Choose your language",
     back: "← Change language",
@@ -24,7 +39,7 @@ const UI = {
     headerTitle: "المساعد التعاوني",
     headerStatus: "متصل",
     inputPlaceholder: "...اكتب رسالتك",
-    welcomeTitle: "👋 مرحباً",
+    welcomeTitle: "مرحباً",
     welcomeSubtitle: "مساعد تعاونيات درعة تافيلالت",
     chooseLang: "اختر لغتك",
     back: "تغيير اللغة ←",
@@ -34,80 +49,80 @@ const UI = {
 // ── Suggested questions per language ────────────────────────
 const SUGGESTIONS = {
   fr: [
-    { label: "🛍️ Produits disponibles", topic: "products" },
-    { label: "🛒 Comment acheter ?", topic: "buy" },
-    { label: "🚚 Livraison", topic: "delivery" },
-    { label: "🤝 Coopératives participantes", topic: "cooperatives" },
-    { label: "💰 Prix des produits", topic: "price" },
-    { label: "🌿 Huile d'argan", topic: "argan" },
-    { label: "🌸 Safran", topic: "safran" },
+    { label: "Produits disponibles", topic: "products", icon: <BsBasket3 /> },
+    { label: "Comment acheter ?", topic: "buy", icon: <FiShoppingBag /> },
+    { label: "Livraison", topic: "delivery", icon: <FiTruck /> },
+    { label: "Coopératives participantes", topic: "cooperatives", icon: <FiUsers /> },
+    { label: "Prix des produits", topic: "price", icon: <FiTag /> },
+    { label: "Huile d'argan", topic: "argan", icon: <FaLeaf /> },
+    { label: "Safran", topic: "safran", icon: <BsAward /> },
   ],
   en: [
-    { label: "🛍️ Available products", topic: "products" },
-    { label: "🛒 How to buy?", topic: "buy" },
-    { label: "🚚 Delivery", topic: "delivery" },
-    { label: "🤝 Participating cooperatives", topic: "cooperatives" },
-    { label: "💰 Product prices", topic: "price" },
-    { label: "🌿 Argan oil", topic: "argan" },
-    { label: "🌸 Saffron", topic: "safran" },
+    { label: "Available products", topic: "products", icon: <BsBasket3 /> },
+    { label: "How to buy?", topic: "buy", icon: <FiShoppingBag /> },
+    { label: "Delivery", topic: "delivery", icon: <FiTruck /> },
+    { label: "Participating cooperatives", topic: "cooperatives", icon: <FiUsers /> },
+    { label: "Product prices", topic: "price", icon: <FiTag /> },
+    { label: "Argan oil", topic: "argan", icon: <FaLeaf /> },
+    { label: "Saffron", topic: "safran", icon: <BsAward /> },
   ],
   ar: [
-    { label: "🛍️ المنتجات المتوفرة", topic: "products" },
-    { label: "🛒 كيف أشتري؟", topic: "buy" },
-    { label: "🚚 التوصيل", topic: "delivery" },
-    { label: "🤝 التعاونيات المشاركة", topic: "cooperatives" },
-    { label: "💰 أسعار المنتجات", topic: "price" },
-    { label: "🌿 زيت الأركان", topic: "argan" },
-    { label: "🌸 الزعفران", topic: "safran" },
+    { label: "المنتجات المتوفرة", topic: "products", icon: <BsBasket3 /> },
+    { label: "كيف أشتري؟", topic: "buy", icon: <FiShoppingBag /> },
+    { label: "التوصيل", topic: "delivery", icon: <FiTruck /> },
+    { label: "التعاونيات المشاركة", topic: "cooperatives", icon: <FiUsers /> },
+    { label: "أسعار المنتجات", topic: "price", icon: <FiTag /> },
+    { label: "زيت الأركان", topic: "argan", icon: <FaLeaf /> },
+    { label: "الزعفران", topic: "safran", icon: <BsAward /> },
   ],
 };
 
 // ── Knowledge base responses ────────────────────────────────
 const KB = {
   products: {
-    fr: "Nos coopératives proposent des produits authentiques de Drâa-Tafilalet :\n🌿 Huile d'argan\n🍯 Miel naturel\n🌸 Safran de Taliouine\n🌴 Dattes Mejhoul\n🧴 Cosmétiques naturels\n\nConsultez notre catalogue pour tout découvrir !",
-    en: "Our cooperatives offer authentic Drâa-Tafilalet products:\n🌿 Argan oil\n🍯 Natural honey\n🌸 Taliouine saffron\n🌴 Mejhoul dates\n🧴 Natural cosmetics\n\nBrowse our catalog to discover everything!",
-    ar: "تقدم تعاونياتنا منتجات أصيلة من درعة تافيلالت:\n🌿 زيت الأركان\n🍯 العسل الطبيعي\n🌸 زعفران تالوين\n🌴 تمور المجهول\n🧴 مستحضرات تجميل طبيعية\n\nتصفح الكتالوج لاكتشاف المزيد!",
+    fr: "Nos coopératives proposent des produits authentiques de Drâa-Tafilalet :\n- Huile d'argan\n- Miel naturel\n- Safran de Taliouine\n- Dattes Mejhoul\n- Cosmétiques naturels\n\nConsultez notre catalogue pour tout découvrir !",
+    en: "Our cooperatives offer authentic Drâa-Tafilalet products:\n- Argan oil\n- Natural honey\n- Taliouine saffron\n- Mejhoul dates\n- Natural cosmetics\n\nBrowse our catalog to discover everything!",
+    ar: "تقدم تعاونياتنا منتجات أصيلة من درعة تافيلالت:\n- زيت الأركان\n- العسل الطبيعي\n- زعفران تالوين\n- تمور المجهول\n- مستحضرات تجميل طبيعية\n\nتصفح الكتالوج لاكتشاف المزيد!",
   },
   buy: {
-    fr: "للشراء :\n1️⃣ تصفح المنتجات على موقعنا\n2️⃣ اختر المنتج\n3️⃣ تواصل مع التعاونية عبر واتساب أو الهاتف\n4️⃣ أكد طلبك\n\nPour acheter :\n1️⃣ Parcourez les produits\n2️⃣ Choisissez votre produit\n3️⃣ Contactez la coopérative via WhatsApp ou téléphone\n4️⃣ Confirmez votre commande",
-    en: "To buy:\n1️⃣ Browse products on our website\n2️⃣ Choose your product\n3️⃣ Contact the cooperative via WhatsApp or phone\n4️⃣ Confirm your order\n\nIt's simple and direct!",
-    ar: "لشراء المنتجات:\n1️⃣ تصفح المنتجات على موقعنا\n2️⃣ اختر المنتج المطلوب\n3️⃣ تواصل مع التعاونية عبر واتساب أو الهاتف\n4️⃣ أكد طلبك\n\nالعملية بسيطة ومباشرة!",
+    fr: "Pour acheter :\n1. Parcourez les produits\n2. Choisissez votre produit\n3. Contactez la coopérative via WhatsApp ou téléphone\n4. Confirmez votre commande",
+    en: "To buy:\n1. Browse products on our website\n2. Choose your product\n3. Contact the cooperative via WhatsApp or phone\n4. Confirm your order\n\nIt's simple and direct!",
+    ar: "لشراء المنتجات:\n1. تصفح المنتجات على موقعنا\n2. اختر المنتج المطلوب\n3. تواصل مع التعاونية عبر واتساب أو الهاتف\n4. أكد طلبك\n\nالعملية بسيطة ومباشرة!",
   },
   delivery: {
-    fr: "Oui, la livraison est disponible ! 🚚\nChaque coopérative gère ses livraisons. Contactez-la directement pour connaître les options, délais et frais dans votre région.",
-    en: "Yes, delivery is available! 🚚\nEach cooperative manages its own deliveries. Contact them directly for options, timeframes and fees in your area.",
-    ar: "نعم، التوصيل متاح! 🚚\nكل تعاونية تدير خدمة التوصيل الخاصة بها. تواصل معها مباشرة لمعرفة الخيارات والمدة والرسوم في منطقتك.",
+    fr: "Oui, la livraison est disponible !\nChaque coopérative gère ses livraisons. Contactez-la directement pour connaître les options, délais et frais dans votre région.",
+    en: "Yes, delivery is available!\nEach cooperative manages its own deliveries. Contact them directly for options, timeframes and fees in your area.",
+    ar: "نعم، التوصيل متاح!\nكل تعاونية تدير خدمة التوصيل الخاصة بها. تواصل معها مباشرة لمعرفة الخيارات والمدة والرسوم في منطقتك.",
   },
   cooperatives: {
-    fr: "Plusieurs coopératives de Drâa-Tafilalet sont sur notre plateforme 🤝\nSpécialisées en huile d'argan, safran, dattes, miel et cosmétiques naturels.\nVisitez la page 'Coopératives' pour les découvrir !",
-    en: "Several Drâa-Tafilalet cooperatives are on our platform 🤝\nSpecializing in argan oil, saffron, dates, honey and natural cosmetics.\nVisit the 'Cooperatives' page to discover them!",
-    ar: "العديد من تعاونيات درعة تافيلالت على منصتنا 🤝\nمتخصصة في زيت الأركان والزعفران والتمور والعسل ومستحضرات التجميل.\nقم بزيارة صفحة 'التعاونيات' لاكتشافها!",
+    fr: "Plusieurs coopératives de Drâa-Tafilalet sont sur notre plateforme.\nSpécialisées en huile d'argan, safran, dattes, miel et cosmétiques naturels.\nVisitez la page 'Coopératives' pour les découvrir !",
+    en: "Several Drâa-Tafilalet cooperatives are on our platform.\nSpecializing in argan oil, saffron, dates, honey and natural cosmetics.\nVisit the 'Cooperatives' page to discover them!",
+    ar: "العديد من تعاونيات درعة تافيلالت على منصتنا.\nمتخصصة في زيت الأركان والزعفران والتمور والعسل ومستحضرات التجميل.\nقم بزيارة صفحة 'التعاونيات' لاكتشافها!",
   },
   price: {
-    fr: "Les prix varient selon le produit et la coopérative. 💰\nVous trouverez les prix sur chaque fiche produit. Nos prix sont équitables et soutiennent les producteurs locaux.",
-    en: "Prices vary by product and cooperative. 💰\nYou'll find prices on each product page. Our prices are fair and support local producers.",
-    ar: "تختلف الأسعار حسب المنتج والتعاونية. 💰\nستجد الأسعار في صفحة كل منتج. أسعارنا عادلة وتدعم المنتجين المحليين.",
+    fr: "Les prix varient selon le produit et la coopérative.\nVous trouverez les prix sur chaque fiche produit. Nos prix sont équitables et soutiennent les producteurs locaux.",
+    en: "Prices vary by product and cooperative.\nYou'll find prices on each product page. Our prices are fair and support local producers.",
+    ar: "تختلف الأسعار حسب المنتج والتعاونية.\nستجد الأسعار في صفحة كل منتج. أسعارنا عادلة وتدعم المنتجين المحليين.",
   },
   argan: {
-    fr: "L'huile d'argan de nos coopératives est 100% pure et naturelle 🌿\nPressée à froid, disponible en version alimentaire et cosmétique. Un trésor du terroir marocain !",
-    en: "Our argan oil is 100% pure and natural 🌿\nCold-pressed, available in food and cosmetic versions. A Moroccan heritage treasure!",
-    ar: "زيت الأركان من تعاونياتنا نقي 100% وطبيعي 🌿\nمعصور على البارد، متوفر للاستخدام الغذائي والتجميلي. كنز من التراث المغربي!",
+    fr: "L'huile d'argan de nos coopératives est 100% pure et naturelle.\nPressée à froid, disponible en version alimentaire et cosmétique. Un trésor du terroir marocain !",
+    en: "Our argan oil is 100% pure and natural.\nCold-pressed, available in food and cosmetic versions. A Moroccan heritage treasure!",
+    ar: "زيت الأركان من تعاونياتنا نقي 100% وطبيعي.\nمعصور على البارد، متوفر للاستخدام الغذائي والتجميلي. كنز من التراث المغربي!",
   },
   safran: {
-    fr: "Le safran de Taliouine est l'un des meilleurs au monde ! 🌸\nPur, récolté à la main dans la région Drâa-Tafilalet.",
-    en: "Taliouine saffron is one of the best in the world! 🌸\nPure, hand-harvested in the Drâa-Tafilalet region.",
-    ar: "زعفران تالوين من أفضل الأنواع في العالم! 🌸\nنقي، يُحصد يدوياً في منطقة درعة تافيلالت.",
+    fr: "Le safran de Taliouine est l'un des meilleurs au monde !\nPur, récolté à la main dans la région Drâa-Tafilalet.",
+    en: "Taliouine saffron is one of the best in the world!\nPure, hand-harvested in the Drâa-Tafilalet region.",
+    ar: "زعفران تالوين من أفضل الأنواع في العالم!\nنقي، يُحصد يدوياً في منطقة درعة تافيلالت.",
   },
   default: {
-    fr: "Merci pour votre message ! 😊 Je peux vous aider avec les produits, les achats, la livraison ou nos coopératives. Posez votre question !",
-    en: "Thanks for your message! 😊 I can help you with products, purchases, delivery or our cooperatives. Ask your question!",
-    ar: "شكراً لرسالتك! 😊 يمكنني مساعدتك في المنتجات والشراء والتوصيل والتعاونيات. اطرح سؤالك!",
+    fr: "Merci pour votre message ! Je peux vous aider avec les produits, les achats, la livraison ou nos coopératives. Posez votre question !",
+    en: "Thanks for your message! I can help you with products, purchases, delivery or our cooperatives. Ask your question!",
+    ar: "شكراً لرسالتك! يمكنني مساعدتك في المنتجات والشراء والتوصيل والتعاونيات. اطرح سؤالك!",
   },
   welcome: {
-    fr: "Bonjour ! 😊 Comment puis-je vous aider aujourd'hui ?\nVoici quelques questions fréquentes :",
-    en: "Hello! 😊 How can I help you today?\nHere are some common questions:",
-    ar: "مرحباً! 😊 كيف يمكنني مساعدتك اليوم؟\nإليك بعض الأسئلة الشائعة:",
+    fr: "Bonjour ! Comment puis-je vous aider aujourd'hui ?\nVoici quelques questions fréquentes :",
+    en: "Hello! How can I help you today?\nHere are some common questions:",
+    ar: "مرحباً! كيف يمكنني مساعدتك اليوم؟\nإليك بعض الأسئلة الشائعة:",
   },
 };
 
@@ -115,13 +130,13 @@ const KB = {
 const matchTopic = (text) => {
   const lower = text.toLowerCase();
   const rules = [
-    { topic: "products", words: ["produit","product","منتج","catalogue","catalog","كتالوج","disponible","available","متوف"] },
-    { topic: "buy", words: ["acheter","achat","buy","purchase","شراء","commander","order","طلب","commande","كيف أشتري"] },
-    { topic: "delivery", words: ["livraison","delivery","توصيل","shipping","شحن","envoyer"] },
-    { topic: "cooperatives", words: ["coopérative","cooperative","تعاوني","partenaire","partner","شريك","particip","تعاونيات"] },
-    { topic: "price", words: ["prix","price","سعر","coût","cost","تكلفة","combien","how much","كم"] },
-    { topic: "argan", words: ["argan","أركان","أرغان"] },
-    { topic: "safran", words: ["safran","saffron","زعفران"] },
+    { topic: "products", words: ["produit","product","منتج","catalogue","catalog","كتالوج","disponible","available","metov"] },
+    { topic: "buy", words: ["acheter","achat","buy","purchase","shraa","commander","order","talab","commande","chri"] },
+    { topic: "delivery", words: ["livraison","delivery","tawsil","shipping","shahn","envoyer"] },
+    { topic: "cooperatives", words: ["coopérative","cooperative","taawon","partenaire","partner","sharik","particip","taawoniyat"] },
+    { topic: "price", words: ["prix","price","taman","coût","cost","si3r","combien","how much","kam"] },
+    { topic: "argan", words: ["argan","arkan","arghan"] },
+    { topic: "safran", words: ["safran","saffron","zafran"] },
   ];
   for (const r of rules) {
     if (r.words.some((w) => lower.includes(w))) return r.topic;
@@ -150,7 +165,6 @@ const Chatbot = () => {
     if (isOpen && lang && inputRef.current) inputRef.current.focus();
   }, [isOpen, lang]);
 
-  // When user picks a language, show welcome + suggestions
   const handleSelectLang = (selectedLang) => {
     setLang(selectedLang);
     setMessages([{ type: "bot", text: KB.welcome[selectedLang], time: new Date() }]);
@@ -214,8 +228,10 @@ const Chatbot = () => {
             style={{ background: "linear-gradient(135deg, #8B4513 0%, #C2783E 50%, #D4A574 100%)" }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
-                style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}>🌿</div>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg text-amber-100"
+                style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}>
+                <FaLeaf className="w-5 h-5" />
+              </div>
               <div className="text-white">
                 <div className="font-bold text-sm">{ui.headerTitle}</div>
                 <div className="text-[11px] opacity-80 flex items-center gap-1.5">
@@ -224,29 +240,25 @@ const Chatbot = () => {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-lg cursor-pointer border-none transition-colors"
-              style={{ background: "rgba(255,255,255,0.15)" }}
-              onMouseEnter={(e) => (e.target.style.background = "rgba(255,255,255,0.3)")}
-              onMouseLeave={(e) => (e.target.style.background = "rgba(255,255,255,0.15)")}
-            >✕</button>
+            
           </div>
 
           {/* ── Language Picker Screen ── */}
           {!lang ? (
             <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6">
-              <div>
-                <div className="text-4xl mb-3">🌍</div>
+              <div className="flex flex-col items-center text-amber-800">
+                <RiMessage3Line className="text-5xl mb-2" />
                 <h3 className="text-xl font-bold text-gray-800 mb-1">{UI.fr.welcomeTitle}</h3>
                 <p className="text-sm text-gray-500">{UI.fr.welcomeSubtitle}</p>
               </div>
-              <p className="text-sm font-semibold text-gray-700">{UI.fr.chooseLang}</p>
+              <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+                <FiGlobe /> {UI.fr.chooseLang}
+              </p>
               <div className="flex flex-col gap-3 w-full max-w-[240px]">
                 {[
-                  { code: "ar", label: "العربية", flag: "🇲🇦" },
-                  { code: "fr", label: "Français", flag: "🇫🇷" },
-                  { code: "en", label: "English", flag: "🇬🇧" },
+                  { code: "ar", label: "العربية" },
+                  { code: "fr", label: "Français" },
+                  { code: "en", label: "English" },
                 ].map((l) => (
                   <button
                     key={l.code}
@@ -268,7 +280,6 @@ const Chatbot = () => {
                       e.currentTarget.style.borderColor = "#d4a574";
                     }}
                   >
-                    <span className="text-xl">{l.flag}</span>
                     {l.label}
                   </button>
                 ))}
@@ -322,14 +333,14 @@ const Chatbot = () => {
                   </div>
                 )}
 
-                {/* Suggestion chips — always visible */}
+                {/* Suggestion chips */}
                 {!isTyping && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {SUGGESTIONS[lang].map((s, i) => (
                       <button
                         key={i}
                         onClick={() => handleSuggestion(s)}
-                        className="border rounded-full px-3.5 py-1.5 text-xs font-medium cursor-pointer transition-all duration-200"
+                        className="border rounded-full px-3.5 py-1.5 text-xs font-bold cursor-pointer transition-all duration-200 flex items-center gap-1.5 shadow-sm"
                         style={{
                           background: "white",
                           borderColor: "#d4a574",
@@ -346,7 +357,8 @@ const Chatbot = () => {
                           e.currentTarget.style.borderColor = "#d4a574";
                         }}
                       >
-                        {s.label}
+                        <span className="text-amber-800 group-hover:text-white transition-colors">{s.icon}</span>
+                        <span>{s.label}</span>
                       </button>
                     ))}
                   </div>
@@ -355,16 +367,14 @@ const Chatbot = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* ── Footer: change lang + input ── */}
+              {/* ── Footer ── */}
               <div className="flex-shrink-0 border-t border-gray-200 bg-white">
-                {/* Change language link */}
                 <button
                   onClick={handleResetLang}
-                  className="w-full text-center py-1.5 text-[11px] text-gray-400 hover:text-amber-700 cursor-pointer bg-transparent border-none transition-colors"
+                  className="w-full text-center py-2 text-[11px] text-gray-400 hover:text-amber-700 cursor-pointer bg-transparent border-none transition-colors font-bold flex items-center justify-center gap-1"
                 >
-                  {ui.back}
+                  <FiArrowLeft className="text-xs" /> {ui.back}
                 </button>
-                {/* Input row */}
                 <div className="flex items-center gap-2.5 px-4 pb-3">
                   <input
                     ref={inputRef}
@@ -393,10 +403,7 @@ const Chatbot = () => {
                       color: "white",
                     }}
                   >
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                      style={{ transform: isRtl ? "scaleX(-1)" : "none" }}>
-                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                    </svg>
+                    <FiSend size={15} style={{ transform: isRtl ? "scaleX(-1)" : "none" }} />
                   </button>
                 </div>
               </div>
@@ -408,14 +415,14 @@ const Chatbot = () => {
       {/* ── Floating Button ── */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-[60px] h-[60px] rounded-full border-none flex items-center justify-center cursor-pointer text-white text-2xl transition-transform duration-300 hover:scale-110"
+        className="w-[60px] h-[60px] rounded-full border-none flex items-center justify-center cursor-pointer text-white text-2xl transition-transform duration-300 hover:scale-110 shadow-lg"
         style={{
-          background: "linear-gradient(135deg, #8B4513 0%, #C2783E 100%)",
+          background: "linear-gradient(135deg, #4e6c33 0%, #3a6232 100%)",
           boxShadow: "0 6px 24px rgba(139,69,19,0.35)",
           animation: !isOpen ? "chatPulse 2s infinite" : "none",
         }}
       >
-        {isOpen ? "✕" : "💬"}
+        {isOpen ? "✕" : <RiDiscussLine />}
       </button>
 
       {/* ── Keyframes ── */}

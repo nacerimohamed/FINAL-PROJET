@@ -1,20 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+import { FaQuoteRight, FaStar, FaRegStar, FaUsers, FaLeaf, FaBoxOpen, FaSmile } from "react-icons/fa";
 
 const StarRating = ({ rating }) => {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-0.5 text-amber-400">
       {[1, 2, 3, 4, 5].map((star) => (
-        <svg
-          key={star}
-          className={`w-5 h-5 ${
-            star <= rating ? "text-amber-400" : "text-gray-200"
-          }`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
+        <span key={star} className="text-sm">
+          {star <= rating ? <FaStar /> : <FaRegStar className="text-gray-200" />}
+        </span>
       ))}
     </div>
   );
@@ -22,6 +17,37 @@ const StarRating = ({ rating }) => {
 
 const Testimonials = () => {
   const { t } = useTranslation();
+  
+  // State variables dynamic counts
+  const [cooperativesCount, setCooperativesCount] = useState(0);
+  const [productsCount, setProductsCount] = useState(0);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    fetchDynamicStats();
+  }, []);
+
+  const fetchDynamicStats = async () => {
+    try {
+      setLoadingStats(true);
+      // Fetch concurrent data components
+      const [coopRes, prodRes] = await Promise.all([
+        axios.get("http://localhost:8000/api/cooperatives"),
+        axios.get("http://localhost:8000/api/products")
+      ]);
+
+      if (coopRes.data.success) {
+        setCooperativesCount(coopRes.data.data.length);
+      }
+      if (prodRes.data.success) {
+        setProductsCount(prodRes.data.data.length);
+      }
+    } catch (err) {
+      console.error("Error fetching dynamic stats for counter:", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   const testimonials = [
     {
@@ -30,7 +56,7 @@ const Testimonials = () => {
       rating: 5,
       comment: t("testimonials.review1Comment"),
       avatar: "F",
-      color: "from-green-400 to-emerald-500",
+      color: "from-emerald-500 to-teal-600",
     },
     {
       name: t("testimonials.review2Name"),
@@ -38,7 +64,7 @@ const Testimonials = () => {
       rating: 5,
       comment: t("testimonials.review2Comment"),
       avatar: "A",
-      color: "from-blue-400 to-indigo-500",
+      color: "from-emerald-600 to-green-700",
     },
     {
       name: t("testimonials.review3Name"),
@@ -46,7 +72,7 @@ const Testimonials = () => {
       rating: 4,
       comment: t("testimonials.review3Comment"),
       avatar: "K",
-      color: "from-purple-400 to-pink-500",
+      color: "from-teal-500 to-emerald-600",
     },
     {
       name: t("testimonials.review4Name"),
@@ -54,94 +80,128 @@ const Testimonials = () => {
       rating: 5,
       comment: t("testimonials.review4Comment"),
       avatar: "S",
-      color: "from-orange-400 to-red-500",
+      color: "from-green-600 to-emerald-800",
     },
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-white relative overflow-hidden" id="testimonials">
-      {/* Decorative Background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-green-50 to-transparent rounded-full opacity-60 -translate-y-1/2"></div>
+    <section className="py-20 lg:py-24 bg-green-50/10 relative overflow-hidden" id="testimonials">
+      {/* Decorative Background Pattern */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-emerald-50/60 to-transparent rounded-full opacity-70 -translate-y-1/2 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Section Header */}
-        <div className="text-center mb-16 fade-up">
-          <span className="inline-block px-4 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-semibold tracking-wide uppercase mb-4">
+        <div className="text-center mb-14">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 mb-3">
+            <FaLeaf className="text-[10px]" />
             {t("testimonials.badge")}
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-gray-800 tracking-tight mb-3">
             {t("testimonials.title")}
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 text-xs sm:text-sm max-w-xl mx-auto font-medium">
             {t("testimonials.subtitle")}
           </p>
-          <div className="w-20 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full mt-6"></div>
+          <div className="w-14 h-1 bg-emerald-500 mx-auto rounded-full mt-4" />
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="fade-up group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:border-green-200 hover:-translate-y-2 transition-all duration-500"
-              style={{ transitionDelay: `${index * 100}ms` }}
+              className="group relative bg-white rounded-2xl p-5 shadow-sm border border-emerald-100/60 hover:shadow-xl hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between"
+              style={{ 
+                animation: `fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 40}ms both` 
+              }}
             >
-              {/* Quote Icon */}
-              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <svg className="w-12 h-12 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
-                </svg>
+              {/* Top Row: Stars & Quote Icon */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <StarRating rating={testimonial.rating} />
+                  <FaQuoteRight className="text-emerald-100 group-hover:text-emerald-200 transition-colors text-lg" />
+                </div>
+
+                {/* Comment */}
+                <p className="text-gray-600 text-xs leading-relaxed mb-6 italic">
+                  "{testimonial.comment}"
+                </p>
               </div>
 
-              {/* Stars */}
-              <div className="mb-4">
-                <StarRating rating={testimonial.rating} />
-              </div>
-
-              {/* Comment */}
-              <p className="text-gray-600 leading-relaxed mb-6 text-sm min-h-[80px]">
-                "{testimonial.comment}"
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                <div
-                  className={`w-11 h-11 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300`}
+              {/* Author Info Block */}
+              <div className="flex items-center gap-3 pt-4 border-t border-emerald-50/60">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform`}
                 >
                   {testimonial.avatar}
                 </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-sm">{testimonial.name}</h4>
-                  <p className="text-gray-500 text-xs">{testimonial.location}</p>
+                <div className="min-w-0">
+                  <h4 className="font-bold text-gray-800 text-xs truncate">{testimonial.name}</h4>
+                  <p className="text-gray-400 text-[10px] font-semibold">{testimonial.location}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Trust Stats */}
-        <div className="mt-16 fade-up">
-          <div className="bg-gradient-to-r from-green-600 via-green-700 to-emerald-700 rounded-2xl p-8 lg:p-12 shadow-2xl">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                { value: "500+", label: t("testimonials.statClients") },
-                { value: "100+", label: t("testimonials.statCooperatives") },
-                { value: "1000+", label: t("testimonials.statProducts") },
-                { value: "98%", label: t("testimonials.statSatisfaction") },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-green-200 text-sm font-medium">
-                    {stat.label}
+        {/* Trust Stats Counter Block [DYNAMIQUE %100] */}
+          <div className="mt-14">
+            <div className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 rounded-2xl p-6 lg:p-10 shadow-lg border-b-4 border-emerald-500">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+                
+                {/* Stat 1: Dynamic Clients */}
+                <div className="text-center space-y-1">
+                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaSmile /></div>
+                  <div className="text-2xl lg:text-3xl font-black text-white">500+</div>
+                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
+                    {t("testimonials.statClients")}
                   </div>
                 </div>
-              ))}
+
+                {/* Stat 2: Dynamic Cooperatives Count */}
+                <div className="text-center space-y-1 border-l lg:border-l border-emerald-700/50">
+                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaUsers /></div>
+                  <div className="text-2xl lg:text-3xl font-black text-white">
+                    {loadingStats ? "..." : `${cooperativesCount}+`}
+                  </div>
+                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
+                    {t("testimonials.statCooperatives")}
+                  </div>
+                </div>
+
+                {/* Stat 3: Dynamic Products Count */}
+                <div className="text-center space-y-1 border-l border-emerald-700/50">
+                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaBoxOpen /></div>
+                  <div className="text-2xl lg:text-3xl font-black text-white">
+                    {loadingStats ? "..." : `${productsCount}+`}
+                  </div>
+                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
+                    {t("testimonials.statProducts")}
+                  </div>
+                </div>
+
+                {/* Stat 4: Satisfaction */}
+                <div className="text-center space-y-1 border-l border-emerald-700/50">
+                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaStar /></div>
+                  <div className="text-2xl lg:text-3xl font-black text-white">98%</div>
+                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
+                    {t("testimonials.statSatisfaction")}
+                  </div>
+                </div>
+
             </div>
           </div>
         </div>
+        
       </div>
+
+      {/* Animation scope placeholder */}
+      <style>{`
+        @keyframes fadeUp { 
+          from { opacity: 0; transform: translateY(10px); } 
+          to { opacity: 1; transform: translateY(0); } 
+        }
+      `}</style>
     </section>
   );
 };

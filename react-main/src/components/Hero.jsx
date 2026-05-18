@@ -113,14 +113,7 @@ const Hero = () => {
       </div>
 
       {/* Scroll Down Indicator */}
-      <div className="absolute bottom-15 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-        <div className="text-white text-center">
-          <svg className="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-          <p className="text-sm text-white/80">{t('hero.scrollDown')}</p>
-        </div>
-      </div>
+      
 
       <style jsx>{`
         @keyframes blob {

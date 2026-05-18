@@ -6,6 +6,17 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { 
+  FaUser, 
+  FaEnvelope, 
+  FaCommentAlt, 
+  FaPaperPlane, 
+  FaSpinner, 
+  FaPhoneAlt, 
+  FaMapMarkerAlt, 
+  FaBolt,
+  FaLeaf
+} from "react-icons/fa";
 
 const Contact = () => {
   const { t, i18n } = useTranslation();
@@ -74,53 +85,53 @@ const Contact = () => {
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 25, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 12
+        stiffness: 90,
+        damping: 14
       }
     }
   };
 
   const cardVariants = {
     hover: {
-      y: -8,
-      boxShadow: "0 20px 40px -12px rgba(0,0,0,0.1)",
-      transition: { type: "spring", stiffness: 300, damping: 15 }
+      y: -6,
+      boxShadow: "0 20px 40px -15px rgba(6, 78, 59, 0.12)",
+      transition: { type: "spring", stiffness: 300, damping: 20 }
     },
-    tap: { scale: 0.98 }
+    tap: { scale: 0.99 }
   };
 
   const iconVariants = {
     hover: {
-      scale: 1.1,
-      rotate: isRTL ? -5 : 5,
-      backgroundColor: "#065f46",
+      scale: 1.08,
+      rotate: isRTL ? -6 : 6,
+      backgroundColor: "#047857",
       color: "#fef3c7",
-      transition: { type: "spring", stiffness: 400, damping: 10 }
+      transition: { type: "spring", stiffness: 400, damping: 12 }
     }
   };
 
-  // Contact information data with translations
+  // Contact info mapping with unified icons
   const contactInfo = [
     { 
-      icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z", 
+      icon: <FaEnvelope className="w-6 h-6" />, 
       title: t('contact.email'), 
       content: "contact@cooperative.ma", 
       sub: t('contact.responseTime')
     },
     { 
-      icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z", 
+      icon: <FaPhoneAlt className="w-5 h-5" />, 
       title: t('contact.phone'), 
       content: "+212 5XX-XXXXXX", 
       sub: t('contact.hours')
     },
     { 
-      icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z", 
+      icon: <FaMapMarkerAlt className="w-5 h-5" />, 
       title: t('contact.address'), 
       content: t('contact.addressFull'), 
       sub: null 
@@ -143,130 +154,94 @@ const Contact = () => {
         theme="colored"
       />
       
-      {/* Hero Section avec animation */}
+      {/* Hero Section Premium (Green Gradient) */}
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, type: "spring", stiffness: 80 }}
-        className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-stone-800 text-amber-50 py-20"
+        transition={{ duration: 0.8, type: "spring", stiffness: 70 }}
+        className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-stone-900 text-amber-50 py-5 border-b-4 border-emerald-600"
         dir={isRTL ? 'rtl' : 'ltr'}
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 1.5, delay: 0.3 }}
-          className="absolute inset-0 bg-black"
-        ></motion.div>
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
         
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
           <motion.div
-            initial={{ scale: 0, rotate: isRTL ? 180 : -180 }}
+            initial={{ scale: 0, rotate: isRTL ? 135 : -135 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-            className="inline-block mb-6"
+            transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
+            className="inline-block mb-4"
           >
-            <div className="bg-amber-50/20 backdrop-blur-sm rounded-full p-4 w-24 h-24 flex items-center justify-center mx-auto border border-amber-100/30">
-              <motion.svg
-                animate={{
-                  y: [0, -5, 0],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-12 h-12 text-amber-50"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="bg-emerald-500/20 backdrop-blur-md rounded-full p-4 w-20 h-20 flex items-center justify-center mx-auto border border-emerald-400/30 shadow-inner">
+              <motion.div
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="text-emerald-300 text-3xl"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-              </motion.svg>
+                <FaLeaf />
+              </motion.div>
             </div>
           </motion.div>
           
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-5xl md:text-6xl font-light mb-6 tracking-wide"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-3xl md:text-5xl font-black mb-4 tracking-tight drop-shadow-sm"
           >
             {t('contact.title')}
           </motion.h1>
           
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl md:text-2xl text-amber-100/80 max-w-3xl mx-auto mb-8 font-light"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-base md:text-lg text-emerald-100/80 max-w-2xl mx-auto mb-6 font-medium"
           >
             {t('contact.subtitle')}
           </motion.p>
           
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: "6rem" }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="h-1 bg-amber-200/50 mx-auto"
-          ></motion.div>
+         
         </div>
       </motion.div>
 
-      {/* Contact Content */}
+      {/* Main Grid Content */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-7xl mx-auto px-6 py-20 bg-stone-50/50"
+        className="bg-stone-50/60 py-16"
         dir={isRTL ? 'rtl' : 'ltr'}
       >
-        <div className={`grid lg:grid-cols-2 gap-16 ${isRTL ? 'lg:rtl-grid' : ''}`}>
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:items-start">
           
-          {/* Contact Form - Carte élégante avec animations */}
+          {/* Contact Form Container */}
           <motion.div
             variants={itemVariants}
             whileHover="hover"
             whileTap="tap"
             {...cardVariants}
-            className="bg-white p-10 rounded-2xl shadow-lg border border-stone-200 hover:border-emerald-700/30 transition-all"
+            className="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-emerald-100/60 transition-all duration-300"
           >
-            <div className="mb-10">
-              <motion.h2
-                initial={{ x: isRTL ? 20 : -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl font-light text-stone-800 mb-4"
-              >
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
                 {t('contact.formTitle')}
-              </motion.h2>
-              <motion.p
-                initial={{ x: isRTL ? 20 : -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-stone-500 text-lg"
-              >
+              </h2>
+              <p className="text-gray-500 text-sm">
                 {t('contact.formSubtitle')}
-              </motion.p>
+              </p>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Field */}
               <div>
-                <label className="block text-stone-700 font-medium mb-3 text-lg">
+                <label className="block text-gray-700 font-semibold mb-2 text-sm">
                   {t('contact.name')}
                 </label>
                 <div className="relative">
-                  <motion.svg
-                    animate={focusedField === "name" ? { scale: 1.1, color: "#065f46" } : {}}
-                    className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 text-stone-400 w-5 h-5 transition-colors`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                  </motion.svg>
-                  <motion.input
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  <span className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 transition-colors duration-200 ${focusedField === "name" ? "text-emerald-600" : "text-gray-400"}`}>
+                    <FaUser className="text-sm" />
+                  </span>
+                  <input
                     type="text"
                     name="name"
                     value={formData.name}
@@ -274,29 +249,22 @@ const Contact = () => {
                     onFocus={() => setFocusedField("name")}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className={`w-full ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 border border-stone-200 rounded-lg focus:outline-none focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700/20 transition-all bg-stone-50/50`}
+                    className={`w-full ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-3.5 border border-emerald-100 bg-emerald-50/10 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder-gray-400 text-sm font-medium text-gray-700`}
                     placeholder={t('contact.namePlaceholder')}
                   />
                 </div>
               </div>
 
+              {/* Email Field */}
               <div>
-                <label className="block text-stone-700 font-medium mb-3 text-lg">
+                <label className="block text-gray-700 font-semibold mb-2 text-sm">
                   {t('contact.email')}
                 </label>
                 <div className="relative">
-                  <motion.svg
-                    animate={focusedField === "email" ? { scale: 1.1, color: "#065f46" } : {}}
-                    className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 text-stone-400 w-5 h-5 transition-colors`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </motion.svg>
-                  <motion.input
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  <span className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 transition-colors duration-200 ${focusedField === "email" ? "text-emerald-600" : "text-gray-400"}`}>
+                    <FaEnvelope className="text-sm" />
+                  </span>
+                  <input
                     type="email"
                     name="email"
                     value={formData.email}
@@ -304,200 +272,121 @@ const Contact = () => {
                     onFocus={() => setFocusedField("email")}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className={`w-full ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 border border-stone-200 rounded-lg focus:outline-none focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700/20 transition-all bg-stone-50/50`}
+                    className={`w-full ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-3.5 border border-emerald-100 bg-emerald-50/10 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder-gray-400 text-sm font-medium text-gray-700`}
                     placeholder={t('contact.emailPlaceholder')}
                   />
                 </div>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <label className="block text-stone-700 font-medium mb-3 text-lg">
+              {/* Message Field */}
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2 text-sm">
                   {t('contact.message')}
                 </label>
                 <div className="relative">
-                  <motion.svg
-                    animate={focusedField === "message" ? { scale: 1.1, color: "#065f46" } : {}}
-                    className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-6 text-stone-400 w-5 h-5 transition-colors`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                  </motion.svg>
-                  <motion.textarea
-                    whileFocus={{ scale: 1.01 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  <span className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-5 transition-colors duration-200 ${focusedField === "message" ? "text-emerald-600" : "text-gray-400"}`}>
+                    <FaCommentAlt className="text-sm" />
+                  </span>
+                  <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("message")}
                     onBlur={() => setFocusedField(null)}
                     required
-                    rows="6"
-                    className={`w-full ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 border border-stone-200 rounded-lg focus:outline-none focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700/20 transition-colors resize-none bg-stone-50/50`}
+                    rows="5"
+                    className={`w-full ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-4 border border-emerald-100 bg-emerald-50/10 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder-gray-400 text-sm font-medium text-gray-700 resize-none`}
                     placeholder={t('contact.messagePlaceholder')}
                   />
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.button
+              {/* Submit Button */}
+              <button
                 type="submit"
                 disabled={sending}
-                whileHover={{ scale: 1.02, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.2)" }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                className="w-full py-4 bg-emerald-800 hover:bg-emerald-900 text-amber-50 font-medium text-lg rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg relative overflow-hidden"
+                className="w-full py-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2 active:scale-[0.99]"
               >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-transparent"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.6 }}
-                />
                 {sending ? (
-                  <div className="flex items-center justify-center">
-                    <motion.svg
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="h-6 w-6 mr-3 text-amber-50"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </motion.svg>
-                    {t('contact.sending')}
-                  </div>
+                  <>
+                    <FaSpinner className="animate-spin text-lg" />
+                    <span>{t('contact.sending')}</span>
+                  </>
                 ) : (
-                  <div className="flex items-center justify-center">
-                    <motion.svg
-                      animate={{ y: [0, -3, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="w-6 h-6 mr-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </motion.svg>
-                    {t('contact.send')}
-                  </div>
+                  <>
+                    <FaPaperPlane className="text-xs" />
+                    <span>{t('contact.send')}</span>
+                  </>
                 )}
-              </motion.button>
+              </button>
             </form>
           </motion.div>
 
-          {/* Contact Information - avec animations */}
-          <div className="space-y-8">
+          {/* Contact Information Right Column */}
+          <div className="space-y-6">
             <motion.div
               variants={itemVariants}
               whileHover="hover"
               {...cardVariants}
-              className="bg-white p-10 rounded-2xl shadow-lg border border-stone-200"
+              className="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-emerald-100/60"
             >
-              <motion.h2
-                initial={{ x: isRTL ? -20 : 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-4xl font-light text-stone-800 mb-10"
-              >
+              <h2 className="text-2xl font-bold text-gray-800 mb-8">
                 {t('contact.infoTitle')}
-              </motion.h2>
+              </h2>
               
-              <div className="space-y-10">
+              <div className="space-y-6">
                 {contactInfo.map((item, index) => (
                   <motion.div
-                    key={item.title}
-                    initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
+                    key={index}
+                    initial={{ opacity: 0, x: isRTL ? -15 : 15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className={`flex items-start group ${isRTL ? 'flex-row-reverse' : ''}`}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className={`flex items-start ${isRTL ? 'space-x-reverse' : ''} gap-4 group`}
                   >
                     <motion.div
                       whileHover="hover"
                       variants={iconVariants}
-                      className={`bg-emerald-100 text-emerald-800 p-4 rounded-xl transition-colors cursor-pointer ${isRTL ? 'ml-6' : 'mr-6'}`}
+                      className="bg-emerald-50 text-emerald-700 p-3.5 rounded-xl transition-colors flex-shrink-0 flex items-center justify-center w-12 h-12 border border-emerald-100"
                     >
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon}></path>
-                      </svg>
+                      {item.icon}
                     </motion.div>
-                    <motion.div
-                      whileHover={{ x: isRTL ? -5 : 5 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                      className={isRTL ? 'text-right' : 'text-left'}
-                    >
-                      <h3 className="font-medium text-stone-800 mb-2 text-xl">{item.title}</h3>
-                      <p className="text-stone-600 text-lg whitespace-pre-line">{item.content}</p>
+                    
+                    <div className="space-y-0.5">
+                      <h3 className="font-bold text-gray-800 text-base">{item.title}</h3>
+                      <p className="text-gray-600 text-sm font-medium whitespace-pre-line leading-relaxed">{item.content}</p>
                       {item.sub && (
-                        <p className="text-stone-400 text-sm mt-1">{item.sub}</p>
+                        <p className="text-gray-400 text-xs font-semibold">{item.sub}</p>
                       )}
-                    </motion.div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Carte réponse garantie */}
+            {/* Fast Response Guarantee Banner */}
             <motion.div
               variants={itemVariants}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-                transition: { type: "spring", stiffness: 300 }
-              }}
-              className="bg-gradient-to-r from-emerald-800 to-stone-800 text-amber-50 p-8 rounded-2xl text-center relative overflow-hidden"
+              whileHover={{ y: -4 }}
+              className="bg-gradient-to-br from-emerald-800 to-emerald-950 text-amber-50 p-6 rounded-2xl text-center relative overflow-hidden border border-emerald-700/50 shadow-md shadow-emerald-950/20"
             >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-transparent"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "200%" }}
-                transition={{ duration: 0.8 }}
-              />
+              <div className="absolute inset-0 opacity-5 bg-[linear-gradient(45deg,#fff_25%,transparent_25%,transparent_50%,#fff_50%,#fff_75%,transparent_75%,transparent)] bg-[size:24px_24px]" />
               
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  rotate: isRTL ? [0, -5, 5, 0] : [0, 5, -5, 0]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="mb-4"
-              >
-                <svg className="w-12 h-12 mx-auto text-amber-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-              </motion.div>
-              
-              <motion.h4
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl font-light mb-3"
-              >
-                {t('contact.guarantee')}
-              </motion.h4>
-              
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-amber-100/80"
-              >
-                {t('contact.guaranteeText')}
-              </motion.p>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="mb-3 bg-amber-400/20 p-2.5 rounded-full border border-amber-400/30 text-amber-300 text-xl animate-pulse">
+                  <FaBolt />
+                </div>
+                
+                <h4 className="text-lg font-bold text-amber-200 mb-1">
+                  {t('contact.guarantee')}
+                </h4>
+                
+                <p className="text-emerald-100/90 text-xs max-w-sm font-medium leading-relaxed">
+                  {t('contact.guaranteeText')}
+                </p>
+              </div>
             </motion.div>
           </div>
+
         </div>
       </motion.div>
 
@@ -505,7 +394,5 @@ const Contact = () => {
     </>
   );
 };
-
-
 
 export default Contact;

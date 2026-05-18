@@ -212,26 +212,8 @@ const ManagerDashboard = () => {
               sparkColor="#3b82f6"
               delay={80}
             />
-            <StatCard
-              icon={<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>}
-              label="Rupture de stock"
-              value={stats?.outOfStock ?? 0}
-              sub={stats?.total > 0 ? `${outPct}% du catalogue` : "Hors stock"}
-              color="rose"
-              trend="down"
-              sparkColor="#f43f5e"
-              delay={160}
-            />
-            <StatCard
-              icon={<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>}
-              label="Stock faible"
-              value={stats?.lowStock ?? 0}
-              sub={stats?.total > 0 ? `${lowPct}% à réapprovisionner` : "À surveiller"}
-              color="amber"
-              trend="down"
-              sparkColor="#f59e0b"
-              delay={240}
-            />
+            
+            
             <StatCard
               icon={<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>}
               label="Catégories"
@@ -242,16 +224,7 @@ const ManagerDashboard = () => {
               sparkColor="#8b5cf6"
               delay={320}
             />
-            <StatCard
-              icon={<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>}
-              label="Commandes"
-              value={stats?.orders ?? 0}
-              sub="Total reçues"
-              color="teal"
-              trend="up"
-              sparkColor="#14b8a6"
-              delay={400}
-            />
+           
           </div>
 
           {/* Stock Health Bar */}
@@ -294,7 +267,7 @@ const ManagerDashboard = () => {
               <div className="flex flex-wrap gap-4 mt-4">
                 {[
                   { color: "bg-blue-500",  label: "Disponibles",  pct: availablePct },
-                  { color: "bg-amber-400", label: "Stock faible", pct: lowPct       },
+                  
                   { color: "bg-rose-500",  label: "Rupture",      pct: outPct       },
                 ].map(({ color, label, pct }) => (
                   <div key={label} className="flex items-center gap-2">
@@ -307,55 +280,7 @@ const ManagerDashboard = () => {
             </div>
           )}
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 sm:p-6">
-            <h2 className="text-sm font-bold text-gray-800 mb-4">Actions rapides</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[
-                {
-                  href: "/manager/products",
-                  icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />,
-                  label: "Voir les produits",
-                  desc: "Gérer le catalogue",
-                  from: "from-emerald-500", to: "to-emerald-600",
-                  light: "hover:bg-emerald-50", textColor: "group-hover:text-emerald-700",
-                },
-                {
-                  href: "/manager/products/new",
-                  icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />,
-                  label: "Nouveau produit",
-                  desc: "Ajouter au catalogue",
-                  from: "from-blue-500", to: "to-blue-600",
-                  light: "hover:bg-blue-50", textColor: "group-hover:text-blue-700",
-                },
-                {
-                  href: "/manager/stock",
-                  icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />,
-                  label: "Gérer le stock",
-                  desc: "Niveaux & alertes",
-                  from: "from-amber-500", to: "to-amber-600",
-                  light: "hover:bg-amber-50", textColor: "group-hover:text-amber-700",
-                },
-              ].map(({ href, icon, label, desc, from, to, light, textColor }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className={`group flex items-center gap-3 p-4 rounded-xl bg-gray-50 ${light} transition-all duration-200 hover:shadow-sm`}
-                >
-                  <div className={`w-10 h-10 bg-gradient-to-br ${from} ${to} rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-200 shrink-0`}>
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">{icon}</svg>
-                  </div>
-                  <div>
-                    <p className={`text-sm font-semibold text-gray-700 ${textColor} transition-colors`}>{label}</p>
-                    <p className="text-xs text-gray-400">{desc}</p>
-                  </div>
-                  <svg className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          </div>
+          
 
         </div>
       </div>

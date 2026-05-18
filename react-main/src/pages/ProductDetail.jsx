@@ -154,14 +154,7 @@ const ProductDetail = () => {
             <h1 className="text-4xl font-bold text-green-800">{product.name}</h1>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl font-bold text-green-700">{t('productDetail.price', { price: product.price })}</span>
-              {product.quantity > 0 
-                ? <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    {t('productDetail.inStock', { quantity: product.quantity })}
-                  </span>
-                : <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    {t('productDetail.outOfStock')}
-                  </span>
-              }
+             
             </div>
 
             {/* Description */}
@@ -252,14 +245,7 @@ const ProductDetail = () => {
                   <FaWhatsapp className="text-lg" /> {t('productDetail.whatsapp')}
                 </button>
               )}
-              {product.cooperative?.email && (
-                <button
-                  onClick={handleEmailPurchase}
-                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl transition transform hover:scale-105 shadow-md"
-                >
-                  <FaEnvelope className="text-lg" /> {t('productDetail.email')}
-                </button>
-              )}
+           
               {product.cooperative?.tele && (
                 <button
                   onClick={handlePhoneCall}
@@ -284,11 +270,7 @@ const ProductDetail = () => {
                   <FaWhatsapp /> {t('productDetail.whatsapp')}
                 </button>
               )}
-              {product.cooperative?.email && (
-                <button onClick={handleEmailPurchase} className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2">
-                  <FaEnvelope /> {t('productDetail.email')}
-                </button>
-              )}
+              
               {product.cooperative?.tele && (
                 <button onClick={handlePhoneCall} className="w-full bg-green-400 hover:bg-green-500 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2">
                   <FaPhone /> {t('productDetail.call')}

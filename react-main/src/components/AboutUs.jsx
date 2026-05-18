@@ -69,13 +69,7 @@ const AboutUs = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
             </div>
-            {/* Floating stat card */}
-            <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6 border border-gray-100 hidden sm:block">
-              <div className="text-center">
-                <div className="text-3xl font-extrabold text-green-600 mb-1">100+</div>
-                <div className="text-sm text-gray-600 font-medium">{t("aboutUs.cooperativesCount")}</div>
-              </div>
-            </div>
+           
             {/* Decorative border */}
             <div className="absolute -top-4 -left-4 w-full h-full border-2 border-green-300/50 rounded-2xl -z-10"></div>
           </div>

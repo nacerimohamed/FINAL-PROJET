@@ -14,6 +14,8 @@ import ManagerProducts from "./pages/Manager/ManagerProducts";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCooperatives from "./pages/Admin/AdminCooperatives";
 
+import ScrollToTop from "./components/ScrollToTop";
+
 // ProtectedRoute
 const ProtectedRoute = ({ children, role }) => {
   const token = localStorage.getItem("token");
@@ -38,6 +40,7 @@ const ProtectedRoute = ({ children, role }) => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />

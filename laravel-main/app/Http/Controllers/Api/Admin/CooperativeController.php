@@ -53,7 +53,7 @@ class CooperativeController extends Controller
                 // ✅ IMPORTANT FIELD
                 'ville' => 'nullable|string|max:100',
 
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
                 'contact' => 'nullable|string',
                 'tele' => 'nullable|string',
                 'instagram' => 'nullable|string',
@@ -133,7 +133,7 @@ class CooperativeController extends Controller
                 // ✅ FIXED
                 'ville' => 'nullable|string|max:100',
 
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
 
             if ($validator->fails()) {
