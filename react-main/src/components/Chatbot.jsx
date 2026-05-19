@@ -9,11 +9,13 @@ import {
   FiSend,
   FiTruck,
   FiTag,
-  FiSmile //
+  FiSmile
 } from "react-icons/fi";
 import { FaLeaf, FaTimes } from "react-icons/fa";
 import { RiDiscussLine, RiMessage3Line } from "react-icons/ri";
 import { BsBasket3, BsAward } from "react-icons/bs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import robotIcon from "../assets/robot_icon.png";
 
 // ── UI translations per language ────────────────────────────
 const UI = {
@@ -176,16 +178,77 @@ const Chatbot = () => {
     setInput("");
   };
 
-  const addBotResponse = (topic) => {
+  const addBotResponse = async (topicOrText, isDirectText = false) => {
     setIsTyping(true);
-    setTimeout(() => {
+    
+    // Si c'est un sujet de la base de connaissances interne, on l'affiche directement
+    if (!isDirectText && KB[topicOrText] && topicOrText !== "default") {
+      setTimeout(() => {
+        setMessages((prev) => [...prev, {
+          type: "bot",
+          text: KB[topicOrText][lang] || KB.default[lang],
+          time: new Date(),
+        }]);
+        setIsTyping(false);
+      }, 500 + Math.random() * 500);
+      return;
+    }
+
+    // Sinon, on fait appel à Gemini API
+    const userQuery = isDirectText ? topicOrText : (KB[topicOrText] ? KB[topicOrText][lang] : topicOrText);
+    
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      console.log("ENV CHECK - apiKey est :", apiKey);
+      if (!apiKey || apiKey === "votre_vraie_cle_api_gemini_ici" || apiKey === "YOUR_API_KEY") {
+        const warningMessage = lang === 'fr' 
+          ? "⚠️ L'intelligence artificielle est désactivée.\n\nPour l'activer, vous devez ajouter une vraie clé API Gemini (VITE_GEMINI_API_KEY) dans le fichier .env de react-main, puis redémarrer le serveur avec `npm run dev`."
+          : lang === 'ar'
+          ? "⚠️ الذكاء الاصطناعي معطل.\n\nلتفعيله، يجب إضافة مفتاح API Gemini حقيقي في ملف .env ثم إعادة تشغيل الخادم."
+          : "⚠️ AI is disabled.\n\nTo enable it, you must add a real Gemini API key (VITE_GEMINI_API_KEY) in the react-main .env file, then restart the server with `npm run dev`.";
+          
+        setMessages((prev) => [...prev, {
+          type: "bot",
+          text: warningMessage,
+          time: new Date(),
+        }]);
+        setIsTyping(false);
+        return;
+      }
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // Fast & reliable model
+
+      // Add context about the cooperative platform to the prompt
+      const contextPrompt = `
+      You are a helpful and polite assistant for the "Drâa-Tafilalet Cooperatives" platform in Morocco.
+      You must reply in the user's selected language: ${lang === 'fr' ? 'French' : lang === 'ar' ? 'Arabic' : 'English'}.
+      Keep your answers short, friendly, and relevant to purchasing local products like Argan oil, saffron, honey, dates, and cosmetics.
+      User's message: "${userQuery}"
+      `;
+
+      const result = await model.generateContent(contextPrompt);
+      const responseText = result.response.text();
+
       setMessages((prev) => [...prev, {
         type: "bot",
-        text: KB[topic]?.[lang] || KB.default[lang],
+        text: responseText,
         time: new Date(),
       }]);
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      let errorMessage = "Désolé, je rencontre des difficultés techniques. Veuillez réessayer plus tard.";
+      if (error.message.includes("VITE_GEMINI_API_KEY")) {
+        errorMessage = "⚠️ La clé API Gemini est manquante. Veuillez créer un fichier .env dans react-main et y ajouter VITE_GEMINI_API_KEY=votre_clé.";
+      }
+      setMessages((prev) => [...prev, {
+        type: "bot",
+        text: errorMessage,
+        time: new Date(),
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 500 + Math.random() * 500);
+    }
   };
 
   const handleSend = () => {
@@ -193,7 +256,14 @@ const Chatbot = () => {
     if (!trimmed) return;
     setMessages((prev) => [...prev, { type: "user", text: trimmed, time: new Date() }]);
     setInput("");
-    addBotResponse(matchTopic(trimmed));
+    
+    // Check if it matches a specific topic, otherwise send the text to Gemini
+    const matchedTopic = matchTopic(trimmed);
+    if (matchedTopic !== "default") {
+      addBotResponse(matchedTopic);
+    } else {
+      addBotResponse(trimmed, true); // Direct text to Gemini
+    }
   };
 
   const handleSuggestion = (s) => {
@@ -228,9 +298,8 @@ const Chatbot = () => {
             style={{ background: "linear-gradient(135deg, #8B4513 0%, #C2783E 50%, #D4A574 100%)" }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg text-amber-100"
-                style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}>
-                <FaLeaf className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-full shadow-sm overflow-hidden border border-white/20 flex-shrink-0">
+                <img src={robotIcon} alt="Bot" className="w-full h-full object-cover scale-110" />
               </div>
               <div className="text-white">
                 <div className="font-bold text-sm">{ui.headerTitle}</div>
@@ -415,14 +484,14 @@ const Chatbot = () => {
       {/* ── Floating Button ── */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-[60px] h-[60px] rounded-full border-none flex items-center justify-center cursor-pointer text-white text-2xl transition-transform duration-300 hover:scale-110 shadow-lg"
+        className="w-[64px] h-[64px] rounded-full border-none flex items-center justify-center cursor-pointer text-white transition-transform duration-300 hover:scale-110 shadow-2xl z-[10000] overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #4e6c33 0%, #3a6232 100%)",
-          boxShadow: "0 6px 24px rgba(139,69,19,0.35)",
+          background: isOpen ? "linear-gradient(135deg, #4e6c33 0%, #3a6232 100%)" : "transparent",
+          boxShadow: "0 6px 24px rgba(59,130,246,0.4)",
           animation: !isOpen ? "chatPulse 2s infinite" : "none",
         }}
       >
-        {isOpen ? "✕" : <RiDiscussLine />}
+        {isOpen ? "✕" : <img src={robotIcon} alt="Chatbot" className="w-full h-full object-cover" />}
       </button>
 
       {/* ── Keyframes ── */}

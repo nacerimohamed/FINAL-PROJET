@@ -12,6 +12,8 @@ i18n
   .init({
     debug: process.env.NODE_ENV === 'development',
     fallbackLng: 'fr',
+    supportedLngs: ['fr', 'en', 'ar'],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
     },

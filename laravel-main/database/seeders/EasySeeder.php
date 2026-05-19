@@ -13,24 +13,27 @@ class EasySeeder extends Seeder
         echo " Ajout des utilisateurs...\n";
 
         // أضف مستخدمين فقط
-        DB::table('users')->insert([
+        DB::table('users')->updateOrInsert(
+            ['email' => 'admin@test.com'],
             [
                 'name' => 'Admin User',
-                'email' => 'admin@test.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ]
+        );
+
+        DB::table('users')->updateOrInsert(
+            ['email' => 'manager@test.com'],
             [
                 'name' => 'Manager User',
-                'email' => 'manager@test.com',
                 'password' => Hash::make('manager123'),
                 'role' => 'manager',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-        ]);
+            ]
+        );
 
         echo "Utilisateurs ajoutés!\n";
         echo "Admin: admin@test.com / admin123\n";

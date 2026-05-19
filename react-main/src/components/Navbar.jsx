@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { 
@@ -25,7 +25,13 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
+
+  const isActivePath = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   const isRTL = i18n.language === 'ar';
 
@@ -145,19 +151,33 @@ const Navbar = () => {
 
             {/* Desktop Navigation Links */}
             <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-1`}>
-              {navLinks.map((link) => {
+              {navLinks.map((link, index) => {
                 const Icon = link.icon;
+                const active = isActivePath(link.path);
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className="relative px-5 py-2.5 text-sm xl:text-base text-slate-800 hover:text-emerald-700 font-bold transition-all duration-200 group rounded-xl hover:bg-emerald-50/80 flex items-center"
+                    className={`relative px-3 xl:px-5 py-2 xl:py-2.5 text-sm xl:text-base font-semibold transition-all duration-300 group rounded-xl ${
+                      active
+                        ? 'text-green-700 bg-green-100/80'
+                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                    }`}
+                    style={{ 
+                      animationDelay: `${index * 100}ms`,
+                      animation: 'slideDown 0.5s ease-out forwards',
+                      opacity: 0
+                    }}
                   >
-                    <span className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-2`}>
-                      <Icon className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform duration-300" />
-                      <span className="whitespace-nowrap opacity-100 block font-extrabold">{link.name}</span>
+                    <span className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-1 xl:space-x-2`}>
+                      <Icon className={`w-3 h-3 xl:w-4 xl:h-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-125'}`} />
+                      <span className="hidden xl:inline">{link.name}</span>
+                      <span className="xl:hidden">{link.name.charAt(0)}</span>
+                      {active && <span className="hidden xl:inline-block w-1.5 h-1.5 bg-green-600 rounded-full ml-1 animate-pulse"></span>}
                     </span>
-                    <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-emerald-500 to-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
+                    <span className={`absolute bottom-0 ${isRTL ? 'right-2 xl:right-4' : 'left-2 xl:left-4'} h-0.5 xl:h-[3px] bg-gradient-to-r from-green-600 via-green-500 to-green-400 rounded-full transition-all duration-500 shadow-lg shadow-green-500/50 ${
+                      active ? 'w-[calc(100%-1rem)] xl:w-[calc(100%-2rem)]' : 'w-0 group-hover:w-[calc(100%-1rem)] xl:group-hover:w-[calc(100%-2rem)]'
+                    }`}></span>
                   </Link>
                 );
               })}
@@ -254,19 +274,37 @@ const Navbar = () => {
         <div className="flex flex-col p-5 space-y-2">
           {navLinks.map((link, index) => {
             const Icon = link.icon;
+            const active = isActivePath(link.path);
             return (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between px-4 py-3.5 text-slate-800 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl font-bold text-sm transition-all group"
-                style={{ animationDelay: `${index * 50}ms` }}
+                className={`group flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 sm:space-x-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300 transform ${isRTL ? 'hover:-translate-x-2' : 'hover:translate-x-2'} hover:shadow-md ${
+                  active
+                    ? 'text-green-700 bg-white shadow-md border-l-4 border-green-600'
+                    : 'text-gray-700 hover:text-green-600 hover:bg-white'
+                }`}
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  animation: isMobileMenuOpen ? 'slideInLeft 0.5s ease-out forwards' : 'none',
+                  opacity: 0
+                }}
               >
-                <div className="flex items-center space-x-3">
-                  <Icon className="text-emerald-600 group-hover:scale-110 transition-transform" />
-                  <span>{link.name}</span>
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  active
+                    ? 'bg-gradient-to-br from-green-600 to-green-700 scale-110 rotate-6'
+                    : 'bg-gradient-to-br from-green-100 to-green-200 group-hover:from-green-600 group-hover:to-green-700 group-hover:scale-110 group-hover:rotate-6'
+                }`}>
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${active ? 'text-white' : 'text-green-700 group-hover:text-white'}`} />
                 </div>
-                <FiChevronRight className="text-gray-400 text-xs group-hover:translate-x-1 transition-transform" />
+                <span className="flex-1 text-sm sm:text-base">{link.name}</span>
+                {active && <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>}
+                {!active && (isRTL ? (
+                  <FiChevronLeft className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:-translate-x-1 transition-all duration-300" />
+                ) : (
+                  <FiChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                ))}
               </Link>
             );
           })}
@@ -318,7 +356,41 @@ const Navbar = () => {
       {/* Spacer to avoid layout shifting */}
       <div className="h-16 md:h-20" />
 
+      {/* Styles animations */}
       <style>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }

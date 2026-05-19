@@ -8,7 +8,8 @@
     "contact": "Contact",
     "login": "Login",
     "logout": "Logout",
-    "user": "User"
+    "user": "User",
+    "menu": "Menu"
   },
   "hero": {
     "welcome": "Welcome to our",
@@ -167,7 +168,10 @@
     "local": "Local",
     "new": "New",
     "discount": "Discount",
-    "sale": "Sale"
+    "sale": "Sale",
+    "resetFilters": "Reset filters",
+    "resetAll": "Reset all",
+    "reset": "Reset"
   },
   "productDetail": {
     "loading": "Loading product...",

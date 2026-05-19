@@ -85,10 +85,10 @@ const ManagerSidebar = () => {
             {/* Accueil FIRST */}
             <li>
               <Link
-                to="/manager/home"
+                to="/"
                 onClick={handleLinkClick}
                 className={`flex items-center gap-3 p-3 rounded-xl ${
-                  isActive("/manager/home") ? "bg-white text-green-700" : "hover:bg-white/10"
+                  isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
                 }`}
               >
                 <FiHome />
@@ -127,10 +127,14 @@ const ManagerSidebar = () => {
           <div className="p-4 border-t border-green-600">
             <button
               onClick={handleLogout}
-              className="w-full bg-red-500 p-3 rounded-xl flex items-center justify-center gap-2"
+              className="group w-full p-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-[1.03] hover:-translate-y-0.5 border border-white/20 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #e8a820 0%, #d4a032 25%, #c4a83a 50%, #9cb33a 75%, #7faa35 100%)',
+              }}
             >
-              <FiLogOut />
-              Déconnexion
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+              <FiLogOut className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-700 relative z-10 drop-shadow-sm" />
+              <span className="relative z-10 drop-shadow-sm">Déconnexion</span>
             </button>
           </div>
         </div>
@@ -161,9 +165,9 @@ const ManagerSidebar = () => {
         {/* Accueil FIRST */}
         <li>
           <Link
-            to="/manager/home"
+            to="/"
             className={`flex items-center gap-3 p-3 rounded-xl ${
-              isActive("/manager/home") ? "bg-white text-green-700" : "hover:bg-white/10"
+              isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
             }`}
           >
             <FiHome />
@@ -200,10 +204,14 @@ const ManagerSidebar = () => {
       <div className="p-4 border-t border-green-600">
         <button
           onClick={handleLogout}
-          className="w-full bg-red-500 p-3 rounded-xl flex items-center justify-center gap-2"
+          className="group w-full p-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #e8a820 0%, #d4a032 25%, #c4a83a 50%, #9cb33a 75%, #7faa35 100%)',
+          }}
         >
-          <FiLogOut />
-          Déconnexion
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+          <FiLogOut className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-700 relative z-10 drop-shadow-sm" />
+          <span className="relative z-10 drop-shadow-sm">Déconnexion</span>
         </button>
       </div>
 

@@ -13,24 +13,30 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("handleLogin started with:", { email, password });
     setError("");
     setLoading(true);
 
     try {
+      console.log("Sending request to backend...");
       const response = await axios.post("http://127.0.0.1:8000/api/login", {
         email,
         password,
       });
+      console.log("Response received:", response.data);
 
       if (response.data.success && response.data.token) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        if (response.data.user.role === "admin") navigate("/admin/dashboard");
-        else if (response.data.user.role === "manager") navigate("/manager/dashboard");
-        else navigate("/");
-
-        setTimeout(() => window.location.reload(), 100);
+        const role = response.data.user.role;
+        if (role === "admin") {
+          window.location.href = "/admin/dashboard";
+        } else if (role === "manager") {
+          window.location.href = "/manager/dashboard";
+        } else {
+          window.location.href = "/";
+        }
       } else {
         setError(response.data.message || "Erreur de connexion");
       }
@@ -43,76 +49,31 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden perspective-1000">
+    <div className="min-h-screen flex items-start justify-center px-4 pt-[10vh] pb-8 relative overflow-hidden">
       {/* ARRIÈRE-PLAN 3D ANIMÉ */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
-        {/* Effet de profondeur avec cubes flottants */}
+      {/* ARRIÈRE-PLAN CLAIR MODERNE */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-green-50/40">
         <div className="absolute inset-0 overflow-hidden">
-          {/* Grands cubes 3D */}
-          <div className="absolute top-20 left-10 w-64 h-64 bg-green-500/5 rounded-3xl transform rotate-45 animate-float-slow border border-green-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(30deg) translateZ(50px)' }}>
+          {/* Formes décoratives subtiles */}
+          <div className="absolute top-10 left-10 w-72 h-72 bg-green-100/40 rounded-full blur-3xl animate-float-slow"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-amber-50/40 rounded-full blur-3xl animate-float-medium"></div>
+          {/* Grille subtile */}
+          <div className="absolute inset-0 opacity-[0.03]"
+            style={{ backgroundImage: 'radial-gradient(circle, #16a34a 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
           </div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-emerald-500/5 rounded-3xl transform -rotate-12 animate-float border border-emerald-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-20deg) translateZ(100px)' }}>
-          </div>
-          <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-green-600/5 rounded-3xl transform rotate-12 animate-float-medium border border-green-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(60deg) rotateY(45deg) translateZ(30px)' }}>
-          </div>
-          
-          {/* Petits cubes */}
-          <div className="absolute top-40 right-20 w-32 h-32 bg-emerald-500/10 rounded-2xl transform rotate-45 animate-float-fast border border-emerald-400/20"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(45deg) translateZ(70px)' }}>
-          </div>
-          <div className="absolute bottom-40 left-20 w-40 h-40 bg-green-500/10 rounded-2xl transform -rotate-12 animate-float-slow border border-green-400/20"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-30deg) translateZ(40px)' }}>
-          </div>
-          
-          {/* Effet de lignes 3D */}
-          <div className="absolute inset-0">
-            <div className="absolute top-1/3 left-0 w-1 h-32 bg-gradient-to-b from-green-400/0 via-green-400/30 to-green-400/0"
-                 style={{ transform: 'rotateY(45deg) translateZ(20px)' }}></div>
-            <div className="absolute top-2/3 right-0 w-1 h-48 bg-gradient-to-b from-emerald-400/0 via-emerald-400/30 to-emerald-400/0"
-                 style={{ transform: 'rotateY(-45deg) translateZ(30px)' }}></div>
-          </div>
-
-          {/* Grille 3D animée */}
-          <div 
-            className="absolute inset-0"
-            style={{ 
-              backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px)',
-              backgroundSize: '50px 50px',
-              transform: 'perspective(500px) rotateX(60deg) translateZ(-100px)',
-              transformOrigin: 'center',
-              animation: 'gridMove 20s linear infinite'
-            }}
-          ></div>
-
-          {/* Particules 3D */}
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-green-400/30 rounded-full"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                transform: `translateZ(${Math.random() * 200}px)`,
-                animation: `particleFloat ${5 + Math.random() * 5}s linear infinite`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            />
-          ))}
         </div>
       </div>
 
       {/* CARD PRINCIPALE - Fixe */}
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-sm relative z-10">
         {/* Ombre décorative */}
-        <div className="absolute -inset-4 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-30"></div>
+        <div className="absolute -inset-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-3xl blur-xl opacity-40 pointer-events-none"></div>
         
         {/* Carte principale - Fixe sans transformations 3D */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/30">
+        <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
           {/* Header avec dégradé vert */}
-          <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-8 text-center overflow-hidden">
+          <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center overflow-hidden">
             {/* Effet de brillance */}
             <div className="absolute inset-0 bg-white/5"></div>
             
@@ -124,18 +85,18 @@ const Login = () => {
             
             <div className="relative">
               {/* Icône */}
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-2xl mb-4 backdrop-blur-sm border border-white/20">
-                <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-3 backdrop-blur-sm border border-white/20">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-white mb-2">Bienvenue</h1>
-              <p className="text-green-50 text-sm">Connectez-vous pour accéder à votre espace</p>
+              <h1 className="text-2xl font-bold text-white mb-1">Bienvenue</h1>
+              <p className="text-green-50 text-xs">Connectez-vous pour accéder à votre espace</p>
             </div>
           </div>
 
-          <div className="p-8">
-            <form className="space-y-6" onSubmit={handleLogin}>
+          <div className="p-6">
+            <form className="space-y-5" onSubmit={handleLogin}>
               {/* Champ Email */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -161,33 +122,9 @@ const Login = () => {
 
               {/* Champ Mot de passe */}
               <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    Mot de passe
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors flex items-center"
-                  >
-                    {showPassword ? (
-                      <>
-                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                        </svg>
-                        Masquer
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        Afficher
-                      </>
-                    )}
-                  </button>
-                </div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Mot de passe
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -201,8 +138,24 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                   />
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); setShowPassword(!showPassword); }}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
+                  >
+                    {showPassword ? (
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -260,52 +213,24 @@ const Login = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes float {
-          0%, 100% { transform: rotateX(45deg) rotateY(30deg) translateZ(50px) translateY(0px); }
-          50% { transform: rotateX(45deg) rotateY(30deg) translateZ(50px) translateY(-20px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
         }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
         
         @keyframes float-slow {
-          0%, 100% { transform: rotateX(30deg) rotateY(-20deg) translateZ(100px) translateY(0px); }
-          50% { transform: rotateX(30deg) rotateY(-20deg) translateZ(100px) translateY(-15px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
         }
-        .animate-float-slow {
-          animation: float-slow 8s ease-in-out infinite;
-        }
+        .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
         
         @keyframes float-medium {
-          0%, 100% { transform: rotateX(60deg) rotateY(45deg) translateZ(30px) translateY(0px); }
-          50% { transform: rotateX(60deg) rotateY(45deg) translateZ(30px) translateY(-25px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-25px); }
         }
-        .animate-float-medium {
-          animation: float-medium 7s ease-in-out infinite;
-        }
-        
-        @keyframes float-fast {
-          0%, 100% { transform: rotateX(45deg) rotateY(45deg) translateZ(70px) translateY(0px); }
-          50% { transform: rotateX(45deg) rotateY(45deg) translateZ(70px) translateY(-30px); }
-        }
-        .animate-float-fast {
-          animation: float-fast 5s ease-in-out infinite;
-        }
-        
-        @keyframes gridMove {
-          0% { transform: perspective(500px) rotateX(60deg) translateZ(-100px) translateY(0); }
-          100% { transform: perspective(500px) rotateX(60deg) translateZ(-100px) translateY(50px); }
-        }
-        
-        @keyframes particleFloat {
-          0% { transform: translateY(0) translateZ(0) rotate(0deg); }
-          100% { transform: translateY(-100vh) translateZ(200px) rotate(360deg); }
-        }
-        
-        .perspective-1000 {
-          perspective: 1000px;
-        }
+        .animate-float-medium { animation: float-medium 7s ease-in-out infinite; }
       `}</style>
     </div>
   );

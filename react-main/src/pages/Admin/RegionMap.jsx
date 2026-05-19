@@ -428,8 +428,7 @@ const RegionMap = () => {
 
       {/* Embedded Animations */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(6px); }
           to   { opacity: 1; transform: translateY(0); }

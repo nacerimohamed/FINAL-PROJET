@@ -40,7 +40,7 @@ const AdminSidebar = () => {
 
  const menuItems = [
   {
-    path: "/admin/home",
+    path: "/",
     label: "Accueil",
     icon: (
       <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,10 +155,14 @@ const AdminSidebar = () => {
           <div className="p-6 border-t border-green-600/50">
             <button
               onClick={handleLogout}
-              className="group w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 font-semibold shadow-lg"
+              className="group w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl transition-all duration-500 font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-[1.03] hover:-translate-y-0.5 border border-white/20 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #e8a820 0%, #d4a032 25%, #c4a83a 50%, #9cb33a 75%, #7faa35 100%)',
+              }}
             >
-              <FiLogOut className="group-hover:rotate-12 transition-transform" />
-              <span>Déconnexion</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+              <FiLogOut className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-700 relative z-10 drop-shadow-sm" />
+              <span className="relative z-10 drop-shadow-sm">Déconnexion</span>
             </button>
           </div>
         </div>
@@ -220,10 +224,14 @@ const AdminSidebar = () => {
       <div className="p-6 border-t border-green-600/50">
         <button
           onClick={handleLogout}
-          className="group w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="group w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl transition-all duration-500 font-bold text-white shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #e8a820 0%, #d4a032 25%, #c4a83a 50%, #9cb33a 75%, #7faa35 100%)',
+          }}
         >
-          <FiLogOut className="group-hover:rotate-12 transition-transform" />
-          <span className="text-sm lg:text-base">Déconnexion</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+          <FiLogOut className="w-5 h-5 group-hover:rotate-[360deg] transition-transform duration-700 relative z-10 drop-shadow-sm" />
+          <span className="text-sm lg:text-base relative z-10 drop-shadow-sm">Déconnexion</span>
         </button>
       </div>
     </div>

@@ -19,21 +19,25 @@ import ScrollToTop from "./components/ScrollToTop";
 // ProtectedRoute
 const ProtectedRoute = ({ children, role }) => {
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  console.log("🔒 ProtectedRoute check:", { token, user, requiredRole: role });
+  let user = null;
+  
+  try {
+    const userData = localStorage.getItem("user");
+    if (userData) user = JSON.parse(userData);
+  } catch (e) {
+    console.error("Erreur parsing user:", e);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  }
 
   if (!token || !user) {
-    console.log("❌ Non authentifié, redirection vers /login");
     return <Navigate to="/login" replace />;
   }
   
   if (role && user.role !== role) {
-    console.log(`❌ Rôle incorrect: ${user.role} au lieu de ${role}`);
     return <Navigate to="/" replace />;
   }
   
-  console.log("✅ Accès autorisé pour:", user.role);
   return children;
 };
 
@@ -52,6 +56,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         {/* Admin Routes */}
+        <Route
+          path="/admin/home"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/dashboard"
           element={
@@ -78,6 +90,14 @@ function App() {
         />
         
         {/* Manager Routes */}
+        <Route
+          path="/manager/home"
+          element={
+            <ProtectedRoute role="manager">
+              <ManagerDashboard/>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/manager/dashboard"
           element={
