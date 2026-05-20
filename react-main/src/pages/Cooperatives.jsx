@@ -33,13 +33,23 @@ const Cooperatives = () => {
       const res = await axios.get("http://localhost:8000/api/cooperatives");
       if (res.data.success) {
         const data = res.data.data.map((coop) => {
-          const loc = (coop.region || coop.province || coop.adresse || coop.city || "").toLowerCase();
           let cityId = null;
-          if (loc.includes("tinghir")) cityId = "Tinghir";
-          else if (loc.includes("ouarzazate")) cityId = "Ouarzazate";
-          else if (loc.includes("midelt")) cityId = "Midelt";
-          else if (loc.includes("errachidia")) cityId = "Errachidia";
-          else if (loc.includes("zagora")) cityId = "Zagora";
+          if (coop.ville) {
+            const v = coop.ville.trim().toLowerCase();
+            if (v === "tinghir") cityId = "Tinghir";
+            else if (v === "ouarzazate") cityId = "Ouarzazate";
+            else if (v === "midelt") cityId = "Midelt";
+            else if (v === "errachidia") cityId = "Errachidia";
+            else if (v === "zagora") cityId = "Zagora";
+          }
+          if (!cityId) {
+            const loc = (coop.region || coop.province || coop.adresse || coop.city || "").toLowerCase();
+            if (loc.includes("ouarzazate")) cityId = "Ouarzazate";
+            else if (loc.includes("midelt")) cityId = "Midelt";
+            else if (loc.includes("errachidia")) cityId = "Errachidia";
+            else if (loc.includes("zagora")) cityId = "Zagora";
+            else if (loc.includes("tinghir")) cityId = "Tinghir";
+          }
           return { ...coop, cityId };
         });
         setCooperatives(data);
