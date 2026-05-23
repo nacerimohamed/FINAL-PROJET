@@ -19,12 +19,14 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,manager',
+            'role' => 'required|in:admin,manager,cooperative',
             'address' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:2048',
+            'tele' => 'nullable|string|max:20',
+            'description' => 'nullable|string',
         ]);
 
-        $data = $request->only('name', 'email', 'role', 'address');
+        $data = $request->only('name', 'email', 'role', 'address', 'tele', 'description');
         $data['password'] = Hash::make($request->password);
 
         if ($request->hasFile('image')) {
@@ -44,7 +46,46 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
                 'address' => $user->address,
+                'tele' => $user->tele,
+                'description' => $user->description,
                 'image' => $user->image,
+            ]
+        ], 201);
+    }
+
+    // ==============================
+    // REGISTER COOPERATIVE
+    // ==============================
+    public function registerCooperative(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6',
+            'tele' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $data = $request->only('name', 'email', 'tele', 'address', 'description');
+        $data['role'] = 'cooperative';
+        $data['is_approved'] = false; // Requiert l'approbation de l'administrateur
+        $data['password'] = Hash::make($request->password);
+
+        $user = User::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inscription coopérative réussie. Votre compte est en attente d\'approbation par l\'administrateur.',
+            'pending_approval' => true,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'address' => $user->address,
+                'tele' => $user->tele,
+                'description' => $user->description,
             ]
         ], 201);
     }
@@ -69,6 +110,14 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Vérifier si le compte est approuvé (uniquement pour les coopératives)
+            if ($user->role === 'cooperative' && !$user->is_approved) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Votre compte est en attente d\'approbation par l\'administrateur.'
+                ], 403);
+            }
+
             // Supprimer les anciens tokens
             $user->tokens()->delete();
             
@@ -85,6 +134,8 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'address' => $user->address,
+                    'tele' => $user->tele,
+                    'description' => $user->description,
                     'image' => $user->image,
                 ]
             ]);
@@ -133,6 +184,8 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'address' => $user->address,
+                    'tele' => $user->tele,
+                    'description' => $user->description,
                     'image' => $user->image,
                 ]
             ]);

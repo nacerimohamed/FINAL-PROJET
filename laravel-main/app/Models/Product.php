@@ -29,6 +29,6 @@ class Product extends Model
      */
     public function cooperative()
     {
-        return $this->belongsTo(Cooperative::class, 'cooperative_id');
+        return $this->belongsTo(User::class, 'cooperative_id');
     }
 }

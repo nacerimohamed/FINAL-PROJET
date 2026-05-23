@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cooperative;
+use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -15,22 +15,23 @@ class PublicCooperativeController extends Controller
     public function index()
     {
         try {
-            $cooperatives = Cooperative::orderBy('created_at', 'desc')
+            $cooperatives = User::where('role', 'cooperative')
+                ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function($coop) {
                     return [
                         'id' => $coop->id,
-                        'nom' => $coop->nom,
+                        'nom' => $coop->name,
                         'email' => $coop->email,
                         'ville' => $coop->ville,
                         'description' => $coop->description,
                         'adresse' => $coop->adresse,
-                        'image' => $coop->image,
-                        'contact' => $coop->contact,
+                        'image' => $coop->image ?? null,
+                        'contact' => $coop->tele,
                         'tele' => $coop->tele,
-                        'instagram' => $coop->instagram,
-                        'facebook' => $coop->facebook,
-                        'whatsapp' => $coop->whatsapp,
+                        'instagram' => null,
+                        'facebook' => null,
+                        'whatsapp' => $coop->tele,
                         'created_at' => $coop->created_at,
                     ];
                 });
@@ -54,23 +55,23 @@ class PublicCooperativeController extends Controller
     public function show($id)
     {
         try {
-            $cooperative = Cooperative::findOrFail($id);
+            $cooperative = User::where('role', 'cooperative')->findOrFail($id);
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'id' => $cooperative->id,
-                    'nom' => $cooperative->nom,
+                    'nom' => $cooperative->name,
                     'email' => $cooperative->email,
                     'ville' => $cooperative->ville,
                     'description' => $cooperative->description,
                     'adresse' => $cooperative->adresse,
-                    'image' => $cooperative->image,
-                    'contact' => $cooperative->contact,
+                    'image' => $cooperative->image ?? null,
+                    'contact' => $cooperative->tele,
                     'tele' => $cooperative->tele,
-                    'instagram' => $cooperative->instagram,
-                    'facebook' => $cooperative->facebook,
-                    'whatsapp' => $cooperative->whatsapp,
+                    'instagram' => null,
+                    'facebook' => null,
+                    'whatsapp' => $cooperative->tele,
                     'created_at' => $cooperative->created_at,
                 ]
             ]);
@@ -89,15 +90,16 @@ class PublicCooperativeController extends Controller
     public function featured()
     {
         try {
-            $cooperatives = Cooperative::orderBy('created_at', 'desc')
+            $cooperatives = User::where('role', 'cooperative')
+                ->orderBy('created_at', 'desc')
                 ->limit(4)
                 ->get()
                 ->map(function($coop) {
                     return [
                         'id' => $coop->id,
-                        'nom' => $coop->nom,
+                        'nom' => $coop->name,
                         'description' => $coop->description,
-                        'image' => $coop->image,
+                        'image' => $coop->image ?? null,
                     ];
                 });
 
@@ -121,12 +123,12 @@ class PublicCooperativeController extends Controller
     {
         try {
             // First verify cooperative exists
-            $cooperative = Cooperative::findOrFail($id);
+            $cooperative = User::where('role', 'cooperative')->findOrFail($id);
             
             // Get products for this cooperative
             $products = Product::where('cooperative_id', $id)
                 ->with(['cooperative' => function($query) {
-                    $query->select('id', 'nom', 'email');
+                    $query->select('id', 'name', 'email');
                 }])
                 ->orderBy('created_at', 'desc')
                 ->get()
@@ -140,7 +142,7 @@ class PublicCooperativeController extends Controller
                         'quantity' => $product->quantity,
                         'cooperative' => [
                             'id' => $product->cooperative->id ?? null,
-                            'nom' => $product->cooperative->nom ?? 'Unknown',
+                            'nom' => $product->cooperative->name ?? 'Unknown',
                         ],
                         'created_at' => $product->created_at,
                     ];
@@ -151,7 +153,7 @@ class PublicCooperativeController extends Controller
                 'data' => $products,
                 'cooperative' => [
                     'id' => $cooperative->id,
-                    'nom' => $cooperative->nom,
+                    'nom' => $cooperative->name,
                 ]
             ]);
         } catch (\Exception $e) {

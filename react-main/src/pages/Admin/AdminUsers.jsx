@@ -230,6 +230,24 @@ const AdminUsers = () => {
     }
   };
 
+  const handleApprove = async (id) => {
+    if (!window.confirm("Voulez-vous vraiment approuver cette coopérative ?")) return;
+    setLoading(true);
+    try {
+      console.log("Approving cooperative ID:", id);
+      await axios.put(`${API_URL}/api/admin/users/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Coopérative approuvée avec succès !");
+      fetchUsers();
+    } catch (err) {
+      console.error("Error approving cooperative:", err);
+      alert("Erreur lors de l'approbation: " + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -254,6 +272,7 @@ const AdminUsers = () => {
     switch(role) {
       case 'admin': return 'bg-red-100 text-red-700 border-red-200';
       case 'manager': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'cooperative': return 'bg-purple-100 text-purple-700 border-purple-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -324,6 +343,7 @@ const AdminUsers = () => {
               <option value="all">Tous les rôles</option>
               <option value="admin">Administrateurs</option>
               <option value="manager">Managers</option>
+              <option value="cooperative">Coopératives</option>
             </select>
           </div>
         </div>
@@ -353,13 +373,33 @@ const AdminUsers = () => {
                         <h3 className="font-semibold text-gray-900">{user.name}</h3>
                         <p className="text-sm text-gray-600 mt-0.5">{user.email}</p>
                       </div>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role)}`}>
-                        {user.role}
-                      </span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role)}`}>
+                          {user.role}
+                        </span>
+                        {user.role === 'cooperative' && (
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
+                            user.is_approved 
+                              ? 'bg-green-100 text-green-700 border-green-200' 
+                              : 'bg-orange-100 text-orange-700 border-orange-200'
+                          }`}>
+                            {user.is_approved ? 'Approuvé' : 'En attente'}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center justify-between mt-4">
                       <span className="text-xs text-gray-500">ID: {user.id}</span>
                       <div className="flex gap-2">
+                        {user.role === 'cooperative' && !user.is_approved && (
+                          <button
+                            onClick={() => handleApprove(user.id)}
+                            disabled={loading}
+                            className="px-3 py-1.5 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                          >
+                            Approuver
+                          </button>
+                        )}
                         <button
                           onClick={() => handleEdit(user)}
                           disabled={loading}
@@ -389,6 +429,7 @@ const AdminUsers = () => {
                       <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Nom</th>
                       <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Email</th>
                       <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Rôle</th>
+                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Statut</th>
                       <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Actions</th>
                     </tr>
                   </thead>
@@ -404,7 +445,33 @@ const AdminUsers = () => {
                           </span>
                         </td>
                         <td className="p-3 lg:p-4">
+                          {user.role === 'cooperative' ? (
+                            user.is_approved ? (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
+                                Approuvé
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-orange-100 text-orange-700 border-orange-200">
+                                En attente
+                              </span>
+                            )
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
+                              Actif
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3 lg:p-4">
                           <div className="flex gap-2">
+                            {user.role === 'cooperative' && !user.is_approved && (
+                              <button
+                                onClick={() => handleApprove(user.id)}
+                                disabled={loading}
+                                className="px-3 lg:px-4 py-1.5 lg:py-2 bg-green-600 text-white text-xs lg:text-sm rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                              >
+                                Approuver
+                              </button>
+                            )}
                             <button
                               onClick={() => handleEdit(user)}
                               disabled={loading}
@@ -522,6 +589,7 @@ const AdminUsers = () => {
                   >
                     <option value="manager">Manager</option>
                     <option value="admin">Administrateur</option>
+                    <option value="cooperative">Coopérative</option>
                   </select>
                 </div>
                 <div>
@@ -639,6 +707,7 @@ const AdminUsers = () => {
                   >
                     <option value="manager">Manager</option>
                     <option value="admin">Administrateur</option>
+                    <option value="cooperative">Coopérative</option>
                   </select>
                 </div>
                 <div>

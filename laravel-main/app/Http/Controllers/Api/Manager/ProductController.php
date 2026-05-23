@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with('cooperative:id,nom,email,tele,whatsapp')
+            $products = Product::with('cooperative:id,name,email,tele')
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function($product) {
@@ -96,7 +96,7 @@ class ProductController extends Controller
 ]);
 
             // Load the cooperative relationship
-            $product->load('cooperative:id,nom,email,tele,whatsapp');
+            $product->load('cooperative:id,name,email,tele');
 
             return response()->json([
                 'success' => true,
@@ -132,7 +132,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with('cooperative:id,nom,email,tele,whatsapp')->findOrFail($id);
+            $product = Product::with('cooperative:id,name,email,tele')->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -204,7 +204,7 @@ class ProductController extends Controller
             $product->update($request->except(['image', '_method']));
             
             // Reload the cooperative relationship
-            $product->load('cooperative:id,nom,email,tele,whatsapp');
+            $product->load('cooperative:id,name,email,tele');
 
             return response()->json([
                 'success' => true,

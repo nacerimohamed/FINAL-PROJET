@@ -14,6 +14,12 @@ import ManagerProducts from "./pages/Manager/ManagerProducts";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCooperatives from "./pages/Admin/AdminCooperatives";
 
+import RegisterCooperative from "./pages/RegisterCooperative";
+import CooperativeDashboard from "./pages/Cooperative/CooperativeDashboard";
+import CooperativeProducts from "./pages/Cooperative/CooperativeProducts";
+import AddProduct from "./pages/Cooperative/AddProduct";
+import EditProduct from "./pages/Cooperative/EditProduct";
+
 import ScrollToTop from "./components/ScrollToTop";
 
 // ProtectedRoute
@@ -54,6 +60,7 @@ function App() {
         <Route path="/cooperatives/:id" element={<CooperativeDetail />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register-cooperative" element={<RegisterCooperative />} />
         
         {/* Admin Routes */}
         <Route
@@ -115,6 +122,39 @@ function App() {
           }
         />
         
+        {/* Cooperative Routes */}
+        <Route
+          path="/cooperative/dashboard"
+          element={
+            <ProtectedRoute role="cooperative">
+              <CooperativeDashboard/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cooperative/products"
+          element={
+            <ProtectedRoute role="cooperative">
+              <CooperativeProducts/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cooperative/products/add"
+          element={
+            <ProtectedRoute role="cooperative">
+              <AddProduct/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cooperative/products/edit/:id"
+          element={
+            <ProtectedRoute role="cooperative">
+              <EditProduct/>
+            </ProtectedRoute>
+          }
+        />
         
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

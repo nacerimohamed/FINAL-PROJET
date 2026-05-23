@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +8,16 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Forgot Password States
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [forgotError, setForgotError] = useState("");
+  const [forgotSuccess, setForgotSuccess] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -29,64 +39,148 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        const role = response.data.user.role;
-        if (role === "admin") {
-          window.location.href = "/admin/dashboard";
-        } else if (role === "manager") {
-          window.location.href = "/manager/dashboard";
-        } else {
-          window.location.href = "/";
-        }
+        // الإبقاء على اللوجيك المطور للأدوار كاملين
+        if (response.data.user.role === "admin") navigate("/admin/dashboard");
+        else if (response.data.user.role === "manager") navigate("/manager/dashboard");
+        else if (response.data.user.role === "cooperative") navigate("/cooperative/dashboard");
+        else navigate("/");
+
+        setTimeout(() => window.location.reload(), 100);
       } else {
         setError(response.data.message || "Erreur de connexion");
       }
     } catch (error) {
       if (error.response?.status === 401) setError("Email ou mot de passe incorrect");
+      else if (error.response?.status === 403) setError(error.response.data.message || "Votre compte est en attente d'approbation par l'administrateur.");
       else setError("Erreur serveur");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotSuccess("");
+    setForgotLoading(true);
+    try {
+      const res = await axios.post("http://127.0.0.1:8000/api/forgot-password", { email: forgotEmail });
+      if (res.data.success) {
+        setForgotSuccess(res.data.message);
+        setForgotStep(2);
+      }
+    } catch (err) {
+      setForgotError(err.response?.data?.message || "Erreur lors de l'envoi de l'email.");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotSuccess("");
+    setForgotLoading(true);
+    try {
+      const res = await axios.post("http://127.0.0.1:8000/api/reset-password", {
+        email: forgotEmail,
+        otp: otp.trim(),
+        password: newPassword
+      });
+      if (res.data.success) {
+        setForgotSuccess(res.data.message);
+        setTimeout(() => {
+          closeForgotModal();
+        }, 3000);
+      }
+    } catch (err) {
+      setForgotError(err.response?.data?.message || "Code invalide ou erreur.");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const closeForgotModal = () => {
+    setShowForgotModal(false);
+    setForgotStep(1);
+    setForgotEmail("");
+    setOtp("");
+    setNewPassword("");
+    setForgotError("");
+    setForgotSuccess("");
+  };
+
   return (
     <div className="min-h-screen flex items-start justify-center px-4 pt-[10vh] pb-8 relative overflow-hidden">
-      {/* ARRIÈRE-PLAN 3D ANIMÉ */}
-      {/* ARRIÈRE-PLAN CLAIR MODERNE */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-green-50/40">
+      {/* ARRIÈRE-PLAN 3D ANIMÉ (Stashed changes Version) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
         <div className="absolute inset-0 overflow-hidden">
-          {/* Formes décoratives subtiles */}
-          <div className="absolute top-10 left-10 w-72 h-72 bg-green-100/40 rounded-full blur-3xl animate-float-slow"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-amber-50/40 rounded-full blur-3xl animate-float-medium"></div>
-          {/* Grille subtile */}
-          <div className="absolute inset-0 opacity-[0.03]"
-            style={{ backgroundImage: 'radial-gradient(circle, #16a34a 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
+          <div className="absolute top-20 left-10 w-64 h-64 bg-green-500/5 rounded-3xl transform rotate-45 animate-float-slow border border-green-400/10"
+               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(30deg) translateZ(50px)' }}>
           </div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-emerald-500/5 rounded-3xl transform -rotate-12 animate-float border border-emerald-400/10"
+               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-20deg) translateZ(100px)' }}>
+          </div>
+          <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-green-600/5 rounded-3xl transform rotate-12 animate-float-medium border border-green-400/10"
+               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(60deg) rotateY(45deg) translateZ(30px)' }}>
+          </div>
+          
+          <div className="absolute top-40 right-20 w-32 h-32 bg-emerald-500/10 rounded-2xl transform rotate-45 animate-float-fast border border-emerald-400/20"
+               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(45deg) translateZ(70px)' }}>
+          </div>
+          <div className="absolute bottom-40 left-20 w-40 h-40 bg-green-500/10 rounded-2xl transform -rotate-12 animate-float-slow border border-green-400/20"
+               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-30deg) translateZ(40px)' }}>
+          </div>
+          
+          <div className="absolute inset-0">
+            <div className="absolute top-1/3 left-0 w-1 h-32 bg-gradient-to-b from-green-400/0 via-green-400/30 to-green-400/0"
+                 style={{ transform: 'rotateY(45deg) translateZ(20px)' }}></div>
+            <div className="absolute top-2/3 right-0 w-1 h-48 bg-gradient-to-b from-emerald-400/0 via-emerald-400/30 to-emerald-400/0"
+                 style={{ transform: 'rotateY(-45deg) translateZ(30px)' }}></div>
+          </div>
+
+          <div 
+            className="absolute inset-0"
+            style={{ 
+              backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px)',
+              backgroundSize: '50px 50px',
+              transform: 'perspective(500px) rotateX(60deg) translateZ(-100px)',
+              transformOrigin: 'center',
+              animation: 'gridMove 20s linear infinite'
+            }}
+          ></div>
+
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-green-400/30 rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                transform: `translateZ(${Math.random() * 200}px)`,
+                animation: `particleFloat ${5 + Math.random() * 5}s linear infinite`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          ))}
         </div>
       </div>
 
-      {/* CARD PRINCIPALE - Fixe */}
-      <div className="w-full max-w-sm relative z-10">
-        {/* Ombre décorative */}
-        <div className="absolute -inset-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-3xl blur-xl opacity-40 pointer-events-none"></div>
+      {/* CARD PRINCIPALE */}
+      <div className="w-full max-w-md relative z-10">
+        <div className="absolute -inset-4 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-30"></div>
         
-        {/* Carte principale - Fixe sans transformations 3D */}
-        <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-          {/* Header avec dégradé vert */}
-          <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center overflow-hidden">
-            {/* Effet de brillance */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/30">
+          <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-8 text-center overflow-hidden">
             <div className="absolute inset-0 bg-white/5"></div>
-            
-            {/* Motif en arrière-plan */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full filter blur-2xl"></div>
               <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full filter blur-2xl"></div>
             </div>
             
             <div className="relative">
-              {/* Icône */}
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-3 backdrop-blur-sm border border-white/20">
-                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-2xl mb-4 backdrop-blur-sm border border-white/20">
+                <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -95,9 +189,8 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="p-6">
-            <form className="space-y-5" onSubmit={handleLogin}>
-              {/* Champ Email */}
+          <div className="p-8">
+            <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Adresse email
@@ -120,11 +213,19 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Champ Mot de passe */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Mot de passe
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Mot de passe
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors flex items-center"
+                  >
+                    {showPassword ? "Masquer" : "Afficher"}
+                  </button>
+                </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,61 +260,146 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Lien "Mot de passe oublié" */}
               <div className="text-right">
                 <button
                   type="button"
+                  onClick={() => setShowForgotModal(true)}
                   className="text-sm text-gray-500 hover:text-green-600 transition-colors"
                 >
                   Mot de passe oublié ?
                 </button>
               </div>
 
-              {/* Message d'erreur */}
               {error && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
                   <div className="flex items-center">
-                    <svg className="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
                     <span className="text-red-700 text-sm font-medium">{error}</span>
                   </div>
                 </div>
               )}
 
-              {/* Bouton de connexion */}
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-green-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="flex items-center justify-center">
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Connexion en cours...
-                    </>
-                  ) : (
-                    "Se connecter"
-                  )}
-                </span>
+                {loading ? "Connexion en cours..." : "Se connecter"}
               </button>
             </form>
 
-            {/* Footer simple */}
-            <div className="mt-8 text-center">
-              <p className="text-gray-500 text-sm">
-                © Tous droits réservés
+            <div className="mt-6 text-center space-y-4">
+              <p className="text-sm text-gray-600">
+                Vous êtes une coopérative ?{" "}
+                <Link to="/register-cooperative" className="text-green-600 hover:text-green-700 font-semibold transition-colors">
+                  Créez un compte
+                </Link>
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <style>{`
+      {/* MODAL: MOT DE PASSE OUBLIÉ */}
+      {showForgotModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative">
+            <button 
+              onClick={closeForgotModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="p-8">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Réinitialisation</h3>
+                <p className="text-gray-500 text-sm mt-2">
+                  {forgotStep === 1 
+                    ? "Entrez votre email pour recevoir un code de sécurité." 
+                    : "Entrez le code reçu par email et votre nouveau mot de passe."}
+                </p>
+              </div>
+
+              {forgotError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 text-center">
+                  {forgotError}
+                </div>
+              )}
+              {forgotSuccess && (
+                <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm mb-4 text-center">
+                  {forgotSuccess}
+                </div>
+              )}
+
+              {/* STEP 1: SEND EMAIL */}
+              {forgotStep === 1 && (
+                <form onSubmit={handleSendOtp} className="space-y-4">
+                  <div>
+                    <input 
+                      type="email" 
+                      required
+                      placeholder="Votre adresse email" 
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={forgotLoading}
+                    className="w-full py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition disabled:opacity-50"
+                  >
+                    {forgotLoading ? "Envoi en cours..." : "Envoyer le code"}
+                  </button>
+                </form>
+              )}
+
+              {/* STEP 2: VERIFY OTP & NEW PASSWORD */}
+              {forgotStep === 2 && (
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div>
+                    <input 
+                      type="text" 
+                      required
+                      maxLength="6"
+                      placeholder="Code à 6 chiffres" 
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\s/g, ''))}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none text-center tracking-widest font-bold text-lg"
+                    />
+                  </div>
+                  <div>
+                    <input 
+                      type="password" 
+                      required
+                      placeholder="Nouveau mot de passe" 
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={forgotLoading}
+                    className="w-full py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition disabled:opacity-50"
+                  >
+                    {forgotLoading ? "Vérification..." : "Réinitialiser le mot de passe"}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-20px); }

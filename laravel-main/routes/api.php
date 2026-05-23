@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\Admin\UserManagementController;
 use App\Http\Controllers\Api\Admin\CooperativeController;
 use App\Http\Controllers\Api\Admin\AdminProductController;
 use App\Http\Controllers\Api\Manager\ProductController;
+use App\Http\Controllers\Api\Cooperative\CooperativeProductController;
+use App\Http\Controllers\Api\Cooperative\CooperativeProfileController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\PublicProductController;
 use App\Http\Controllers\Api\PublicCooperativeController;
 
@@ -43,6 +46,11 @@ Route::get('/cooperatives/{id}/products', [PublicCooperativeController::class, '
 // ===== PUBLIC AUTH ROUTES =====
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register-cooperative', [AuthController::class, 'registerCooperative']);
+
+// Password Reset Routes
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 // ===== PROTECTED ROUTES =====
 Route::middleware('auth:sanctum')->group(function () {
@@ -59,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', [UserManagementController::class, 'index']);
         Route::post('/users', [UserManagementController::class, 'store']);
         Route::put('/users/{id}', [UserManagementController::class, 'update']);
+        Route::put('/users/{id}/approve', [UserManagementController::class, 'approve']);
         Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
 
         // Cooperatives CRUD routes
@@ -90,5 +99,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/products/{id}', [ProductController::class, 'show']);
         Route::put('/products/{id}', [ProductController::class, 'update']);
         Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    });
+
+    // ===== COOPERATIVE ROUTES =====
+    Route::middleware('role:cooperative')->prefix('cooperative')->group(function () {
+        Route::get('/dashboard', function () {
+            return response()->json(['success' => true, 'message' => 'Cooperative Dashboard']);
+        });
+        Route::apiResource('products', \App\Http\Controllers\Api\Cooperative\CooperativeProductController::class);
     });
 });

@@ -24,13 +24,19 @@ class UserManagementController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,manager',
+            'role' => 'required|in:admin,manager,cooperative',
             'address' => 'nullable|string',
             'image' => 'nullable|image|max:2048', // file upload
+            'is_approved' => 'nullable|boolean',
         ]);
 
         // Hash password
         $data['password'] = Hash::make($data['password']);
+
+        // Default approval status
+        if (!isset($data['is_approved'])) {
+            $data['is_approved'] = $data['role'] !== 'cooperative';
+        }
 
         // Upload image if exists
         if ($request->hasFile('image')) {
@@ -50,9 +56,10 @@ class UserManagementController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'email' => "required|email|unique:users,email,$id",
-            'role' => 'required|in:admin,manager',
+            'role' => 'required|in:admin,manager,cooperative',
             'address' => 'nullable|string',
             'image' => 'nullable|image|max:2048', // file upload
+            'is_approved' => 'nullable|boolean',
         ]);
 
         // Upload new image if exists
@@ -67,6 +74,20 @@ class UserManagementController extends Controller
         $user->update($data);
 
         return response()->json($user);
+    }
+
+    // Approve cooperative/user
+    public function approve($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_approved = true;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Compte coopérative approuvé avec succès.',
+            'user' => $user
+        ]);
     }
 
     // Delete user

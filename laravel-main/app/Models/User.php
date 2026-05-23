@@ -23,6 +23,9 @@ protected $fillable = [
     'role',
     'address',
     'image',
+    'tele',
+    'description',
+    'is_approved',
 ];
 
     /**
@@ -46,5 +49,23 @@ protected $fillable = [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getNomAttribute()
+    {
+        return $this->name;
+    }
+
+    public function getWhatsappAttribute()
+    {
+        return $this->tele;
+    }
+
+    /**
+     * Get the products for the cooperative (user).
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'cooperative_id');
     }
 }
