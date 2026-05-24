@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { 
-  FiHome, 
-  FiShoppingBag, 
-  FiUsers, 
-  FiMail, 
-  FiLogOut, 
+import {
+  FiHome,
+  FiShoppingBag,
+  FiUsers,
+  FiMail,
+  FiLogOut,
   FiUser,
   FiMenu,
   FiX,
@@ -60,7 +60,7 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleResize);
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
@@ -106,16 +106,15 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed w-full top-0 left-0 z-40 transition-all duration-500 ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md shadow-lg py-1"
-            : "bg-white shadow-md py-2"
-        }`}
+        className={`fixed w-full top-0 left-0 z-40 transition-all duration-500 ${isScrolled
+          ? "bg-white/90 backdrop-blur-md shadow-lg py-1"
+          : "bg-white shadow-md py-2"
+          }`}
         dir={isRTL ? 'rtl' : 'ltr'}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            
+
             {/* Logo Section */}
             <Link
               to="/"
@@ -123,19 +122,19 @@ const Navbar = () => {
               onClick={() => isMobile && setIsMobileMenuOpen(false)}
             >
               <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400/20 to-amber-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              
+
               <div className="relative">
                 <div className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg ring-2 ring-emerald-500/30 group-hover:ring-emerald-500/60 transition-all duration-300 bg-gradient-to-br from-emerald-100 to-amber-100">
-                  <img 
-                    src={logoImage} 
-                    alt="AgriMarket Logo" 
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
+                  <img
+                    src={logoImage}
+                    alt="AgriMarket Logo"
+                    className="w-full h-full object-cover scale-[1.25] transition-all duration-500 group-hover:scale-[1.35] group-hover:rotate-6"
                   />
                 </div>
                 <div className="absolute inset-0 rounded-full border-2 border-emerald-500/40 animate-ping opacity-0 group-hover:opacity-100 pointer-events-none"></div>
                 <div className="absolute -inset-1 rounded-full border border-emerald-400/30 animate-spin-slow opacity-0 group-hover:opacity-100 pointer-events-none"></div>
               </div>
-              
+
               <div className="flex flex-col overflow-hidden">
                 <div className="flex items-center">
                   <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-none">
@@ -158,12 +157,11 @@ const Navbar = () => {
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`relative px-3 xl:px-5 py-2 xl:py-2.5 text-sm xl:text-base font-semibold transition-all duration-300 group rounded-xl ${
-                      active
-                        ? 'text-green-700 bg-green-100/80'
-                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-                    }`}
-                    style={{ 
+                    className={`relative px-3 xl:px-5 py-2 xl:py-2.5 text-sm xl:text-base font-semibold transition-all duration-300 group rounded-xl ${active
+                      ? 'text-green-700 bg-green-100/80'
+                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                      }`}
+                    style={{
                       animationDelay: `${index * 100}ms`,
                       animation: 'slideDown 0.5s ease-out forwards',
                       opacity: 0
@@ -175,9 +173,8 @@ const Navbar = () => {
                       <span className="xl:hidden">{link.name.charAt(0)}</span>
                       {active && <span className="hidden xl:inline-block w-1.5 h-1.5 bg-green-600 rounded-full ml-1 animate-pulse"></span>}
                     </span>
-                    <span className={`absolute bottom-0 ${isRTL ? 'right-2 xl:right-4' : 'left-2 xl:left-4'} h-0.5 xl:h-[3px] bg-gradient-to-r from-green-600 via-green-500 to-green-400 rounded-full transition-all duration-500 shadow-lg shadow-green-500/50 ${
-                      active ? 'w-[calc(100%-1rem)] xl:w-[calc(100%-2rem)]' : 'w-0 group-hover:w-[calc(100%-1rem)] xl:group-hover:w-[calc(100%-2rem)]'
-                    }`}></span>
+                    <span className={`absolute bottom-0 ${isRTL ? 'right-2 xl:right-4' : 'left-2 xl:left-4'} h-0.5 xl:h-[3px] bg-gradient-to-r from-green-600 via-green-500 to-green-400 rounded-full transition-all duration-500 shadow-lg shadow-green-500/50 ${active ? 'w-[calc(100%-1rem)] xl:w-[calc(100%-2rem)]' : 'w-0 group-hover:w-[calc(100%-1rem)] xl:group-hover:w-[calc(100%-2rem)]'
+                      }`}></span>
                   </Link>
                 );
               })}
@@ -186,33 +183,33 @@ const Navbar = () => {
             {/* Desktop Action Right Block */}
             <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 flex-shrink-0`}>
               <LanguageSwitcher />
-              
+
               {user ? (
                 <div className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-2 animate-fadeIn`}>
                   {/* 🔹 رجعنا هاد الجزء عبارة عن Link قابل للضغط كيدي لـ Dashboard */}
-                  <Link 
+                  <Link
                     to={getDashboardPath()}
                     title="Accéder au tableau de bord"
-                    className="flex items-center space-x-2 bg-gradient-to-r from-emerald-50 via-teal-50/30 to-emerald-100/50 hover:from-emerald-100 hover:to-emerald-200 px-4 py-2 rounded-xl border border-emerald-300 shadow-sm transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 group/user"
+                    className="flex items-center space-x-2 bg-gradient-to-r from-emerald-50 via-teal-50/30 to-emerald-100/50 hover:from-emerald-100 hover:to-emerald-200 px-3 h-9 rounded-xl border border-emerald-300 shadow-sm transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 group/user"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-full flex items-center justify-center shadow-md relative overflow-hidden group-hover/user:scale-105 transition-transform">
-                      <span className="text-white text-xs font-bold group-hover/user:hidden">
+                    <div className="w-6 h-6 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-full flex items-center justify-center shadow-md relative overflow-hidden group-hover/user:scale-105 transition-transform">
+                      <span className="text-white text-sm font-bold group-hover/user:hidden">
                         {user.name?.charAt(0).toUpperCase() || "U"}
                       </span>
-                      <FiLayout className="text-white text-xs hidden group-hover/user:block" />
+                      <FiLayout className="text-white text-sm hidden group-hover/user:block" />
                     </div>
-                    <span className="text-slate-800 font-extrabold text-sm max-w-[140px] truncate flex flex-col items-start">
-                      <span>{user.name || t("navbar.user")}</span>
-                      
+                    <span className="text-slate-800 font-extrabold text-xs max-w-[140px] truncate">
+                      {user.name || t("navbar.user")}
                     </span>
                   </Link>
 
                   <button
                     onClick={handleLogout}
-                    className="flex items-center space-x-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all font-bold text-xs shadow-sm active:scale-95 hover:shadow-md"
+                    className="group flex items-center space-x-1.5 px-4 h-9 bg-gradient-to-r from-yellow-500/90 to-lime-500/90 hover:from-yellow-400 hover:to-lime-400 text-white rounded-xl transition-all font-bold text-xs shadow-sm active:scale-95 hover:shadow-md relative overflow-hidden"
                   >
-                    <FiLogOut />
-                    <span>{t("navbar.logout")}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                    <FiLogOut className="relative z-10" />
+                    <span className="relative z-10">{t("navbar.logout")}</span>
                   </button>
                 </div>
               ) : (
@@ -249,9 +246,8 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-full w-[300px] bg-white z-50 shadow-2xl lg:hidden transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-full w-[300px] bg-white z-50 shadow-2xl lg:hidden transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gradient-to-r from-emerald-50/30 to-transparent">
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center space-x-3">
@@ -280,22 +276,20 @@ const Navbar = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 sm:space-x-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300 transform ${isRTL ? 'hover:-translate-x-2' : 'hover:translate-x-2'} hover:shadow-md ${
-                  active
-                    ? 'text-green-700 bg-white shadow-md border-l-4 border-green-600'
-                    : 'text-gray-700 hover:text-green-600 hover:bg-white'
-                }`}
-                style={{ 
+                className={`group flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 sm:space-x-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300 transform ${isRTL ? 'hover:-translate-x-2' : 'hover:translate-x-2'} hover:shadow-md ${active
+                  ? 'text-green-700 bg-white shadow-md border-l-4 border-green-600'
+                  : 'text-gray-700 hover:text-green-600 hover:bg-white'
+                  }`}
+                style={{
                   animationDelay: `${index * 100}ms`,
                   animation: isMobileMenuOpen ? 'slideInLeft 0.5s ease-out forwards' : 'none',
                   opacity: 0
                 }}
               >
-                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                  active
-                    ? 'bg-gradient-to-br from-green-600 to-green-700 scale-110 rotate-6'
-                    : 'bg-gradient-to-br from-green-100 to-green-200 group-hover:from-green-600 group-hover:to-green-700 group-hover:scale-110 group-hover:rotate-6'
-                }`}>
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${active
+                  ? 'bg-gradient-to-br from-green-600 to-green-700 scale-110 rotate-6'
+                  : 'bg-gradient-to-br from-green-100 to-green-200 group-hover:from-green-600 group-hover:to-green-700 group-hover:scale-110 group-hover:rotate-6'
+                  }`}>
                   <Icon className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${active ? 'text-white' : 'text-green-700 group-hover:text-white'}`} />
                 </div>
                 <span className="flex-1 text-sm sm:text-base">{link.name}</span>
@@ -308,7 +302,7 @@ const Navbar = () => {
               </Link>
             );
           })}
-          
+
           <div className="pt-4 border-t border-gray-100 mt-2 px-2">
             <LanguageSwitcher mobile={true} />
           </div>
@@ -330,13 +324,14 @@ const Navbar = () => {
                     <p className="text-[11px] text-emerald-600 font-bold uppercase tracking-wider">Mon Dashboard ↗</p>
                   </div>
                 </Link>
-                
+
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center space-x-2 py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold text-sm transition-all shadow-sm"
+                  className="group w-full flex items-center justify-center space-x-2 py-3.5 bg-gradient-to-r from-yellow-500/90 to-lime-500/90 hover:from-yellow-400 hover:to-lime-400 text-white rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg active:scale-95 relative overflow-hidden"
                 >
-                  <FiLogOut />
-                  <span>{t("navbar.logout")}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                  <FiLogOut className="relative z-10" />
+                  <span className="relative z-10">{t("navbar.logout")}</span>
                 </button>
               </div>
             ) : (

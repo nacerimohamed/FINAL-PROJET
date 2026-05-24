@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
-import { FaQuoteRight, FaStar, FaRegStar, FaUsers, FaLeaf, FaBoxOpen, FaSmile } from "react-icons/fa";
+import { FaQuoteRight, FaStar, FaRegStar, FaLeaf } from "react-icons/fa";
 
 const StarRating = ({ rating }) => {
   return (
@@ -17,37 +16,8 @@ const StarRating = ({ rating }) => {
 
 const Testimonials = () => {
   const { t } = useTranslation();
-  
-  // State variables dynamic counts
-  const [cooperativesCount, setCooperativesCount] = useState(0);
-  const [productsCount, setProductsCount] = useState(0);
-  const [loadingStats, setLoadingStats] = useState(true);
 
-  useEffect(() => {
-    fetchDynamicStats();
-  }, []);
 
-  const fetchDynamicStats = async () => {
-    try {
-      setLoadingStats(true);
-      // Fetch concurrent data components
-      const [coopRes, prodRes] = await Promise.all([
-        axios.get("http://localhost:8000/api/cooperatives"),
-        axios.get("http://localhost:8000/api/products")
-      ]);
-
-      if (coopRes.data.success) {
-        setCooperativesCount(coopRes.data.data.length);
-      }
-      if (prodRes.data.success) {
-        setProductsCount(prodRes.data.data.length);
-      }
-    } catch (err) {
-      console.error("Error fetching dynamic stats for counter:", err);
-    } finally {
-      setLoadingStats(false);
-    }
-  };
 
   const testimonials = [
     {
@@ -90,7 +60,7 @@ const Testimonials = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-emerald-50/60 to-transparent rounded-full opacity-70 -translate-y-1/2 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center mb-14">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 mb-3">
@@ -112,8 +82,8 @@ const Testimonials = () => {
             <div
               key={index}
               className="group relative bg-white rounded-2xl p-5 shadow-sm border border-emerald-100/60 hover:shadow-xl hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between"
-              style={{ 
-                animation: `fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 40}ms both` 
+              style={{
+                animation: `fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 40}ms both`
               }}
             >
               {/* Top Row: Stars & Quote Icon */}
@@ -144,55 +114,8 @@ const Testimonials = () => {
           ))}
         </div>
 
-        {/* Trust Stats Counter Block [DYNAMIQUE %100] */}
-          <div className="mt-14">
-            <div className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 rounded-2xl p-6 lg:p-10 shadow-lg border-b-4 border-emerald-500">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-                
-                {/* Stat 1: Dynamic Clients */}
-                <div className="text-center space-y-1">
-                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaSmile /></div>
-                  <div className="text-2xl lg:text-3xl font-black text-white">500+</div>
-                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-                    {t("testimonials.statClients")}
-                  </div>
-                </div>
 
-                {/* Stat 2: Dynamic Cooperatives Count */}
-                <div className="text-center space-y-1 border-l lg:border-l border-emerald-700/50">
-                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaUsers /></div>
-                  <div className="text-2xl lg:text-3xl font-black text-white">
-                    {loadingStats ? "..." : `${cooperativesCount}+`}
-                  </div>
-                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-                    {t("testimonials.statCooperatives")}
-                  </div>
-                </div>
 
-                {/* Stat 3: Dynamic Products Count */}
-                <div className="text-center space-y-1 border-l border-emerald-700/50">
-                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaBoxOpen /></div>
-                  <div className="text-2xl lg:text-3xl font-black text-white">
-                    {loadingStats ? "..." : `${productsCount}+`}
-                  </div>
-                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-                    {t("testimonials.statProducts")}
-                  </div>
-                </div>
-
-                {/* Stat 4: Satisfaction */}
-                <div className="text-center space-y-1 border-l border-emerald-700/50">
-                  <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaStar /></div>
-                  <div className="text-2xl lg:text-3xl font-black text-white">98%</div>
-                  <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-                    {t("testimonials.statSatisfaction")}
-                  </div>
-                </div>
-
-            </div>
-          </div>
-        </div>
-        
       </div>
 
       {/* Animation scope placeholder */}

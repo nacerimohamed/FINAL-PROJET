@@ -42,10 +42,7 @@ const AdminProducts = () => {
 
   const fetchCooperatives = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:8000/api/admin/cooperatives', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.get('http://localhost:8000/api/cooperatives');
       if (response.data.success) {
         setCooperatives(response.data.data);
       }

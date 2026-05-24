@@ -12,7 +12,7 @@
     "menu": "Menu"
   },
   "hero": {
-    "welcome": "Bienvenue à notre",
+    "welcome": "Bienvenue Sur notre",
     "marketplace": "Marketplace Coopérative",
     "description": "Découvrez des produits locaux, biologiques et équitables directement de nos coopératives partenaires",
     "discoverProducts": "Découvrir les Produits",
@@ -43,7 +43,7 @@
     "cooperativeList": "Liste des coopératives",
     "legalInfo": "Informations Légales",
     "aboutUs": "Qui sommes-nous ?",
-     "faq": "FAQ",
+    "faq": "FAQ",
     "testimonials": "Témoignages",
     "legalMentions": "Mentions légales",
     "termsOfUse": "Conditions d'utilisation",
@@ -492,8 +492,8 @@
     "title": "Qui sommes-nous ?",
     "imageAlt": "Produits coopératifs marocains",
     "cooperativesCount": "Coopératives partenaires",
-    "subtitle": "Une plateforme dédiée aux coopératives marocaines",
-    "description": "Notre plateforme aide les coopératives marocaines à promouvoir et gérer leurs produits locaux en ligne. Nous connectons les producteurs locaux directement aux consommateurs, en valorisant le savoir-faire artisanal et les produits du terroir marocain. Ensemble, nous construisons un écosystème digital qui soutient l'économie locale et le commerce équitable.",
+    "subtitle": "Une AgriMarket dédiée aux coopératives marocaines",
+    "description": "Notre AgriMarket aide les coopératives marocaines à promouvoir et gérer leurs produits locaux en ligne. Nous connectons les producteurs locaux directement aux consommateurs, en valorisant le savoir-faire artisanal et les produits du terroir marocain. Ensemble, nous construisons un écosystème digital qui soutient l'économie locale et le commerce équitable.",
     "feature1Title": "Produits 100% locaux",
     "feature1Desc": "Découvrez des produits authentiques directement issus des coopératives marocaines, garantissant qualité et traçabilité.",
     "feature2Title": "Commerce équitable",

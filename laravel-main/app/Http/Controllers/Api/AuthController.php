@@ -96,10 +96,18 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $request->validate([
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
             ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez remplir tous les champs correctement.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
             $user = User::where('email', $request->email)->first();
 

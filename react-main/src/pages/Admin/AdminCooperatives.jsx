@@ -22,6 +22,9 @@ const AdminCooperatives = () => {
     instagram: "",
     facebook: "",
     whatsapp: "",
+    latitude: "",
+    longitude: "",
+    google_maps_link: "",
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -85,7 +88,11 @@ const AdminCooperatives = () => {
       if (imagePreview && !imagePreview.startsWith(API_URL)) {
         URL.revokeObjectURL(imagePreview);
       }
-      setFormData((prev) => ({ ...prev, image: file }));
+      
+      setFormData({
+        ...formData,
+        image: file,
+      });
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -103,8 +110,12 @@ const AdminCooperatives = () => {
       instagram: "",
       facebook: "",
       whatsapp: "",
+      latitude: "",
+      longitude: "",
+      google_maps_link: "",
       image: null,
     });
+    
     if (imagePreview && !imagePreview.startsWith(API_URL)) {
       URL.revokeObjectURL(imagePreview);
     }
@@ -125,8 +136,12 @@ const AdminCooperatives = () => {
       instagram: cooperative.instagram || "",
       facebook: cooperative.facebook || "",
       whatsapp: cooperative.whatsapp || "",
+      latitude: cooperative.latitude || "",
+      longitude: cooperative.longitude || "",
+      google_maps_link: cooperative.google_maps_link || "",
       image: null,
     });
+    
     if (cooperative.image) {
       setImagePreview(`${API_URL}/storage/${cooperative.image}`);
     } else {
@@ -137,10 +152,13 @@ const AdminCooperatives = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null && formData[key] !== undefined && formData[key] !== "") {
+      
+      // Ajouter tous les champs
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== null && formData[key] !== undefined && formData[key] !== '') {
           formDataToSend.append(key, formData[key]);
         }
       });
@@ -166,7 +184,8 @@ const AdminCooperatives = () => {
       }
       setModalOpen(false);
       fetchCooperatives();
-      // Réinitialisation
+      
+      // Réinitialiser le formulaire
       setFormData({
         name: "",
         email: "",
@@ -178,13 +197,18 @@ const AdminCooperatives = () => {
         instagram: "",
         facebook: "",
         whatsapp: "",
+        latitude: "",
+        longitude: "",
+        google_maps_link: "",
         image: null,
       });
+      
       if (imagePreview && !imagePreview.startsWith(API_URL)) {
         URL.revokeObjectURL(imagePreview);
       }
       setImagePreview(null);
       setEditingCooperative(null);
+      
     } catch (error) {
       console.error("Erreur lors de l'envoi:", error);
       if (error.response?.data?.errors) {
@@ -210,30 +234,12 @@ const AdminCooperatives = () => {
     }
   };
 
-  const handleApprove = async (id, currentStatus) => {
-    const action = currentStatus ? "désapprouver" : "approuver";
-    if (window.confirm(`Voulez-vous ${action} cette coopérative ?`)) {
-      try {
-        // Endpoint : PUT /admin/cooperatives/{id}/approve
-        await api.put(`/admin/cooperatives/${id}/approve`);
-        toast.success(`Coopérative ${action}ée avec succès`);
-        fetchCooperatives();
-      } catch (error) {
-        console.error("Erreur lors de l'approbation:", error);
-        toast.error("Erreur lors de la modification du statut");
-      }
-    }
-  };
-
-  const filteredCooperatives = cooperatives.filter((coop) =>
-    (coop.name || coop.nom || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()) ||
-    (coop.email || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (coop.contact || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (coop.address || coop.adresse || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+  // Filtrer les coopératives
+  const filteredCooperatives = cooperatives.filter(coop => 
+    coop.nom?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coop.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coop.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    coop.adresse?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getImageUrl = (imagePath) => {
@@ -258,7 +264,15 @@ const AdminCooperatives = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       <AdminSidebar />
-      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000} 
+        className="mt-16 z-50"
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+      
       <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* En-tête */}
@@ -326,19 +340,42 @@ const AdminCooperatives = () => {
               <>
                 {/* Version mobile : cartes */}
                 <div className="block sm:hidden divide-y divide-gray-200">
-                  {filteredCooperatives.map((coop) => (
-                    <div key={coop.id} className="p-4 hover:bg-gray-50">
-                      <div className="flex items-start gap-3">
-                        {coop.image ? (
-                          <img
-                            src={getImageUrl(coop.image)}
-                            alt={coop.name || coop.nom}
-                            className="w-12 h-12 rounded-lg object-cover border"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  {filteredCooperatives.map((cooperative) => (
+                    <div key={cooperative.id} className="p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start space-x-3 mb-3">
+                        <div className="flex-shrink-0">
+                          {cooperative.image ? (
+                            <img
+                              className="h-12 w-12 rounded-lg object-cover border border-gray-200"
+                              src={getImageUrl(cooperative.image)}
+                              alt={cooperative.nom}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="h-12 w-12 rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200">
+                              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-semibold text-gray-900 truncate">{cooperative.nom}</h3>
+                          {cooperative.description && (
+                            <p className="text-xs text-gray-500 truncate">{cooperative.description}</p>
+                          )}
+                          <p className="text-xs text-gray-600 mt-1 truncate">{cooperative.email}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-3">
+                        {cooperative.contact && (
+                          <div className="flex items-center text-xs text-gray-600">
+                            <svg className="w-3.5 h-3.5 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                           </div>
                         )}
@@ -491,173 +528,306 @@ const AdminCooperatives = () => {
             )}
           </div>
 
-          {/* Modal d'ajout / modification */}
-          {modalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">
-                    {editingCooperative ? "Modifier la coopérative" : "Ajouter une coopérative"}
-                  </h2>
-                  <button
-                    onClick={() => setModalOpen(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+          {/* Pagination simple */}
+          {filteredCooperatives.length > 0 && (
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <p className="text-xs sm:text-sm text-gray-600 order-2 sm:order-1">
+                Affichage de <span className="font-medium">1</span> à <span className="font-medium">{filteredCooperatives.length}</span> sur <span className="font-medium">{cooperatives.length}</span> coopératives
+              </p>
+              <div className="flex gap-2 order-1 sm:order-2">
+                <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
+                  Précédent
+                </button>
+                <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
+                  Suivant
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modal responsive */}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in">
+            {/* En-tête sticky */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 rounded-t-xl flex justify-between items-center">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate pr-4">
+                {editingCooperative ? "Modifier la Coopérative" : "Ajouter une Coopérative"}
+              </h3>
+              <button
+                onClick={() => {
+                  if (imagePreview && !imagePreview.startsWith(API_URL)) {
+                    URL.revokeObjectURL(imagePreview);
+                  }
+                  setModalOpen(false);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-lg flex-shrink-0"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Formulaire */}
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {/* Nom */}
+                <div className="sm:col-span-1">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Nom <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="nom"
+                    value={formData.nom}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    required
+                    placeholder="Nom de la coopérative"
+                  />
                 </div>
-                <form onSubmit={handleSubmit} className="p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Nom <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full border rounded-lg px-3 py-2 focus:ring-green-500 focus:border-green-500"
+                
+                {/* Email */}
+                <div className="sm:col-span-1">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                      editingCooperative ? 'bg-gray-100' : ''
+                    }`}
+                    required
+                    disabled={editingCooperative}
+                    placeholder="contact@cooperative.com"
+                  />
+                </div>
+                <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Ville
+  </label>
+
+  <select
+    name="ville"
+    value={formData.ville}
+    onChange={handleChange}
+    className="w-full px-3 py-2 border rounded-lg"
+  >
+    <option value="">Choisir ville</option>
+    <option value="Midelt">Midelt</option>
+    <option value="Errachidia">Errachidia</option>
+    <option value="Tinghir">Tinghir</option>
+    <option value="Ouarzazate">Ouarzazate</option>
+    <option value="Zagora">Zagora</option>
+  </select>
+</div>
+                {/* Description */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    rows="3"
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                    placeholder="Description de la coopérative..."
+                  />
+                </div>
+
+                {/* Adresse */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Adresse
+                  </label>
+                  <input
+                    type="text"
+                    name="adresse"
+                    value={formData.adresse}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Adresse complète"
+                  />
+                </div>
+
+                {/* Contact */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Contact
+                  </label>
+                  <input
+                    type="text"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Personne à contacter"
+                  />
+                </div>
+
+                {/* Téléphone */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Téléphone
+                  </label>
+                  <input
+                    type="text"
+                    name="tele"
+                    value={formData.tele}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Numéro de téléphone"
+                  />
+                </div>
+
+                {/* Instagram */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Instagram
+                  </label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 bg-gray-50 border border-r-0 border-gray-300 rounded-l-lg text-gray-500 text-sm">
+                      @
+                    </span>
+                    <input
+                      type="text"
+                      name="instagram"
+                      value={formData.instagram}
+                      onChange={handleChange}
+                      className="flex-1 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="instagram"
+                    />
+                  </div>
+                </div>
+
+                {/* Facebook */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Facebook
+                  </label>
+                  <input
+                    type="text"
+                    name="facebook"
+                    value={formData.facebook}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="URL Facebook"
+                  />
+                </div>
+
+                {/* WhatsApp */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    name="whatsapp"
+                    value={formData.whatsapp}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="212XXXXXXXXX"
+                  />
+                </div>
+
+                {/* Latitude & Longitude */}
+                <div className="sm:col-span-1">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Latitude
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="latitude"
+                    value={formData.latitude}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="ex: 31.5085"
+                  />
+                </div>
+                <div className="sm:col-span-1">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Longitude
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="longitude"
+                    value={formData.longitude}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="ex: -5.5228"
+                  />
+                </div>
+
+                {/* Google Maps Link */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Lien Google Maps
+                  </label>
+                  <input
+                    type="text"
+                    name="google_maps_link"
+                    value={formData.google_maps_link}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="URL Google Maps"
+                  />
+                </div>
+
+                {/* Image */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    Image de la coopérative
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Formats acceptés : JPG, PNG, GIF. Taille max : 2MB
+                  </p>
+                </div>
+
+                {/* Aperçu image */}
+                {imagePreview && (
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      Aperçu
+                    </label>
+                    <div className="relative inline-block">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border border-gray-200"
                       />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        disabled={!!editingCooperative}
-                        className={`w-full border rounded-lg px-3 py-2 ${
-                          editingCooperative ? "bg-gray-100" : ""
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
-                      <select
-                        name="ville"
-                        value={formData.ville}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (imagePreview && !imagePreview.startsWith(API_URL)) {
+                            URL.revokeObjectURL(imagePreview);
+                          }
+                          setImagePreview(null);
+                          setFormData({ ...formData, image: null });
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors shadow-sm"
                       >
-                        <option value="">Sélectionner</option>
-                        <option value="Midelt">Midelt</option>
-                        <option value="Errachidia">Errachidia</option>
-                        <option value="Tinghir">Tinghir</option>
-                        <option value="Ouarzazate">Ouarzazate</option>
-                        <option value="Zagora">Zagora</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
-                      <input
-                        type="text"
-                        name="contact"
-                        value={formData.contact}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Téléphone
-                      </label>
-                      <input
-                        type="text"
-                        name="tele"
-                        value={formData.tele}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Instagram
-                      </label>
-                      <input
-                        type="text"
-                        name="instagram"
-                        value={formData.instagram}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Facebook
-                      </label>
-                      <input
-                        type="text"
-                        name="facebook"
-                        value={formData.facebook}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        WhatsApp
-                      </label>
-                      <input
-                        type="text"
-                        name="whatsapp"
-                        value={formData.whatsapp}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Adresse
-                      </label>
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
-                      </label>
-                      <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        rows="3"
-                        className="w-full border rounded-lg px-3 py-2"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Image
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="w-full"
-                      />
-                      {imagePreview && (
-                        <div className="mt-2">
-                          <img
-                            src={imagePreview}
-                            alt="Aperçu"
-                            className="h-20 w-20 object-cover rounded border"
-                          />
-                        </div>
-                      )}
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
+                )}
                   <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                     <button
                       type="button"

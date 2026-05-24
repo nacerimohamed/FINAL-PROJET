@@ -6,6 +6,21 @@ import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaFacebook, FaInstagram, FaWhatsap
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTranslation } from "react-i18next";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix Leaflet marker icon issue
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconAnchor: [12, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 const CooperativeDetail = () => {
   const { t, i18n } = useTranslation();
@@ -198,9 +213,9 @@ const CooperativeDetail = () => {
     <>
       <Navbar />
 
-      {/* Breadcrumb */}
+      {/* Breadcrumb - pleine largeur */}
       <div className="bg-stone-100 py-4 border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="w-full px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-sm text-stone-500">
             <Link to="/" className="hover:text-emerald-700 transition">Accueil</Link>
             <span>/</span>
@@ -211,7 +226,7 @@ const CooperativeDetail = () => {
         </div>
       </div>
 
-      {/* Hero Section - Version avec image complète */}
+      {/* Hero Section - pleine largeur */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -219,10 +234,10 @@ const CooperativeDetail = () => {
         className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-stone-800 text-amber-50"
         dir={isRTL ? 'rtl' : 'ltr'}
       >
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="w-full px-4 md:px-6 lg:px-8 py-12 md:py-16">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center max-w-full">
             
-            {/* Image - Pleine et complète */}
+            {/* Image */}
             <motion.div
               initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -263,7 +278,7 @@ const CooperativeDetail = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-4xl md:text-5xl font-bold mb-4"
+                className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
               >
                 {cooperative.nom}
               </motion.h1>
@@ -273,7 +288,7 @@ const CooperativeDetail = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="text-amber-100/90 text-lg mb-6 leading-relaxed"
+                  className="text-amber-100/90 text-base md:text-lg mb-6 leading-relaxed"
                 >
                   {cooperative.description}
                 </motion.p>
@@ -325,26 +340,28 @@ const CooperativeDetail = () => {
         </div>
       </motion.div>
 
-      {/* Details Section */}
-      <div className="bg-stone-50 min-h-screen py-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+      {/* Details Section - Products 70% & Map 30% */}
+      <div className="bg-stone-50 min-h-screen py-8 md:py-12">
+        <div className="w-full px-4 md:px-6 lg:px-8">
+          
+          {/* Contact & Social Media Section (gardé tel quel) */}
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
             
             {/* Contact Information */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="md:col-span-2 bg-white rounded-2xl shadow-md border border-stone-200 p-6"
+              className="md:col-span-2 bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6"
             >
-              <h2 className="text-2xl font-bold text-stone-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6 flex items-center gap-2">
                 <div className="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
                   <FaBuilding className="w-4 h-4 text-emerald-700" />
                 </div>
                 {t('cooperativeDetail.contactInfo')}
               </h2>
               
-              <div className="space-y-5">
+              <div className="space-y-4 md:space-y-5">
                 {cooperative.adresse && (
                   <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <FaMapMarkerAlt className="text-emerald-600 mt-1 flex-shrink-0" size={18} />
@@ -398,9 +415,9 @@ const CooperativeDetail = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-2xl shadow-md border border-stone-200 p-6"
+              className="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6"
             >
-              <h2 className="text-2xl font-bold text-stone-800 mb-6">{t('cooperativeDetail.socialMedia')}</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6">{t('cooperativeDetail.socialMedia')}</h2>
               
               <div className="space-y-3">
                 {cooperative.facebook && (
@@ -446,117 +463,201 @@ const CooperativeDetail = () => {
             </motion.div>
           </div>
 
-          {/* Products Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-stone-800 flex items-center gap-2">
-                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <FaBox className="w-5 h-5 text-emerald-700" />
+          {/* Products & Map Section - Products 70% & Map 30% */}
+          <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+            
+            {/* Products Section - 70% width (left side) */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="lg:w-[70%]"
+            >
+              <div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold text-stone-800 flex items-center gap-2">
+                    <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                      <FaBox className="w-5 h-5 text-emerald-700" />
+                    </div>
+                    {t('cooperativeDetail.productsOf', { cooperativeName: cooperative.nom })}
+                  </h2>
+                  <span className="text-sm text-stone-500 bg-white px-3 py-1 rounded-full shadow-sm">
+                    {products.length} produit{products.length > 1 ? 's' : ''}
+                  </span>
                 </div>
-                {t('cooperativeDetail.productsOf', { cooperativeName: cooperative.nom })}
-              </h2>
-              <span className="text-sm text-stone-500 bg-white px-3 py-1 rounded-full shadow-sm">
-                {products.length} produit{products.length > 1 ? 's' : ''}
-              </span>
-            </div>
 
-            {products.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-20 bg-white rounded-2xl border border-stone-200"
-              >
-                <div className="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FaBox size={32} className="text-stone-400" />
-                </div>
-                <p className="text-stone-600 text-xl">{t('cooperativeDetail.noProducts')}</p>
-              </motion.div>
-            ) : (
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-              >
-                {products.map((product) => {
-                  const productImage = getProductImage(product);
-                  const hasProductImage = productImage !== null;
-                  return (
-                    <motion.div
-                      key={product.id}
-                      variants={itemVariants}
-                      whileHover="hover"
-                      whileTap="tap"
-                      {...cardVariants}
-                      onMouseEnter={() => setHoveredProduct(product.id)}
-                      onMouseLeave={() => setHoveredProduct(null)}
-                    >
-                      <Link
-                        to={`/products/${product.id}`}
-                        className="block bg-white rounded-2xl overflow-hidden shadow-md border border-stone-200 group"
+                {products.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-16 md:py-20 bg-white rounded-2xl border border-stone-200"
+                  >
+                    <div className="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FaBox size={32} className="text-stone-400" />
+                    </div>
+                    <p className="text-stone-600 text-lg md:text-xl">{t('cooperativeDetail.noProducts')}</p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6"
+                  >
+                    {products.map((product) => {
+                      const productImage = getProductImage(product);
+                      const hasProductImage = productImage !== null;
+                      return (
+                        <motion.div
+                          key={product.id}
+                          variants={itemVariants}
+                          whileHover="hover"
+                          whileTap="tap"
+                          {...cardVariants}
+                          onMouseEnter={() => setHoveredProduct(product.id)}
+                          onMouseLeave={() => setHoveredProduct(null)}
+                        >
+                          <Link
+                            to={`/products/${product.id}`}
+                            className="block bg-white rounded-2xl overflow-hidden shadow-md border border-stone-200 group"
+                          >
+                            <div className="relative h-48 md:h-52 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200">
+                              {hasProductImage ? (
+                                <img
+                                  src={productImage}
+                                  alt={product.name}
+                                  className="w-full h-full object-contain p-3 md:p-4"
+                                  onError={(e) => {
+                                    e.target.src = "https://via.placeholder.com/400x300/065f46/fef3c7?text=Produit";
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full flex flex-col items-center justify-center">
+                                  <FaBox className="w-10 h-10 md:w-12 md:h-12 text-stone-400 mb-2" />
+                                  <p className="text-stone-500 text-xs md:text-sm">Image non disponible</p>
+                                </div>
+                              )}
+                              <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2 md:px-3 py-1 md:py-1.5 rounded-xl text-xs md:text-sm font-bold text-emerald-800 shadow-lg">
+                                {product.price} DH
+                              </div>
+                              <div className="absolute bottom-3 left-3">
+                                <span className={`text-xs px-2 py-0.5 md:py-1 rounded-lg font-medium ${
+                                  product.quantity > 0 
+                                    ? 'bg-emerald-100 text-emerald-700' 
+                                    : 'bg-red-100 text-red-700'
+                                }`}>
+                                  {product.quantity > 0 ? `Stock: ${product.quantity}` : 'Rupture'}
+                                </span>
+                              </div>
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </div>
+                            
+                            <div className="p-4 md:p-5">
+                              <h3 className="text-lg md:text-xl font-bold text-stone-800 mb-2 group-hover:text-emerald-700 transition line-clamp-1">
+                                {product.name}
+                              </h3>
+                              
+                              {product.description && (
+                                <p className="text-stone-500 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
+                                  {product.description}
+                                </p>
+                              )}
+                              
+                              <div className="flex items-center justify-between pt-3 border-t border-stone-100">
+                                <div className="text-xs md:text-sm text-stone-500">
+                                  {t('productDetail.stock')}: <span className="font-semibold text-stone-700">{product.quantity}</span>
+                                </div>
+                                <span className="text-emerald-600 font-medium text-xs md:text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                                  {t('productDetail.viewDetails')} →
+                                </span>
+                              </div>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Map Section - 30% width (right side) */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.35 }}
+              className="lg:w-[30%]"
+            >
+              <div className="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6 sticky top-4">
+                <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <FaMapMarkerAlt className="w-4 h-4 text-emerald-700" />
+                  </div>
+                  {t('cooperativeDetail.location', 'Localisation')}
+                </h2>
+                
+                {(cooperative.google_maps_embed || cooperative.google_maps_link) ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="h-[350px] md:h-[400px] w-full rounded-xl overflow-hidden border border-stone-200">
+                      <iframe 
+                        src={cooperative.google_maps_embed || cooperative.google_maps_link}
+                        width="100%" 
+                        height="100%" 
+                        style={{ border: 0 }} 
+                        allowFullScreen="" 
+                        loading="lazy" 
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    </div>
+                    <div className="text-center">
+                      <a 
+                        href={cooperative.google_maps_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition inline-flex items-center gap-2 no-underline text-sm"
                       >
-                        <div className="relative h-52 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200">
-                          {hasProductImage ? (
-                            <img
-                              src={productImage}
-                              alt={product.name}
-                              className="w-full h-full object-contain p-4"
-                              onError={(e) => {
-                                e.target.src = "https://via.placeholder.com/400x300/065f46/fef3c7?text=Produit";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center">
-                              <FaBox className="w-12 h-12 text-stone-400 mb-2" />
-                              <p className="text-stone-500 text-sm">Image non disponible</p>
-                            </div>
-                          )}
-                          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl text-sm font-bold text-emerald-800 shadow-lg">
-                            {product.price} DH
+                        <FaMapMarkerAlt /> Ouvrir
+                      </a>
+                    </div>
+                  </div>
+                ) : cooperative.latitude && cooperative.longitude ? (
+                  <div className="h-[350px] md:h-[400px] w-full rounded-xl overflow-hidden border border-stone-200 relative z-0">
+                    <MapContainer 
+                      center={[parseFloat(cooperative.latitude), parseFloat(cooperative.longitude)]} 
+                      zoom={13} 
+                      scrollWheelZoom={false}
+                      style={{ height: "100%", width: "100%" }}
+                    >
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <Marker position={[parseFloat(cooperative.latitude), parseFloat(cooperative.longitude)]}>
+                        <Popup>
+                          <div className="text-center font-sans">
+                            <strong className="block mb-2 text-stone-800">{cooperative.nom}</strong>
+                            <a 
+                              href={`https://www.google.com/maps/search/?api=1&query=${cooperative.latitude},${cooperative.longitude}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-sm inline-block transition no-underline"
+                            >
+                              Ouvrir dans Google Maps
+                            </a>
                           </div>
-                          <div className="absolute bottom-3 left-3">
-                            <span className={`text-xs px-2.5 py-1 rounded-lg font-medium ${
-                              product.quantity > 0 
-                                ? 'bg-emerald-100 text-emerald-700' 
-                                : 'bg-red-100 text-red-700'
-                            }`}>
-                              {product.quantity > 0 ? `Stock: ${product.quantity}` : 'Rupture'}
-                            </span>
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-                        
-                        <div className="p-5">
-                          <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-emerald-700 transition line-clamp-1">
-                            {product.name}
-                          </h3>
-                          
-                          {product.description && (
-                            <p className="text-stone-500 text-sm mb-4 line-clamp-2">
-                              {product.description}
-                            </p>
-                          )}
-                          
-                          <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                            <div className="text-sm text-stone-500">
-                              {t('productDetail.stock')}: <span className="font-semibold text-stone-700">{product.quantity}</span>
-                            </div>
-                            <span className="text-emerald-600 font-medium text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                              {t('productDetail.viewDetails')} →
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            )}
-          </motion.div>
+                        </Popup>
+                      </Marker>
+                    </MapContainer>
+                  </div>
+                ) : (
+                  <div className="h-[350px] w-full rounded-xl bg-stone-100 border border-stone-200 flex flex-col items-center justify-center text-stone-500">
+                    <FaMapMarkerAlt className="w-12 h-12 text-stone-300 mb-3" />
+                    <p className="text-base font-medium">Localisation non disponible</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 

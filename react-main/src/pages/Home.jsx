@@ -8,6 +8,7 @@ import Testimonials from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 import Chatbot from "../components/Chatbot";
+import Statistics from "../components/Statistics";
 import { useTranslation } from "react-i18next";
 import { FaLeaf, FaEye, FaStore, FaTag } from "react-icons/fa";
 
@@ -113,9 +114,8 @@ const Home = () => {
 
   const getProductImage = (product) => {
     if (product.image && !product.image.startsWith("http")) {
-      return `http://localhost:8000${
-        product.image.startsWith("/") ? "" : "/"
-      }${product.image}`;
+      return `http://localhost:8000${product.image.startsWith("/") ? "" : "/"
+        }${product.image}`;
     }
     return product.image || "https://via.placeholder.com/300x200/10b981/ffffff?text=Produit";
   };
@@ -160,7 +160,7 @@ const Home = () => {
       {/* PRODUCTS SECTION */}
       <section id="products" className="py-20 bg-green-50/10 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-emerald-50/60 to-transparent rounded-full opacity-70 -translate-y-1/2 pointer-events-none" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-14">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 mb-3">
@@ -251,9 +251,8 @@ const Home = () => {
             {featuredCooperatives.map((cooperative, index) => (
               <div
                 key={cooperative.id}
-                className={`${
-                  index % 2 === 0 ? "fade-up" : "fade-left"
-                } group bg-white rounded-2xl border border-emerald-100/60 shadow-sm overflow-hidden hover:shadow-xl hover:border-emerald-300 transition-all duration-300 flex flex-col h-full`}
+                className={`${index % 2 === 0 ? "fade-up" : "fade-left"
+                  } group bg-white rounded-2xl border border-emerald-100/60 shadow-sm overflow-hidden hover:shadow-xl hover:border-emerald-300 transition-all duration-300 flex flex-col h-full`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="relative h-52 w-full overflow-hidden bg-emerald-50/50 flex items-center justify-center border-b border-emerald-50">
@@ -287,6 +286,9 @@ const Home = () => {
       <div id="about" ref={aboutRef}>
         <AboutUs />
       </div>
+
+      {/* STATISTICS */}
+      <Statistics />
 
       {/* TESTIMONIALS */}
       <div id="testimonials" ref={testimonialsRef}>

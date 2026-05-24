@@ -22,6 +22,8 @@ class Cooperative extends Model
         'instagram',
         'facebook',
         'whatsapp',
+        'latitude',
+        'longitude',
     ];
 
     /**

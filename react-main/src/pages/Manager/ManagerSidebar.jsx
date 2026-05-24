@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  FiHome, 
-  FiShoppingCart, 
+import {
+  FiHome,
+  FiShoppingCart,
   FiGrid,
   FiLogOut,
   FiMenu,
@@ -72,9 +72,8 @@ const ManagerSidebar = () => {
         )}
 
         {/* Sidebar */}
-        <div className={`fixed top-0 left-0 h-full w-72 bg-green-800 text-white z-50 transform transition-transform ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}>
+        <div className={`fixed top-0 left-0 h-full w-72 bg-green-800 text-white z-50 transform transition-transform ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}>
 
           <div className="p-5 border-b border-green-600">
             <h2 className="font-bold text-xl">Menu</h2>
@@ -87,9 +86,8 @@ const ManagerSidebar = () => {
               <Link
                 to="/"
                 onClick={handleLinkClick}
-                className={`flex items-center gap-3 p-3 rounded-xl ${
-                  isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
+                  }`}
               >
                 <FiHome />
                 Accueil
@@ -100,9 +98,8 @@ const ManagerSidebar = () => {
               <Link
                 to="/manager/dashboard"
                 onClick={handleLinkClick}
-                className={`flex items-center gap-3 p-3 rounded-xl ${
-                  isActive("/manager/dashboard") ? "bg-white text-green-700" : "hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/manager/dashboard") ? "bg-white text-green-700" : "hover:bg-white/10"
+                  }`}
               >
                 <FiGrid />
                 Tableau de Bord
@@ -113,9 +110,8 @@ const ManagerSidebar = () => {
               <Link
                 to="/manager/products"
                 onClick={handleLinkClick}
-                className={`flex items-center gap-3 p-3 rounded-xl ${
-                  isActive("/manager/products") ? "bg-white text-green-700" : "hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/manager/products") ? "bg-white text-green-700" : "hover:bg-white/10"
+                  }`}
               >
                 <FiShoppingCart />
                 Produits
@@ -166,9 +162,8 @@ const ManagerSidebar = () => {
         <li>
           <Link
             to="/"
-            className={`flex items-center gap-3 p-3 rounded-xl ${
-              isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
-            }`}
+            className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/") ? "bg-white text-green-700" : "hover:bg-white/10"
+              }`}
           >
             <FiHome />
             Accueil
@@ -178,9 +173,8 @@ const ManagerSidebar = () => {
         <li>
           <Link
             to="/manager/dashboard"
-            className={`flex items-center gap-3 p-3 rounded-xl ${
-              isActive("/manager/dashboard") ? "bg-white text-green-700" : "hover:bg-white/10"
-            }`}
+            className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/manager/dashboard") ? "bg-white text-green-700" : "hover:bg-white/10"
+              }`}
           >
             <FiGrid />
             Tableau de Bord
@@ -190,9 +184,8 @@ const ManagerSidebar = () => {
         <li>
           <Link
             to="/manager/products"
-            className={`flex items-center gap-3 p-3 rounded-xl ${
-              isActive("/manager/products") ? "bg-white text-green-700" : "hover:bg-white/10"
-            }`}
+            className={`flex items-center gap-3 p-3 rounded-xl ${isActive("/manager/products") ? "bg-white text-green-700" : "hover:bg-white/10"
+              }`}
           >
             <FiShoppingCart />
             Produits

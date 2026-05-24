@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import aboutImage from "../assets/pic3.jpg";
+import aboutImage from "../assets/cooperative_about.png";
 
 const AboutUs = () => {
   const { t } = useTranslation();
