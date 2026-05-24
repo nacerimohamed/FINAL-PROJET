@@ -111,66 +111,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center px-4 pt-[10vh] pb-8 relative overflow-hidden">
-      {/* ARRIÈRE-PLAN 3D ANIMÉ (Stashed changes Version) */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-green-500/5 rounded-3xl transform rotate-45 animate-float-slow border border-green-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(30deg) translateZ(50px)' }}>
-          </div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-emerald-500/5 rounded-3xl transform -rotate-12 animate-float border border-emerald-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-20deg) translateZ(100px)' }}>
-          </div>
-          <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-green-600/5 rounded-3xl transform rotate-12 animate-float-medium border border-green-400/10"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(60deg) rotateY(45deg) translateZ(30px)' }}>
-          </div>
-          
-          <div className="absolute top-40 right-20 w-32 h-32 bg-emerald-500/10 rounded-2xl transform rotate-45 animate-float-fast border border-emerald-400/20"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(45deg) rotateY(45deg) translateZ(70px)' }}>
-          </div>
-          <div className="absolute bottom-40 left-20 w-40 h-40 bg-green-500/10 rounded-2xl transform -rotate-12 animate-float-slow border border-green-400/20"
-               style={{ transformStyle: 'preserve-3d', transform: 'rotateX(30deg) rotateY(-30deg) translateZ(40px)' }}>
-          </div>
-          
-          <div className="absolute inset-0">
-            <div className="absolute top-1/3 left-0 w-1 h-32 bg-gradient-to-b from-green-400/0 via-green-400/30 to-green-400/0"
-                 style={{ transform: 'rotateY(45deg) translateZ(20px)' }}></div>
-            <div className="absolute top-2/3 right-0 w-1 h-48 bg-gradient-to-b from-emerald-400/0 via-emerald-400/30 to-emerald-400/0"
-                 style={{ transform: 'rotateY(-45deg) translateZ(30px)' }}></div>
-          </div>
-
-          <div 
-            className="absolute inset-0"
-            style={{ 
-              backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px)',
-              backgroundSize: '50px 50px',
-              transform: 'perspective(500px) rotateX(60deg) translateZ(-100px)',
-              transformOrigin: 'center',
-              animation: 'gridMove 20s linear infinite'
-            }}
-          ></div>
-
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-green-400/30 rounded-full"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                transform: `translateZ(${Math.random() * 200}px)`,
-                animation: `particleFloat ${5 + Math.random() * 5}s linear infinite`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
+    <div className="min-h-screen flex items-start justify-center px-4 pt-[10vh] pb-8 relative overflow-hidden bg-white">
       {/* CARD PRINCIPALE */}
       <div className="w-full max-w-md relative z-10">
-        <div className="absolute -inset-4 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-30"></div>
-        
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/30">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
           <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-8 text-center overflow-hidden">
             <div className="absolute inset-0 bg-white/5"></div>
             <div className="absolute inset-0 opacity-10">
@@ -218,13 +162,6 @@ const Login = () => {
                   <label className="block text-sm font-semibold text-gray-700">
                     Mot de passe
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors flex items-center"
-                  >
-                    {showPassword ? "Masquer" : "Afficher"}
-                  </button>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -243,7 +180,7 @@ const Login = () => {
                   />
                   <button
                     type="button"
-                    onClick={(e) => { e.preventDefault(); setShowPassword(!showPassword); }}
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
                   >
                     {showPassword ? (
@@ -398,26 +335,6 @@ const Login = () => {
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-15px); }
-        }
-        .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-        
-        @keyframes float-medium {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-25px); }
-        }
-        .animate-float-medium { animation: float-medium 7s ease-in-out infinite; }
-      `}</style>
     </div>
   );
 };
