@@ -23,15 +23,21 @@ class ForgotPasswordController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+        $cooperative = null;
 
-        // Security: Always return success message to prevent email enumeration,
-        // or return error if UX is preferred. For a dashboard, UX is often preferred:
         if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Aucun utilisateur trouvé avec cette adresse email.'
-            ], 404);
+            // Check if it's a cooperative that doesn't have a User account yet
+            $cooperative = \App\Models\Cooperative::where('email', $request->email)->first();
+            
+            if (!$cooperative) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Aucun utilisateur trouvé avec cette adresse email.'
+                ], 404);
+            }
         }
+
+        $name = $user ? $user->name : $cooperative->nom;
 
         // Generate a 6-digit OTP
         $otp = rand(100000, 999999);
@@ -48,7 +54,7 @@ class ForgotPasswordController extends Controller
 
         // Send Email
         try {
-            Mail::to($request->email)->send(new ResetPasswordMail($otp, $user->name));
+            Mail::to($request->email)->send(new ResetPasswordMail($otp, $name));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Mail Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             
@@ -103,11 +109,26 @@ class ForgotPasswordController extends Controller
             ], 400);
         }
 
-        // Update password
+        // Update or create password
         $user = User::where('email', $request->email)->first();
         if ($user) {
             $user->password = Hash::make($request->password);
             $user->save();
+        } else {
+            // It might be a cooperative without a user account
+            $cooperative = \App\Models\Cooperative::where('email', $request->email)->first();
+            if ($cooperative) {
+                User::create([
+                    'name' => $cooperative->nom,
+                    'email' => $cooperative->email,
+                    'password' => Hash::make($request->password),
+                    'role' => 'cooperative',
+                    'tele' => $cooperative->tele,
+                    'address' => $cooperative->adresse,
+                    'description' => $cooperative->description,
+                    'is_approved' => true // Already in cooperatives table, so consider approved
+                ]);
+            }
         }
 
         // Delete the token so it cannot be used again
