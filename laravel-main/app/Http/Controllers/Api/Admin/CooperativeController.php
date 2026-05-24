@@ -199,7 +199,4 @@ class CooperativeController extends Controller
             ], 500);
         }
     }
-}           ], 500);
-        }
-    }
 }

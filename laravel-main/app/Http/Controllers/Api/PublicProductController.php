@@ -15,7 +15,7 @@ class PublicProductController extends Controller
     {
         try {
             $products = Product::with(['cooperative' => function($query) {
-                $query->select('id', 'name', 'email', 'tele');
+                $query->select('id', 'nom', 'email', 'tele');
             }])
             ->orderBy('created_at', 'desc')
             ->get()
@@ -30,7 +30,7 @@ class PublicProductController extends Controller
                     'quantity' => $product->quantity,
                     'cooperative' => [
                         'id' => $product->cooperative->id ?? null,
-                        'name' => $product->cooperative->name ?? 'Unknown',
+                        'name' => $product->cooperative->nom ?? 'Inconnue',
                         'email' => $product->cooperative->email ?? null,
                         'phone' => $product->cooperative->tele ?? null,
                         'whatsapp' => $product->cooperative->tele ?? null,
@@ -59,7 +59,7 @@ class PublicProductController extends Controller
     {
         try {
             $product = Product::with(['cooperative' => function($query) {
-                $query->select('id', 'name', 'email', 'tele', 'description', 'image');
+                $query->select('id', 'nom', 'email', 'tele', 'description', 'image');
             }])->findOrFail($id);
 
             return response()->json([
@@ -74,7 +74,7 @@ class PublicProductController extends Controller
                     'quantity' => $product->quantity,
                     'cooperative' => [
                         'id' => $product->cooperative->id ?? null,
-                        'name' => $product->cooperative->name ?? 'Unknown',
+                        'name' => $product->cooperative->nom ?? 'Inconnue',
                         'email' => $product->cooperative->email ?? null,
                         'description' => $product->cooperative->description ?? null,
                         'image' => $product->cooperative->image ?? null,
@@ -100,7 +100,7 @@ class PublicProductController extends Controller
     {
         try {
             $products = Product::with(['cooperative' => function($query) {
-                $query->select('id', 'name', 'email', 'tele');
+                $query->select('id', 'nom', 'email', 'tele');
             }])
             ->orderBy('created_at', 'desc')
             ->limit(6)
@@ -116,7 +116,7 @@ class PublicProductController extends Controller
                     'quantity' => $product->quantity,
                     'cooperative' => [
                         'id' => $product->cooperative->id ?? null,
-                        'name' => $product->cooperative->name ?? 'Unknown',
+                        'name' => $product->cooperative->nom ?? 'Inconnue',
                         'whatsapp' => $product->cooperative->tele ?? null,
                     ],
                 ];

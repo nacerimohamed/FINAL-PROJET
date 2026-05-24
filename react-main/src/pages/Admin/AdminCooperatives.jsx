@@ -828,7 +828,8 @@ const AdminCooperatives = () => {
                     </div>
                   </div>
                 )}
-                  <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+              </div>
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                     <button
                       type="button"
                       onClick={() => setModalOpen(false)}
@@ -847,8 +848,6 @@ const AdminCooperatives = () => {
               </div>
             </div>
           )}
-        </div>
-      </div>
     </div>
   );
 };
