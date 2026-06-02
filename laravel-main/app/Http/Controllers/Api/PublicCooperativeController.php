@@ -136,8 +136,8 @@ class PublicCooperativeController extends Controller
             // Get products for this cooperative
             $products = Product::where('cooperative_id', $id)
                 ->with(['cooperative' => function($query) {
-                    $query->select('id', 'name', 'email');
-                }])
+                    $query->select('id', 'nom', 'email');
+                }, 'images'])
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function($product) {
@@ -152,6 +152,12 @@ class PublicCooperativeController extends Controller
                             'id' => $product->cooperative->id ?? null,
                             'nom' => $product->cooperative->nom ?? 'Unknown',
                         ],
+                        'images' => $product->images->map(function($img) {
+                            return [
+                                'id' => $img->id,
+                                'url' => $img->url
+                            ];
+                        }),
                         'created_at' => $product->created_at,
                     ];
                 });
@@ -161,7 +167,7 @@ class PublicCooperativeController extends Controller
                 'data' => $products,
                 'cooperative' => [
                     'id' => $cooperative->id,
-                    'nom' => $cooperative->name,
+                    'nom' => $cooperative->nom,
                 ]
             ]);
         } catch (\Exception $e) {

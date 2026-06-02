@@ -43,7 +43,11 @@ const AddProduct = () => {
 
       navigate("/cooperative/products");
     } catch (err) {
-      setError("Erreur lors de l'ajout du produit.");
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Erreur lors de l'ajout du produit.");
+      }
     } finally {
       setLoading(false);
     }

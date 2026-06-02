@@ -32,4 +32,12 @@ class Product extends Model
     {
         return $this->belongsTo(Cooperative::class, 'cooperative_id');
     }
+
+    /**
+     * Get the gallery images for the product.
+     */
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 }

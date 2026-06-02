@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Plans from "../components/Plans";
 import AboutUs from "../components/AboutUs";
 import Testimonials from "../components/Testimonials";
 import FAQ from "../components/FAQ";
@@ -156,6 +157,7 @@ const Home = () => {
 
       <Navbar />
       <Hero />
+      <Plans />
 
       {/* PRODUCTS SECTION */}
       <section id="products" className="py-20 bg-green-50/10 relative overflow-hidden">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaFacebook, FaInstagram, FaWhatsapp, FaBuilding, FaBox, FaArrowLeft } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaFacebook, FaInstagram, FaWhatsapp, FaBuilding, FaBox, FaArrowLeft, FaUser, FaCalendarAlt, FaLeaf, FaHandshake, FaShieldAlt, FaExternalLinkAlt } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTranslation } from "react-i18next";
@@ -15,9 +15,9 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconAnchor: [12, 41]
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconAnchor: [12, 41]
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -210,459 +210,258 @@ const CooperativeDetail = () => {
   const hasImage = cooperativeImage !== null;
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
 
-      {/* Breadcrumb - pleine largeur */}
-      <div className="bg-stone-100 py-4 border-b border-stone-200">
-        <div className="w-full px-4 md:px-6 lg:px-8">
-          <div className="flex items-center gap-2 text-sm text-stone-500">
-            <Link to="/" className="hover:text-emerald-700 transition">Accueil</Link>
-            <span>/</span>
-            <Link to="/cooperatives" className="hover:text-emerald-700 transition">Coopératives</Link>
-            <span>/</span>
-            <span className="text-emerald-700 font-medium">{cooperative?.nom}</span>
-          </div>
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center text-sm text-slate-500 gap-2">
+          <Link to="/" className="hover:text-emerald-600 transition-colors">Accueil</Link>
+          <span>/</span>
+          <Link to="/cooperatives" className="hover:text-emerald-600 transition-colors">Coopératives</Link>
+          <span>/</span>
+          <span className="font-medium text-slate-800">{cooperative?.nom}</span>
         </div>
       </div>
 
-      {/* Hero Section - pleine largeur */}
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, type: "spring", stiffness: 80 }}
-        className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-stone-800 text-amber-50"
-        dir={isRTL ? 'rtl' : 'ltr'}
-      >
-        <div className="w-full px-4 md:px-6 lg:px-8 py-12 md:py-16">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center max-w-full">
-            
-            {/* Image */}
-            <motion.div
-              initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="order-2 md:order-1"
-            >
-              <div className="rounded-2xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-sm">
-                {hasImage ? (
-                  <img
-                    src={cooperativeImage}
-                    alt={cooperative.nom}
-                    className="w-full h-auto max-h-[400px] object-contain bg-gradient-to-br from-stone-100 to-stone-200"
-                    onError={() => setImageError(true)}
-                  />
-                ) : (
-                  <div className="w-full h-80 flex flex-col items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200">
-                    <FaBuilding className="w-20 h-20 text-stone-400 mb-4" />
-                    <p className="text-stone-500 font-medium">Image non disponible</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
-            {/* Info */}
-            <div className="order-1 md:order-2">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-                className="inline-block mb-6"
-              >
-                <div className="bg-amber-50/20 backdrop-blur-sm rounded-full p-3 w-16 h-16 flex items-center justify-center mx-auto md:mx-0 border border-amber-100/30">
-                  <FaBuilding className="w-8 h-8 text-amber-50" />
+        {/* Header Profile Section */}
+        <div className="bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded-3xl shadow-xl border border-emerald-900 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start relative overflow-hidden">
+          {/* Decorative background shape */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-bl-full opacity-10 pointer-events-none"></div>
+
+          {/* Logo */}
+          <div className="w-28 h-28 md:w-36 md:h-36 shrink-0 border-4 border-white/10 rounded-2xl p-2 bg-white/10 backdrop-blur-sm shadow-inner flex items-center justify-center z-10">
+            {hasImage ? (
+              <img src={cooperativeImage} alt={cooperative.nom} className="w-full h-full object-contain rounded-xl bg-white" onError={() => setImageError(true)} />
+            ) : (
+              <FaBuilding size={48} className="text-emerald-100/50" />
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 flex flex-col w-full z-10">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{cooperative.nom}</h1>
                 </div>
-              </motion.div>
-              
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
-              >
-                {cooperative.nom}
-              </motion.h1>
-              
-              {cooperative.description && (
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="text-amber-100/90 text-base md:text-lg mb-6 leading-relaxed"
-                >
-                  {cooperative.description}
-                </motion.p>
-              )}
-              
-              {/* Contact Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="flex flex-wrap gap-3"
-              >
-                {(cooperative.whatsapp || cooperative.tele) && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleWhatsAppClick}
-                    className="flex items-center gap-2 bg-white text-emerald-700 hover:bg-emerald-50 font-semibold py-2.5 px-5 rounded-xl transition shadow-md"
-                  >
-                    <FaWhatsapp className="w-5 h-5" />
-                    {t('cooperativeDetail.whatsapp')}
-                  </motion.button>
-                )}
-                {cooperative.email && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleEmailClick}
-                    className="flex items-center gap-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-semibold py-2.5 px-5 rounded-xl transition"
-                  >
-                    <FaEnvelope className="w-5 h-5" />
-                    {t('cooperativeDetail.email')}
-                  </motion.button>
+                <p className="text-emerald-50/80 text-sm md:text-base max-w-2xl leading-relaxed">
+                  {cooperative.description || "Aucune description fournie pour le moment."}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2 shrink-0 mt-2 sm:mt-0">
+                {cooperative.whatsapp && (
+                  <button onClick={handleWhatsAppClick} className="bg-amber-400 hover:bg-amber-500 text-amber-950 p-2.5 md:px-4 md:py-2.5 rounded-xl transition shadow-md flex items-center gap-2 font-bold text-sm">
+                    <FaWhatsapp size={18} />
+                    <span className="hidden md:inline">WhatsApp</span>
+                  </button>
                 )}
                 {cooperative.tele && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handlePhoneClick}
-                    className="flex items-center gap-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-semibold py-2.5 px-5 rounded-xl transition"
-                  >
-                    <FaPhone className="w-5 h-5" />
-                    {t('cooperativeDetail.call')}
-                  </motion.button>
+                  <button onClick={handlePhoneClick} className="bg-emerald-700 hover:bg-emerald-600 text-white p-2.5 md:px-4 md:py-2.5 rounded-xl transition shadow-md flex items-center gap-2 font-semibold text-sm border border-emerald-600">
+                    <FaPhone size={16} />
+                    <span className="hidden md:inline">Appeler</span>
+                  </button>
                 )}
-              </motion.div>
+                {cooperative.email && (
+                  <button onClick={handleEmailClick} className="bg-emerald-700 hover:bg-emerald-600 text-white p-2.5 rounded-xl transition shadow-md border border-emerald-600" title="Email">
+                    <FaEnvelope size={16} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Inline key info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6 border-t border-emerald-700/50 pt-5 mt-auto">
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaMapMarkerAlt className="text-amber-400" />
+                </div>
+                <span className="truncate" title={cooperative.adresse}>{cooperative.adresse || "Adresse non renseignée"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaPhone className="text-amber-400" />
+                </div>
+                <span>{cooperative.tele || "Téléphone non renseigné"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaEnvelope className="text-amber-400" />
+                </div>
+                <span className="truncate" title={cooperative.email}>{cooperative.email || "Email non renseigné"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaUser className="text-amber-400" />
+                </div>
+                <span className="truncate" title={cooperative.contact}>{cooperative.contact || "Responsable non défini"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaBox className="text-amber-400" />
+                </div>
+                <span>{products.length} produit(s)</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-emerald-50">
+                <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
+                  <FaCalendarAlt className="text-amber-400" />
+                </div>
+                <span>Membre depuis {new Date(cooperative.created_at || Date.now()).getFullYear()}</span>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
 
-      {/* Details Section - Products 70% & Map 30% */}
-      <div className="bg-stone-50 min-h-screen py-8 md:py-12">
-        <div className="w-full px-4 md:px-6 lg:px-8">
-          
-          {/* Contact & Social Media Section (gardé tel quel) */}
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
-            
-            {/* Contact Information */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="md:col-span-2 bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6"
-            >
-              <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6 flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <FaBuilding className="w-4 h-4 text-emerald-700" />
+        {/* Layout Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Main Left - Products */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                <h2 className="text-xl font-bold text-slate-900">Produits de la coopérative</h2>
+                <span className="bg-amber-100 text-amber-900 text-sm font-bold px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">{products.length} Articles</span>
+              </div>
+
+              {products.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                    <FaBox className="text-slate-300 w-10 h-10" />
+                  </div>
+                  <p className="text-slate-500 font-medium">Aucun produit disponible pour le moment.</p>
                 </div>
-                {t('cooperativeDetail.contactInfo')}
-              </h2>
-              
-              <div className="space-y-4 md:space-y-5">
-                {cooperative.adresse && (
-                  <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                    <FaMapMarkerAlt className="text-emerald-600 mt-1 flex-shrink-0" size={18} />
-                    <div>
-                      <p className="font-semibold text-stone-700 text-sm mb-1">{t('cooperativeDetail.address')}</p>
-                      <p className="text-stone-600">{cooperative.adresse}</p>
-                    </div>
-                  </div>
-                )}
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                  {products.map((product) => {
+                    const productImage = getProductImage(product);
+                    return (
+                      <Link to={`/products/${product.id}`} key={product.id} className="group flex flex-col bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-emerald-300 transition-all duration-300">
+                        <div className="h-44 bg-slate-50 relative p-4 flex items-center justify-center group-hover:bg-emerald-50/50 transition-colors">
+                          {productImage ? (
+                            <img src={productImage} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" onError={(e) => e.target.src = "https://via.placeholder.com/400x300/065f46/fef3c7?text=Produit"} />
+                          ) : (
+                            <FaBox className="text-slate-300 w-12 h-12" />
+                          )}
+                          {product.quantity > 0 ? (
+                            <span className="absolute top-3 right-3 bg-amber-400 text-amber-950 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm border border-amber-500/20 z-10">
+                              {product.price} DH
+                            </span>
+                          ) : (
+                            <span className="absolute top-3 right-3 bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-red-200 shadow-sm z-10">
+                              Rupture
+                            </span>
+                          )}
 
-                {cooperative.email && (
-                  <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                    <FaEnvelope className="text-emerald-600 mt-1 flex-shrink-0" size={18} />
-                    <div>
-                      <p className="font-semibold text-stone-700 text-sm mb-1">{t('cooperativeDetail.email')}</p>
-                      <a href={`mailto:${cooperative.email}`} className="text-emerald-700 hover:underline">
-                        {cooperative.email}
-                      </a>
-                    </div>
-                  </div>
-                )}
+                          {/* Mini Gallery inside Card (Always Visible for better UX) */}
+                          {product.images && product.images.length > 0 && (
+                            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-4 z-10">
+                              <img 
+                                src={productImage} 
+                                alt="Main thumbnail" 
+                                className="w-8 h-8 object-cover rounded-md border border-white shadow-sm"
+                              />
+                              {product.images.slice(0, 3).map((img, idx) => (
+                                <img 
+                                  key={idx} 
+                                  src={img.url} 
+                                  alt={`Gallery thumbnail ${idx}`} 
+                                  className="w-8 h-8 object-cover rounded-md border border-white shadow-sm"
+                                />
+                              ))}
+                              {product.images.length > 3 && (
+                                <div className="w-8 h-8 bg-black/50 text-white text-[10px] font-bold rounded-md flex items-center justify-center border border-white shadow-sm">
+                                  +{product.images.length - 3}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4 flex-1 flex flex-col relative bg-white z-20">
+                          <h3 className="font-bold text-slate-800 text-sm mb-1 line-clamp-1 group-hover:text-emerald-700 transition-colors">{product.name}</h3>
+                          <p className="text-slate-500 text-xs line-clamp-2 mb-4 leading-relaxed">{product.description || "Aucune description fournie"}</p>
+                          <div className="mt-auto flex items-center justify-between text-xs font-medium border-t border-slate-100 pt-3">
+                            <span className="text-slate-500 flex items-center gap-1"><FaBox className="text-emerald-500 w-3 h-3" /> Stock: {product.quantity}</span>
+                            <span className="text-emerald-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Détails <FaArrowLeft className="w-3 h-3 rotate-180" /></span>
+                          </div>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
 
-                {cooperative.tele && (
-                  <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                    <FaPhone className="text-emerald-600 mt-1 flex-shrink-0" size={18} />
-                    <div>
-                      <p className="font-semibold text-stone-700 text-sm mb-1">{t('cooperativeDetail.phone')}</p>
-                      <a href={`tel:${cooperative.tele}`} className="text-emerald-700 hover:underline">
-                        {cooperative.tele}
-                      </a>
-                    </div>
-                  </div>
-                )}
 
-                {cooperative.contact && (
-                  <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                    <svg className="w-5 h-5 text-emerald-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <div>
-                      <p className="font-semibold text-stone-700 text-sm mb-1">{t('cooperativeDetail.contactPerson')}</p>
-                      <p className="text-stone-600">{cooperative.contact}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Social Media */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6"
-            >
-              <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6">{t('cooperativeDetail.socialMedia')}</h2>
-              
-              <div className="space-y-3">
-                {cooperative.facebook && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleSocialClick('facebook', cooperative.facebook)}
-                    className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md"
-                  >
-                    <FaFacebook className="w-5 h-5" />
-                    Facebook
-                  </motion.button>
-                )}
-
-                {cooperative.instagram && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleSocialClick('instagram', cooperative.instagram)}
-                    className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md"
-                  >
-                    <FaInstagram className="w-5 h-5" />
-                    Instagram
-                  </motion.button>
-                )}
-
-                {(cooperative.whatsapp || cooperative.tele) && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleWhatsAppClick}
-                    className="w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md"
-                  >
-                    <FaWhatsapp className="w-5 h-5" />
-                    WhatsApp
-                  </motion.button>
-                )}
-
-                {!cooperative.facebook && !cooperative.instagram && !cooperative.whatsapp && (
-                  <p className="text-stone-500 text-center py-8">{t('cooperativeDetail.noSocialMedia')}</p>
-                )}
-              </div>
-            </motion.div>
           </div>
 
-          {/* Products & Map Section - Products 70% & Map 30% */}
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-            
-            {/* Products Section - 70% width (left side) */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="lg:w-[70%]"
-            >
-              <div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8">
-                  <h2 className="text-2xl md:text-3xl font-bold text-stone-800 flex items-center gap-2">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                      <FaBox className="w-5 h-5 text-emerald-700" />
-                    </div>
-                    {t('cooperativeDetail.productsOf', { cooperativeName: cooperative.nom })}
-                  </h2>
-                  <span className="text-sm text-stone-500 bg-white px-3 py-1 rounded-full shadow-sm">
-                    {products.length} produit{products.length > 1 ? 's' : ''}
-                  </span>
+          {/* Right Sidebar */}
+          <div className="space-y-6">
+            {/* Localisation */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+              <h2 className="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
+                <FaMapMarkerAlt className="text-emerald-600" /> Localisation
+              </h2>
+              {cooperative.google_maps_link ? (
+                <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 text-center">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mx-auto mb-3">
+                    <FaMapMarkerAlt className="text-emerald-500 text-xl" />
+                  </div>
+                  <p className="text-sm text-slate-600 font-medium mb-4">Voir l'emplacement exact de la coopérative</p>
+                  <a
+                    href={cooperative.google_maps_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
+                  >
+                    Ouvrir Google Maps <FaExternalLinkAlt size={12} />
+                  </a>
                 </div>
+              ) : (
+                <div className="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-8 text-center">
+                  <FaMapMarkerAlt className="text-slate-300 text-3xl mx-auto mb-3" />
+                  <p className="text-sm text-slate-500 font-medium">Localisation non renseignée</p>
+                </div>
+              )}
+            </div>
 
-                {products.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-16 md:py-20 bg-white rounded-2xl border border-stone-200"
-                  >
-                    <div className="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FaBox size={32} className="text-stone-400" />
-                    </div>
-                    <p className="text-stone-600 text-lg md:text-xl">{t('cooperativeDetail.noProducts')}</p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6"
-                  >
-                    {products.map((product) => {
-                      const productImage = getProductImage(product);
-                      const hasProductImage = productImage !== null;
-                      return (
-                        <motion.div
-                          key={product.id}
-                          variants={itemVariants}
-                          whileHover="hover"
-                          whileTap="tap"
-                          {...cardVariants}
-                          onMouseEnter={() => setHoveredProduct(product.id)}
-                          onMouseLeave={() => setHoveredProduct(null)}
-                        >
-                          <Link
-                            to={`/products/${product.id}`}
-                            className="block bg-white rounded-2xl overflow-hidden shadow-md border border-stone-200 group"
-                          >
-                            <div className="relative h-48 md:h-52 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200">
-                              {hasProductImage ? (
-                                <img
-                                  src={productImage}
-                                  alt={product.name}
-                                  className="w-full h-full object-contain p-3 md:p-4"
-                                  onError={(e) => {
-                                    e.target.src = "https://via.placeholder.com/400x300/065f46/fef3c7?text=Produit";
-                                  }}
-                                />
-                              ) : (
-                                <div className="w-full h-full flex flex-col items-center justify-center">
-                                  <FaBox className="w-10 h-10 md:w-12 md:h-12 text-stone-400 mb-2" />
-                                  <p className="text-stone-500 text-xs md:text-sm">Image non disponible</p>
-                                </div>
-                              )}
-                              <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2 md:px-3 py-1 md:py-1.5 rounded-xl text-xs md:text-sm font-bold text-emerald-800 shadow-lg">
-                                {product.price} DH
-                              </div>
-                              <div className="absolute bottom-3 left-3">
-                                <span className={`text-xs px-2 py-0.5 md:py-1 rounded-lg font-medium ${
-                                  product.quantity > 0 
-                                    ? 'bg-emerald-100 text-emerald-700' 
-                                    : 'bg-red-100 text-red-700'
-                                }`}>
-                                  {product.quantity > 0 ? `Stock: ${product.quantity}` : 'Rupture'}
-                                </span>
-                              </div>
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </div>
-                            
-                            <div className="p-4 md:p-5">
-                              <h3 className="text-lg md:text-xl font-bold text-stone-800 mb-2 group-hover:text-emerald-700 transition line-clamp-1">
-                                {product.name}
-                              </h3>
-                              
-                              {product.description && (
-                                <p className="text-stone-500 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
-                                  {product.description}
-                                </p>
-                              )}
-                              
-                              <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                                <div className="text-xs md:text-sm text-stone-500">
-                                  {t('productDetail.stock')}: <span className="font-semibold text-stone-700">{product.quantity}</span>
-                                </div>
-                                <span className="text-emerald-600 font-medium text-xs md:text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                  {t('productDetail.viewDetails')} →
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                        </motion.div>
-                      );
-                    })}
-                  </motion.div>
+            {/* Réseaux Sociaux */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+              <h2 className="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
+                <FaUser className="text-emerald-600" /> Réseaux Sociaux
+              </h2>
+              <div className="space-y-3">
+                {(cooperative.whatsapp || cooperative.tele) ? (
+                  <button onClick={handleWhatsAppClick} className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium py-2.5 rounded-xl transition-colors shadow-sm text-sm">
+                    <FaWhatsapp size={18} /> Discuter sur WhatsApp
+                  </button>
+                ) : null}
+
+                {cooperative.facebook ? (
+                  <button onClick={() => handleSocialClick('facebook', cooperative.facebook)} className="w-full flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium py-2.5 rounded-xl transition-colors text-sm shadow-sm">
+                    <FaFacebook size={18} className="text-[#1877F2]" /> Facebook
+                  </button>
+                ) : null}
+
+                {cooperative.instagram ? (
+                  <button onClick={() => handleSocialClick('instagram', cooperative.instagram)} className="w-full flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium py-2.5 rounded-xl transition-colors text-sm shadow-sm">
+                    <FaInstagram size={18} className="text-[#E4405F]" /> Instagram
+                  </button>
+                ) : null}
+
+                {!cooperative.facebook && !cooperative.instagram && !cooperative.whatsapp && !cooperative.tele && (
+                  <p className="text-sm text-slate-500 text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">Aucun réseau social lié.</p>
                 )}
               </div>
-            </motion.div>
-
-            {/* Map Section - 30% width (right side) */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.35 }}
-              className="lg:w-[30%]"
-            >
-              <div className="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6 sticky top-4">
-                <h2 className="text-xl md:text-2xl font-bold text-stone-800 mb-5 md:mb-6 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
-                    <FaMapMarkerAlt className="w-4 h-4 text-emerald-700" />
-                  </div>
-                  {t('cooperativeDetail.location', 'Localisation')}
-                </h2>
-                
-                {(cooperative.google_maps_embed || cooperative.google_maps_link) ? (
-                  <div className="flex flex-col gap-4">
-                    <div className="h-[350px] md:h-[400px] w-full rounded-xl overflow-hidden border border-stone-200">
-                      <iframe 
-                        src={cooperative.google_maps_embed || cooperative.google_maps_link}
-                        width="100%" 
-                        height="100%" 
-                        style={{ border: 0 }} 
-                        allowFullScreen="" 
-                        loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
-                    </div>
-                    <div className="text-center">
-                      <a 
-                        href={cooperative.google_maps_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition inline-flex items-center gap-2 no-underline text-sm"
-                      >
-                        <FaMapMarkerAlt /> Ouvrir
-                      </a>
-                    </div>
-                  </div>
-                ) : cooperative.latitude && cooperative.longitude ? (
-                  <div className="h-[350px] md:h-[400px] w-full rounded-xl overflow-hidden border border-stone-200 relative z-0">
-                    <MapContainer 
-                      center={[parseFloat(cooperative.latitude), parseFloat(cooperative.longitude)]} 
-                      zoom={13} 
-                      scrollWheelZoom={false}
-                      style={{ height: "100%", width: "100%" }}
-                    >
-                      <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      />
-                      <Marker position={[parseFloat(cooperative.latitude), parseFloat(cooperative.longitude)]}>
-                        <Popup>
-                          <div className="text-center font-sans">
-                            <strong className="block mb-2 text-stone-800">{cooperative.nom}</strong>
-                            <a 
-                              href={`https://www.google.com/maps/search/?api=1&query=${cooperative.latitude},${cooperative.longitude}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-sm inline-block transition no-underline"
-                            >
-                              Ouvrir dans Google Maps
-                            </a>
-                          </div>
-                        </Popup>
-                      </Marker>
-                    </MapContainer>
-                  </div>
-                ) : (
-                  <div className="h-[350px] w-full rounded-xl bg-stone-100 border border-stone-200 flex flex-col items-center justify-center text-stone-500">
-                    <FaMapMarkerAlt className="w-12 h-12 text-stone-300 mb-3" />
-                    <p className="text-base font-medium">Localisation non disponible</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
-
       <Footer />
-    </>
+    </div>
   );
 };
 

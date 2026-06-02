@@ -65,19 +65,36 @@ class AuthController extends Controller
             'tele' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'plan' => 'nullable|string|in:gratuit,standard,premium,professionnel',
         ]);
 
         $data = $request->only('name', 'email', 'tele', 'address', 'description');
         $data['role'] = 'cooperative';
-        $data['is_approved'] = false; // Requiert l'approbation de l'administrateur
         $data['password'] = Hash::make($request->password);
+        
+        $plan = $request->plan ?? 'gratuit';
+        $data['plan'] = $plan;
+
+        // FREE plan → auto-approved, can login immediately
+        // PAID plans → pending, needs admin approval after payment
+        if ($plan === 'gratuit') {
+            $data['is_approved'] = true;
+            $data['status'] = 'active';
+        } else {
+            $data['is_approved'] = false;
+            $data['status'] = 'pending';
+        }
 
         $user = User::create($data);
 
+        $isPaid = $plan !== 'gratuit';
+
         return response()->json([
             'success' => true,
-            'message' => 'Inscription coopérative réussie. Votre compte est en attente d\'approbation par l\'administrateur.',
-            'pending_approval' => true,
+            'message' => $isPaid
+                ? 'Inscription réussie. Veuillez procéder au paiement pour activer votre compte.'
+                : 'Inscription réussie ! Vous pouvez maintenant vous connecter.',
+            'pending_approval' => $isPaid,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -86,6 +103,8 @@ class AuthController extends Controller
                 'address' => $user->address,
                 'tele' => $user->tele,
                 'description' => $user->description,
+                'plan' => $user->plan,
+                'status' => $user->status,
             ]
         ], 201);
     }
@@ -118,12 +137,21 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // Vérifier si le compte est approuvé (uniquement pour les coopératives)
-            if ($user->role === 'cooperative' && !$user->is_approved) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Votre compte est en attente d\'approbation par l\'administrateur.'
-                ], 403);
+            // Vérifier si le compte est approuvé (uniquement pour les coopératives PAYANTES)
+            if ($user->role === 'cooperative' && $user->plan !== 'gratuit') {
+                if ($user->status === 'rejected') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Votre demande a été rejetée. Veuillez contacter l\'administrateur.'
+                    ], 403);
+                }
+                
+                if (!$user->is_approved || $user->status === 'pending') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Votre compte est en attente d\'approbation ou de validation de paiement.'
+                    ], 403);
+                }
             }
 
             // Supprimer les anciens tokens

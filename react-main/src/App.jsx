@@ -13,8 +13,10 @@ import ManagerDashboard from "./pages/Manager/ManagerDashboard";
 import ManagerProducts from "./pages/Manager/ManagerProducts";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminCooperatives from "./pages/Admin/AdminCooperatives";
+import AdminPayments from "./pages/Admin/AdminPayments";
 
 import RegisterCooperative from "./pages/RegisterCooperative";
+import PaymentInstructions from "./pages/PaymentInstructions";
 import CooperativeDashboard from "./pages/Cooperative/CooperativeDashboard";
 import CooperativeProducts from "./pages/Cooperative/CooperativeProducts";
 import AddProduct from "./pages/Cooperative/AddProduct";
@@ -61,6 +63,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register-cooperative" element={<RegisterCooperative />} />
+        <Route path="/payment" element={<PaymentInstructions />} />
         
         {/* Admin Routes */}
         <Route
@@ -92,6 +95,15 @@ function App() {
           element={
             <ProtectedRoute role="admin">
               <AdminCooperatives />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminPayments />
             </ProtectedRoute>
           }
         />

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Cooperative\CooperativeProfileController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\PublicProductController;
 use App\Http\Controllers\Api\PublicCooperativeController;
+use App\Http\Controllers\Api\PaymentController;
 
 
 
@@ -47,6 +48,7 @@ Route::get('/cooperatives/{id}/products', [PublicCooperativeController::class, '
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/register-cooperative', [AuthController::class, 'registerCooperative']);
+Route::post('/payments', [PaymentController::class, 'store']);
 
 // Password Reset Routes
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
@@ -84,6 +86,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/products/{id}', [AdminProductController::class, 'show']);
         Route::put('/products/{id}', [AdminProductController::class, 'update']);
         Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
+
+        // Payments CRUD routes
+        Route::get('/payments', [PaymentController::class, 'index']);
+        Route::put('/payments/{id}/status', [PaymentController::class, 'updateStatus']);
     });
 
     // ===== MANAGER ROUTES =====

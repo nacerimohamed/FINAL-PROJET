@@ -20,6 +20,8 @@ const ManagerProducts = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -78,6 +80,20 @@ const ManagerProducts = () => {
     }
   };
 
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) {
+      setGalleryFiles(prev => [...prev, ...files]);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setGalleryPreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!currentProduct.name.trim()) newErrors.name = 'Product name is required';
@@ -113,6 +129,9 @@ const ManagerProducts = () => {
       if (imageFile) {
         formData.append('image', imageFile);
       }
+      galleryFiles.forEach((file) => {
+        formData.append('images[]', file);
+      });
       if (editMode) {
         formData.append('_method', 'PUT');
       }
@@ -159,6 +178,8 @@ const ManagerProducts = () => {
       : `http://localhost:8000/storage/${product.image}`
     : null
 );
+    setGalleryFiles([]);
+    setGalleryPreviews(product.images ? product.images.map(img => img.url) : []);
     setEditMode(true);
     setShowModal(true);
   };
@@ -195,6 +216,8 @@ const ManagerProducts = () => {
     });
     setImageFile(null);
     setImagePreview(null);
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
     setEditMode(false);
     setErrors({});
   };
@@ -531,6 +554,36 @@ const ManagerProducts = () => {
                         alt="Preview" 
                         className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg shadow-sm"
                       />
+                    </div>
+                  )}
+                </div>
+
+                {/* Multiple Images Upload */}
+                <div>
+                  <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
+                    Gallery Images
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleGalleryChange}
+                    className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-3 md:file:mr-4 file:py-1.5 md:file:py-2 file:px-3 md:file:px-4 file:rounded-lg file:border-0 file:text-xs md:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  />
+                  {galleryPreviews.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {galleryPreviews.map((src, index) => (
+                        <div key={index} className="relative">
+                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-cover rounded-md shadow" />
+                          <button
+                            type="button"
+                            onClick={() => removeGalleryImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>

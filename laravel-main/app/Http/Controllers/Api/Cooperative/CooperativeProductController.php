@@ -56,6 +56,34 @@ class CooperativeProductController extends Controller
                 ], 422);
             }
 
+            // ========== PLAN LIMIT CHECK ==========
+            $user = Auth::user();
+            $plan = $user->plan ?? 'gratuit';
+            $limits = [
+                'gratuit' => 5,
+                'standard' => 20,
+                'premium' => 50,
+                'professionnel' => null, // unlimited
+            ];
+
+            $maxProducts = $limits[$plan] ?? 5;
+            if ($maxProducts !== null) {
+                $currentCount = $user->products()->count();
+                if ($currentCount >= $maxProducts) {
+                    $planLabels = [
+                        'gratuit' => 'gratuit',
+                        'standard' => 'standard',
+                        'premium' => 'premium',
+                    ];
+                    $label = $planLabels[$plan] ?? $plan;
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Limite atteinte ({$maxProducts} produits max pour le plan {$label}). Veuillez passer à une offre supérieure."
+                    ], 403);
+                }
+            }
+            // ========================================
+
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $image = $request->file('image');

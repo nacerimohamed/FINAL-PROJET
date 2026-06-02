@@ -26,6 +26,8 @@ protected $fillable = [
     'tele',
     'description',
     'is_approved',
+    'plan',
+    'status',
 ];
 
     /**

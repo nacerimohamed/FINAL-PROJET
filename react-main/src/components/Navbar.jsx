@@ -149,32 +149,26 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-1`}>
-              {navLinks.map((link, index) => {
+            <div className={`hidden lg:flex items-center gap-1`}>
+              {navLinks.map((link) => {
                 const Icon = link.icon;
                 const active = isActivePath(link.path);
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`relative px-3 xl:px-5 py-2 xl:py-2.5 text-sm xl:text-base font-semibold transition-all duration-300 group rounded-xl ${active
-                      ? 'text-green-700 bg-green-100/80'
-                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-                      }`}
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                      animation: 'slideDown 0.5s ease-out forwards',
-                      opacity: 0
-                    }}
+                    className={`relative flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 group rounded-xl whitespace-nowrap ${
+                      active
+                        ? 'text-green-700 bg-green-100/80'
+                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                    }`}
                   >
-                    <span className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-1 xl:space-x-2`}>
-                      <Icon className={`w-3 h-3 xl:w-4 xl:h-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-125'}`} />
-                      <span className="hidden xl:inline">{link.name}</span>
-                      <span className="xl:hidden">{link.name.charAt(0)}</span>
-                      {active && <span className="hidden xl:inline-block w-1.5 h-1.5 bg-green-600 rounded-full ml-1 animate-pulse"></span>}
-                    </span>
-                    <span className={`absolute bottom-0 ${isRTL ? 'right-2 xl:right-4' : 'left-2 xl:left-4'} h-0.5 xl:h-[3px] bg-gradient-to-r from-green-600 via-green-500 to-green-400 rounded-full transition-all duration-500 shadow-lg shadow-green-500/50 ${active ? 'w-[calc(100%-1rem)] xl:w-[calc(100%-2rem)]' : 'w-0 group-hover:w-[calc(100%-1rem)] xl:group-hover:w-[calc(100%-2rem)]'
-                      }`}></span>
+                    <Icon className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110" />
+                    <span>{link.name}</span>
+                    {active && <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse shrink-0"></span>}
+                    <span className={`absolute bottom-0 ${isRTL ? 'right-3' : 'left-3'} h-0.5 bg-gradient-to-r from-green-600 to-green-400 rounded-full transition-all duration-500 ${
+                      active ? 'w-[calc(100%-1.5rem)]' : 'w-0 group-hover:w-[calc(100%-1.5rem)]'
+                    }`}></span>
                   </Link>
                 );
               })}

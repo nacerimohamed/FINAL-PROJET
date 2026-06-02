@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { 
-  FaSearch, 
-  FaWhatsapp, 
-  FaRegImage, 
-  FaRedo, 
-  FaBoxes, 
-  FaEye, 
-  FaStore, 
+import {
+  FaSearch,
+  FaWhatsapp,
+  FaRegImage,
+  FaRedo,
+  FaBoxes,
+  FaEye,
+  FaStore,
   FaTag,
   FaLeaf
 } from "react-icons/fa";
@@ -168,15 +168,15 @@ const Products = () => {
         </div>
         <div className="relative pt-1 pb-3">
           <div className="relative h-2 bg-gray-200 rounded-full">
-            <div className="absolute h-2 rounded-full" style={{ background:'linear-gradient(90deg,#16a34a,#22c55e)', left:`${((currentMin-priceMin)/(priceMax-priceMin))*100}%`, right:`${100-((currentMax-priceMin)/(priceMax-priceMin))*100}%` }}></div>
+            <div className="absolute h-2 rounded-full" style={{ background: 'linear-gradient(90deg,#16a34a,#22c55e)', left: `${((currentMin - priceMin) / (priceMax - priceMin)) * 100}%`, right: `${100 - ((currentMax - priceMin) / (priceMax - priceMin)) * 100}%` }}></div>
           </div>
-          <input type="range" min={priceMin} max={priceMax} value={currentMin} onChange={(e)=>{const v=Math.min(Number(e.target.value),currentMax-1);setCurrentMin(v);}} className="abs-slider z-20" />
-          <input type="range" min={priceMin} max={priceMax} value={currentMax} onChange={(e)=>{const v=Math.max(Number(e.target.value),currentMin+1);setCurrentMax(v);}} className="abs-slider z-30" />
+          <input type="range" min={priceMin} max={priceMax} value={currentMin} onChange={(e) => { const v = Math.min(Number(e.target.value), currentMax - 1); setCurrentMin(v); }} className="abs-slider z-20" />
+          <input type="range" min={priceMin} max={priceMax} value={currentMax} onChange={(e) => { const v = Math.max(Number(e.target.value), currentMin + 1); setCurrentMax(v); }} className="abs-slider z-30" />
         </div>
         <div className="flex gap-2 mt-1">
-          <input type="number" min={priceMin} max={currentMax-1} value={currentMin} onChange={(e)=>{const v=Math.min(Number(e.target.value),currentMax-1);if(v>=priceMin)setCurrentMin(v);}}
+          <input type="number" min={priceMin} max={currentMax - 1} value={currentMin} onChange={(e) => { const v = Math.min(Number(e.target.value), currentMax - 1); if (v >= priceMin) setCurrentMin(v); }}
             className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-center focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Min" />
-          <input type="number" min={currentMin+1} max={priceMax} value={currentMax} onChange={(e)=>{const v=Math.max(Number(e.target.value),currentMin+1);if(v<=priceMax)setCurrentMax(v);}}
+          <input type="number" min={currentMin + 1} max={priceMax} value={currentMax} onChange={(e) => { const v = Math.max(Number(e.target.value), currentMin + 1); if (v <= priceMax) setCurrentMax(v); }}
             className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-center focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Max" />
         </div>
       </div>
@@ -202,7 +202,7 @@ const Products = () => {
       {/* Hero Header */}
       <div className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 overflow-hidden py-10 border-b-4 border-emerald-500">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-        
+
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 mb-4 animate-fade-in">
             <FaLeaf className="text-[10px] text-emerald-400" />
@@ -307,7 +307,7 @@ const Products = () => {
                         <FaTag className="text-[10px] text-emerald-200" />
                         <span>{product.price} DH</span>
                       </div>
-                      
+
                       {(product.category || product.categorie) && (
                         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-green-700 px-2.5 py-1 rounded-md text-xs font-bold border border-green-100">{product.category || product.categorie}</div>
                       )}
@@ -432,5 +432,4 @@ const Products = () => {
     </>
   );
 };
-
 export default Products;

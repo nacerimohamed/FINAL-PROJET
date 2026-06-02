@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\Cooperative;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -17,34 +15,36 @@ class AdminProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with('cooperative:id,name,email,tele')
+            $products = Product::with(['cooperative:id,nom,email,tele,whatsapp', 'images'])
                 ->orderBy('created_at', 'desc')
                 ->get()
-                ->map(function($product) {
+                ->map(function ($product) {
                     return [
-                        'id' => $product->id,
-                        'name' => $product->name,
-                        'description' => $product->description,
-                        'image' => $product->image,
-                        'price' => $product->price,
-                        'quantity' => $product->quantity,
+                        'id'             => $product->id,
+                        'name'           => $product->name,
+                        'description'    => $product->description,
+                        'image'          => $product->image,
+                        'images'         => $product->images->map(fn($img) => ['id' => $img->id, 'url' => $img->url]),
+                        'category'       => $product->category,
+                        'price'          => $product->price,
+                        'quantity'       => $product->quantity,
                         'cooperative_id' => $product->cooperative_id,
-                        'cooperative' => [
-                            'id' => $product->cooperative->id ?? null,
-                            'nom' => $product->cooperative->nom ?? 'Unknown',
-                            'email' => $product->cooperative->email ?? '',
-                            'tele' => $product->cooperative->tele ?? '',
+                        'cooperative'    => [
+                            'id'       => $product->cooperative->id ?? null,
+                            'nom'      => $product->cooperative->nom ?? 'Unknown',
+                            'email'    => $product->cooperative->email ?? '',
+                            'tele'     => $product->cooperative->tele ?? '',
                             'whatsapp' => $product->cooperative->whatsapp ?? '',
                         ],
                         'created_at' => $product->created_at,
                         'updated_at' => $product->updated_at,
                     ];
                 });
-            
+
             return response()->json([
                 'success' => true,
-                'data' => $products,
-                'count' => $products->count()
+                'data'    => $products,
+                'count'   => $products->count()
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -62,49 +62,71 @@ class AdminProductController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'cooperative_id' => 'required|exists:cooperatives,id',
-                'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'image' => 'nullable|string',
-                'price' => 'required|numeric|min:0',
-                'quantity' => 'required|integer|min:0',
+                'name'           => 'required|string|max:255',
+                'description'    => 'nullable|string',
+                'category'       => 'nullable|string|max:100',
+                'image'          => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'images.*'       => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'price'          => 'required|numeric|min:0',
+                'quantity'       => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validation error',
-                    'errors' => $validator->errors()
+                    'errors'  => $validator->errors()
                 ], 422);
+            }
+
+            // Handle main image
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image     = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $imageName);
+                $imagePath = url('uploads/products/' . $imageName);
             }
 
             $product = Product::create([
                 'cooperative_id' => $request->cooperative_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'image' => $request->image,
-                'price' => $request->price,
-                'quantity' => $request->quantity,
+                'name'           => $request->name,
+                'description'    => $request->description,
+                'category'       => $request->category ?? 'Non classé',
+                'image'          => $imagePath,
+                'price'          => $request->price,
+                'quantity'       => $request->quantity,
             ]);
 
-            // Load the cooperative relationship
-            $product->load('cooperative:id,name,email,tele');
+            // Handle gallery images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $img) {
+                    $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                    $img->move(public_path('uploads/products'), $imgName);
+                    $product->images()->create(['url' => url('uploads/products/' . $imgName)]);
+                }
+            }
+
+            $product->load(['cooperative:id,nom,email,tele,whatsapp', 'images']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Product created successfully',
-                'data' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'image' => $product->image,
-                    'price' => $product->price,
-                    'quantity' => $product->quantity,
+                'data'    => [
+                    'id'             => $product->id,
+                    'name'           => $product->name,
+                    'description'    => $product->description,
+                    'image'          => $product->image,
+                    'images'         => $product->images->map(fn($img) => ['id' => $img->id, 'url' => $img->url]),
+                    'category'       => $product->category,
+                    'price'          => $product->price,
+                    'quantity'       => $product->quantity,
                     'cooperative_id' => $product->cooperative_id,
-                    'cooperative' => [
-                        'id' => $product->cooperative->id ?? null,
-                        'nom' => $product->cooperative->nom ?? 'Unknown',
-                        'email' => $product->cooperative->email ?? '',
-                        'tele' => $product->cooperative->tele ?? '',
+                    'cooperative'    => [
+                        'id'       => $product->cooperative->id ?? null,
+                        'nom'      => $product->cooperative->nom ?? 'Unknown',
+                        'email'    => $product->cooperative->email ?? '',
+                        'tele'     => $product->cooperative->tele ?? '',
                         'whatsapp' => $product->cooperative->whatsapp ?? '',
                     ],
                 ]
@@ -123,23 +145,25 @@ class AdminProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with('cooperative:id,name,email,tele')->findOrFail($id);
+            $product = Product::with(['cooperative:id,nom,email,tele,whatsapp', 'images'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'image' => $product->image,
-                    'price' => $product->price,
-                    'quantity' => $product->quantity,
+                'data'    => [
+                    'id'             => $product->id,
+                    'name'           => $product->name,
+                    'description'    => $product->description,
+                    'image'          => $product->image,
+                    'images'         => $product->images->map(fn($img) => ['id' => $img->id, 'url' => $img->url]),
+                    'category'       => $product->category,
+                    'price'          => $product->price,
+                    'quantity'       => $product->quantity,
                     'cooperative_id' => $product->cooperative_id,
-                    'cooperative' => [
-                        'id' => $product->cooperative->id ?? null,
-                        'nom' => $product->cooperative->nom ?? 'Unknown',
-                        'email' => $product->cooperative->email ?? '',
-                        'tele' => $product->cooperative->tele ?? '',
+                    'cooperative'    => [
+                        'id'       => $product->cooperative->id ?? null,
+                        'nom'      => $product->cooperative->nom ?? 'Unknown',
+                        'email'    => $product->cooperative->email ?? '',
+                        'tele'     => $product->cooperative->tele ?? '',
                         'whatsapp' => $product->cooperative->whatsapp ?? '',
                     ],
                 ]
@@ -162,42 +186,77 @@ class AdminProductController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'cooperative_id' => 'sometimes|exists:cooperatives,id',
-                'name' => 'sometimes|string|max:255',
-                'description' => 'sometimes|nullable|string',
-                'image' => 'sometimes|nullable|string',
-                'price' => 'sometimes|numeric|min:0',
-                'quantity' => 'sometimes|integer|min:0',
+                'name'           => 'sometimes|string|max:255',
+                'description'    => 'sometimes|nullable|string',
+                'category'       => 'sometimes|nullable|string|max:100',
+                'image'          => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'images.*'       => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'delete_images'  => 'sometimes|array',
+                'delete_images.*'=> 'integer',
+                'price'          => 'sometimes|numeric|min:0',
+                'quantity'       => 'sometimes|integer|min:0',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validation error',
-                    'errors' => $validator->errors()
+                    'errors'  => $validator->errors()
                 ], 422);
             }
 
-            $product->update($request->only(['cooperative_id', 'name', 'description', 'image', 'price', 'quantity']));
-            
-            // Reload the cooperative relationship
-            $product->load('cooperative:id,name,email,tele');
+            // Handle main image replacement
+            if ($request->hasFile('image')) {
+                if ($product->image && file_exists(public_path(parse_url($product->image, PHP_URL_PATH)))) {
+                    @unlink(public_path(parse_url($product->image, PHP_URL_PATH)));
+                }
+                $image     = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $imageName);
+                $product->image = url('uploads/products/' . $imageName);
+                $product->save();
+            }
+
+            $product->update($request->except(['image', 'images', 'delete_images', '_method']));
+
+            // Add new gallery images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $img) {
+                    $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                    $img->move(public_path('uploads/products'), $imgName);
+                    $product->images()->create(['url' => url('uploads/products/' . $imgName)]);
+                }
+            }
+
+            // Delete selected gallery images
+            if ($request->has('delete_images')) {
+                $toDelete = $product->images()->whereIn('id', $request->input('delete_images'))->get();
+                foreach ($toDelete as $img) {
+                    @unlink(public_path(parse_url($img->url, PHP_URL_PATH)));
+                    $img->delete();
+                }
+            }
+
+            $product->load(['cooperative:id,nom,email,tele,whatsapp', 'images']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Product updated successfully',
-                'data' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'image' => $product->image,
-                    'price' => $product->price,
-                    'quantity' => $product->quantity,
+                'data'    => [
+                    'id'             => $product->id,
+                    'name'           => $product->name,
+                    'description'    => $product->description,
+                    'image'          => $product->image,
+                    'images'         => $product->images->map(fn($img) => ['id' => $img->id, 'url' => $img->url]),
+                    'category'       => $product->category,
+                    'price'          => $product->price,
+                    'quantity'       => $product->quantity,
                     'cooperative_id' => $product->cooperative_id,
-                    'cooperative' => [
-                        'id' => $product->cooperative->id ?? null,
-                        'nom' => $product->cooperative->nom ?? 'Unknown',
-                        'email' => $product->cooperative->email ?? '',
-                        'tele' => $product->cooperative->tele ?? '',
+                    'cooperative'    => [
+                        'id'       => $product->cooperative->id ?? null,
+                        'nom'      => $product->cooperative->nom ?? 'Unknown',
+                        'email'    => $product->cooperative->email ?? '',
+                        'tele'     => $product->cooperative->tele ?? '',
                         'whatsapp' => $product->cooperative->whatsapp ?? '',
                     ],
                 ]
@@ -216,7 +275,19 @@ class AdminProductController extends Controller
     public function destroy($id)
     {
         try {
-            $product = Product::findOrFail($id);
+            $product = Product::with('images')->findOrFail($id);
+
+            // Delete gallery images from disk
+            foreach ($product->images as $img) {
+                @unlink(public_path(parse_url($img->url, PHP_URL_PATH)));
+                $img->delete();
+            }
+
+            // Delete main image from disk
+            if ($product->image && file_exists(public_path(parse_url($product->image, PHP_URL_PATH)))) {
+                @unlink(public_path(parse_url($product->image, PHP_URL_PATH)));
+            }
+
             $product->delete();
 
             return response()->json([
@@ -227,49 +298,6 @@ class AdminProductController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Upload product image
-     */
-    public function uploadImage(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation error',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/products'), $imageName);
-                $imageUrl = url('uploads/products/' . $imageName);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Image uploaded successfully',
-                    'image_url' => $imageUrl
-                ]);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'No image file provided'
-            ], 400);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error uploading image: ' . $e->getMessage()
             ], 500);
         }
     }

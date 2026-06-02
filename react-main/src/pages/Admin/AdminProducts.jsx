@@ -13,10 +13,15 @@ const AdminProducts = () => {
     name: '',
     description: '',
     price: '',
+    category: '',
     quantity: '',
     cooperative_id: '',
     image: ''
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -58,10 +63,34 @@ const AdminProducts = () => {
       [name]: value
     }));
     // Clear error for this field
-    setErrors(prev => ({
-      ...prev,
-      [name]: ''
-    }));
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) {
+      setGalleryFiles(prev => [...prev, ...files]);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setGalleryPreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const validateForm = () => {
@@ -70,26 +99,48 @@ const AdminProducts = () => {
     if (!currentProduct.price || parseFloat(currentProduct.price) <= 0) newErrors.price = 'Valid price is required';
     if (!currentProduct.quantity || parseInt(currentProduct.quantity) < 0) newErrors.quantity = 'Valid quantity is required';
     if (!currentProduct.cooperative_id) newErrors.cooperative_id = 'Cooperative is required';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       const token = localStorage.getItem('token');
-      const url = editMode 
+      const url = editMode
         ? `http://localhost:8000/api/admin/products/${currentProduct.id}`
         : 'http://localhost:8000/api/admin/products';
-      
-      const method = editMode ? 'put' : 'post';
-      
-      const response = await axios[method](url, currentProduct, {
-        headers: { Authorization: `Bearer ${token}` }
+
+      const method = editMode ? 'put' : 'post'; // It must be post with _method=PUT for FormData
+
+      const formData = new FormData();
+      formData.append('name', currentProduct.name);
+      formData.append('category', currentProduct.category || 'Non classé');
+      formData.append('cooperative_id', currentProduct.cooperative_id);
+      formData.append('price', currentProduct.price);
+      formData.append('quantity', currentProduct.quantity);
+      if (currentProduct.description) {
+        formData.append('description', currentProduct.description);
+      }
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+      galleryFiles.forEach((file) => {
+        formData.append('images[]', file);
+      });
+      if (editMode) {
+        formData.append('_method', 'PUT');
+      }
+
+      const response = await axios.post(url, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       if (response.data.success) {
@@ -100,7 +151,11 @@ const AdminProducts = () => {
       }
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Error saving product: ' + (error.response?.data?.message || error.message));
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        alert('Error saving product: ' + (error.response?.data?.message || error.message));
+      }
     }
   };
 
@@ -110,10 +165,15 @@ const AdminProducts = () => {
       name: product.name,
       description: product.description || '',
       price: product.price,
+      category: product.category || '',
       quantity: product.quantity,
       cooperative_id: product.cooperative_id,
       image: product.image || ''
     });
+    setImageFile(null);
+    setImagePreview(product.image ? product.image : null);
+    setGalleryFiles([]);
+    setGalleryPreviews(product.images ? product.images.map(img => img.url) : []);
     setEditMode(true);
     setShowModal(true);
   };
@@ -143,10 +203,15 @@ const AdminProducts = () => {
       name: '',
       description: '',
       price: '',
+      category: '',
       quantity: '',
       cooperative_id: '',
       image: ''
     });
+    setImageFile(null);
+    setImagePreview(null);
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
     setEditMode(false);
     setErrors({});
   };
@@ -159,7 +224,7 @@ const AdminProducts = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
-      
+
       <div className="flex-1 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -207,8 +272,8 @@ const AdminProducts = () => {
                       products.map((product) => (
                         <tr key={product.id} className="hover:bg-gray-50 transition">
                           <td className="px-6 py-4">
-                            <img 
-                              src={product.image || 'https://via.placeholder.com/50'} 
+                            <img
+                              src={product.image || 'https://via.placeholder.com/50'}
                               alt={product.name}
                               className="w-12 h-12 object-cover rounded"
                             />
@@ -224,13 +289,12 @@ const AdminProducts = () => {
                             {product.price}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              product.quantity > 10 
-                                ? 'bg-green-100 text-green-800' 
-                                : product.quantity > 0 
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}>
+                            <span className={`px-3 py-1 rounded-full text-sm ${product.quantity > 10
+                                ? 'bg-green-100 text-green-800'
+                                : product.quantity > 0
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
                               {product.quantity}
                             </span>
                           </td>
@@ -269,7 +333,7 @@ const AdminProducts = () => {
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
                 {editMode ? 'Edit Product' : 'Add New Product'}
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Cooperative Selection */}
                 <div>
@@ -280,9 +344,8 @@ const AdminProducts = () => {
                     name="cooperative_id"
                     value={currentProduct.cooperative_id}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.cooperative_id ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.cooperative_id ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   >
                     <option value="">Select a cooperative</option>
                     {cooperatives.map(coop => (
@@ -306,9 +369,8 @@ const AdminProducts = () => {
                     name="name"
                     value={currentProduct.name}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Enter product name"
                   />
                   {errors.name && (
@@ -331,6 +393,26 @@ const AdminProducts = () => {
                   />
                 </div>
 
+                {/* Category */}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Category *</label>
+                  <input
+                    list="categories"
+                    name="category"
+                    value={currentProduct.category}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Category"
+                  />
+                  <datalist id="categories">
+                    <option value="Amandes" />
+                    <option value="Dattes" />
+                    <option value="Miel" />
+                    <option value="Huile d'argan" />
+                    <option value="Safran" />
+                  </datalist>
+                </div>
+
                 {/* Price and Quantity */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -344,9 +426,8 @@ const AdminProducts = () => {
                       onChange={handleInputChange}
                       step="0.01"
                       min="0"
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.price ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.price ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0.00"
                     />
                     {errors.price && (
@@ -363,9 +444,8 @@ const AdminProducts = () => {
                       value={currentProduct.quantity}
                       onChange={handleInputChange}
                       min="0"
-                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.quantity ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.quantity ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0"
                     />
                     {errors.quantity && (
@@ -374,26 +454,47 @@ const AdminProducts = () => {
                   </div>
                 </div>
 
-                {/* Image URL */}
+                {/* Image Upload */}
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Image URL
-                  </label>
+                  <label className="block text-gray-700 font-semibold mb-2">Main Image</label>
                   <input
-                    type="text"
-                    name="image"
-                    value={currentProduct.image}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="https://example.com/image.jpg"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   />
-                  {currentProduct.image && (
-                    <img 
-                      src={currentProduct.image} 
-                      alt="Preview" 
-                      className="mt-2 w-32 h-32 object-cover rounded"
-                      onError={(e) => e.target.style.display = 'none'}
-                    />
+                  {imagePreview && (
+                    <div className="mt-2">
+                      <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded-lg shadow-sm" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Multiple Images Upload */}
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Gallery Images</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleGalleryChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                  />
+                  {galleryPreviews.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {galleryPreviews.map((src, index) => (
+                        <div key={index} className="relative">
+                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-cover rounded-md shadow" />
+                          <button
+                            type="button"
+                            onClick={() => removeGalleryImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
 

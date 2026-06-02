@@ -16,7 +16,7 @@ class PublicProductController extends Controller
         try {
             $products = Product::with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele');
-            }])
+            }, 'images'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function($product) {
@@ -35,6 +35,12 @@ class PublicProductController extends Controller
                         'phone' => $product->cooperative->tele ?? null,
                         'whatsapp' => $product->cooperative->tele ?? null,
                     ],
+                    'images' => $product->images->map(function($img) {
+                        return [
+                            'id' => $img->id,
+                            'url' => $img->url
+                        ];
+                    }),
                     'created_at' => $product->created_at,
                 ];
             });
@@ -60,7 +66,7 @@ class PublicProductController extends Controller
         try {
             $product = Product::with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele', 'description', 'image');
-            }])->findOrFail($id);
+            }, 'images'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -81,6 +87,12 @@ class PublicProductController extends Controller
                         'phone' => $product->cooperative->tele ?? null,
                         'whatsapp' => $product->cooperative->tele ?? null,
                     ],
+                    'images' => $product->images->map(function($img) {
+                        return [
+                            'id' => $img->id,
+                            'url' => $img->url
+                        ];
+                    }),
                     'created_at' => $product->created_at,
                 ]
             ]);
@@ -101,7 +113,7 @@ class PublicProductController extends Controller
         try {
             $products = Product::with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele');
-            }])
+            }, 'images'])
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get()
@@ -119,6 +131,12 @@ class PublicProductController extends Controller
                         'name' => $product->cooperative->nom ?? 'Inconnue',
                         'whatsapp' => $product->cooperative->tele ?? null,
                     ],
+                    'images' => $product->images->map(function($img) {
+                        return [
+                            'id' => $img->id,
+                            'url' => $img->url
+                        ];
+                    }),
                 ];
             });
 

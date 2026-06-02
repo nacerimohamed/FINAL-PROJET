@@ -43,10 +43,10 @@ const StatCard = ({ icon, label, value, sub, color, trend, sparkColor, delay = 0
   const animated = useCounter(typeof value === "number" ? value : 0);
   const colorMap = {
     emerald: { bg: "from-emerald-500 to-emerald-600", text: "text-emerald-700" },
-    blue:    { bg: "from-blue-500 to-blue-600",       text: "text-blue-700"    },
-    amber:   { bg: "from-amber-500 to-amber-600",     text: "text-amber-700"   },
-    rose:    { bg: "from-rose-500 to-rose-600",       text: "text-rose-700"    },
-    violet:  { bg: "from-violet-500 to-violet-600",   text: "text-violet-700"  },
+    blue: { bg: "from-blue-500 to-blue-600", text: "text-blue-700" },
+    amber: { bg: "from-amber-500 to-amber-600", text: "text-amber-700" },
+    rose: { bg: "from-rose-500 to-rose-600", text: "text-rose-700" },
+    violet: { bg: "from-violet-500 to-violet-600", text: "text-violet-700" },
   };
   const c = colorMap[color] || colorMap.emerald;
 
@@ -144,7 +144,7 @@ const CooperativeDashboard = () => {
       if (imageFile) formData.append("image", imageFile);
 
       const res = await axios.post("http://localhost:8000/api/cooperative/profile", formData, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data"
         }
@@ -210,7 +210,7 @@ const CooperativeDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
-          
+
           {/* Header */}
           <div className="mb-8 lg:mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -299,7 +299,7 @@ const CooperativeDashboard = () => {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Modifier le Profil de la Coopérative</h2>
-              
+
               {profileError && (
                 <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-lg text-sm">{profileError}</div>
               )}

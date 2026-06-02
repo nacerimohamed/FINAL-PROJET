@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 
 const RegisterCooperative = () => {
+  const [searchParams] = useSearchParams();
+  const initialPlan = searchParams.get('plan') || 'gratuit';
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -10,6 +13,7 @@ const RegisterCooperative = () => {
     tele: "",
     address: "",
     description: "",
+    plan: initialPlan,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,15 +34,13 @@ const RegisterCooperative = () => {
       const response = await axios.post("http://127.0.0.1:8000/api/register-cooperative", formData);
 
       if (response.data.success) {
-        if (response.data.pending_approval) {
-          alert(response.data.message || "Inscription réussie ! Votre compte est en attente d'approbation par l'administrateur.");
+        if (response.data.pending_approval && formData.plan !== 'gratuit') {
+          // PAID plan → redirect to payment instructions page
+          navigate(`/payment?user_id=${response.data.user.id}&plan=${formData.plan}`);
+        } else {
+          // FREE plan → auto-approved, go to login
+          alert(response.data.message || "Inscription réussie ! Vous pouvez maintenant vous connecter.");
           navigate("/login");
-        } else if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-
-          navigate("/cooperative/dashboard");
-          setTimeout(() => window.location.reload(), 100);
         }
       } else {
         setError(response.data.message || "Erreur d'inscription");

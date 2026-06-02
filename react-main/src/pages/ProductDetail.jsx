@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
 
   useEffect(() => {
     fetchProductDetails();
@@ -27,6 +28,7 @@ const ProductDetail = () => {
       const response = await axios.get(`http://localhost:8000/api/products/${id}`);
       if (response.data.success) {
         setProduct(response.data.data);
+        setActiveImage(response.data.data.image || null);
       }
     } catch (err) {
       setError(t('productDetail.error', 'Erreur lors du chargement du produit.'));
@@ -37,7 +39,7 @@ const ProductDetail = () => {
   };
 
   const getProductImage = (product) =>
-    product?.image || "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Produit";
+    activeImage || product?.image || "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Produit";
 
   const handlePurchaseClick = () => setShowPurchaseModal(true);
 
@@ -99,7 +101,7 @@ const ProductDetail = () => {
   return (
     <div className="bg-gray-50/50 min-h-screen flex flex-col">
       <Navbar />
-      
+
       {/* Breadcrumb - Compact */}
       <div className="bg-white border-b border-gray-100 pt-3 pb-3">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center gap-3 text-xs text-gray-500 font-bold">
@@ -117,7 +119,7 @@ const ProductDetail = () => {
       {/* Product Detail Layout */}
       <div className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-          
+
           {/* Left: Image (Col span 5) */}
           <div className="lg:col-span-5">
             <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm group relative h-[320px] sm:h-[400px] lg:h-[450px]">
@@ -125,7 +127,7 @@ const ProductDetail = () => {
                 src={getProductImage(product)}
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e)=>{ e.target.src = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Produit"; }}
+                onError={(e) => { e.target.src = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Produit"; }}
               />
               {(product.category || product.categorie) && (
                 <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm text-gray-800 px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-100 shadow-sm flex items-center gap-1.5">
@@ -134,11 +136,34 @@ const ProductDetail = () => {
                 </div>
               )}
             </div>
+
+            {/* Gallery Thumbnails */}
+            {product.images && product.images.length > 0 && (
+              <div className="mt-4 flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-200">
+                <button
+                  onClick={() => setActiveImage(product.image)}
+                  className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImage === product.image ? 'border-emerald-500 shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'
+                    }`}
+                >
+                  <img src={product.image} alt="Main" className="w-full h-full object-cover" />
+                </button>
+                {product.images.map((img) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setActiveImage(img.url)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImage === img.url ? 'border-emerald-500 shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'
+                      }`}
+                  >
+                    <img src={img.url} alt={`Gallery ${img.id}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right: Info (Col span 7) */}
           <div className="lg:col-span-7 flex flex-col">
-            
+
             {/* Header: Cooperative & Title */}
             <div className="mb-4">
               <Link to={`/cooperatives/${product.cooperative?.id}`} className="inline-flex items-center gap-1.5 text-[11px] font-black text-emerald-600 uppercase tracking-wider hover:text-emerald-700 transition-colors mb-2 bg-emerald-50 px-2.5 py-1 rounded-md">
@@ -218,11 +243,10 @@ const ProductDetail = () => {
               <button
                 onClick={handlePurchaseClick}
                 disabled={product.quantity === 0 || !quantity}
-                className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] relative z-10 ${
-                  product.quantity > 0 
-                    ? 'bg-gray-900 hover:bg-black text-white shadow-md hover:shadow-lg' 
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-                }`}
+                className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] relative z-10 ${product.quantity > 0
+                  ? 'bg-gray-900 hover:bg-black text-white shadow-md hover:shadow-lg'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                  }`}
               >
                 {product.quantity > 0 ? t('productDetail.orderNow', 'Commander ce produit') : t('productDetail.unavailable', 'Indisponible')}
               </button>
@@ -240,7 +264,7 @@ const ProductDetail = () => {
                   >
                     <FaWhatsapp className="text-sm" /> WhatsApp
                   </button>
-                  
+
                   <button
                     onClick={handlePhoneCall}
                     disabled={!product.cooperative?.tele}
@@ -274,16 +298,16 @@ const ProductDetail = () => {
             <p className="text-xs font-medium text-gray-500 mb-6">
               Choisissez comment vous souhaitez contacter la coopérative pour finaliser l'achat de <strong>{product.name}</strong>.
             </p>
-            
+
             <div className="space-y-3">
               <button onClick={handleWhatsAppPurchase} disabled={!product.cooperative?.whatsapp && !product.cooperative?.tele} className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white py-3 px-4 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm">
                 <FaWhatsapp className="text-lg" /> Commander via WhatsApp
               </button>
-              
+
               <button onClick={handlePhoneCall} disabled={!product.cooperative?.tele} className="w-full bg-gray-50 hover:bg-gray-100 text-gray-800 py-3 px-4 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 border border-gray-200 disabled:opacity-50 shadow-sm">
                 <FaPhone className="text-gray-400" /> Appeler pour commander
               </button>
-              
+
               <button onClick={() => setShowPurchaseModal(false)} className="w-full mt-2 text-gray-400 hover:text-gray-700 font-bold text-sm py-2 transition-colors">
                 Annuler
               </button>
