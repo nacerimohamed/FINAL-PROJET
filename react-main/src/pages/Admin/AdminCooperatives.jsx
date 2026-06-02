@@ -693,7 +693,7 @@ const AdminCooperatives = () => {
                 {/* WhatsApp */}
                 <div className="group">
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 group-focus-within:text-green-600 transition-colors">
-                    WhatsApp
+                    Whatsapp
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
