@@ -61,9 +61,9 @@ class CooperativeProductController extends Controller
             $user = Auth::user();
             $plan = $user->plan ?? 'gratuit';
             $limits = [
-                'gratuit' => 5,
-                'standard' => 20,
-                'premium' => 50,
+                'gratuit' => 1,
+                'standard' => 5,
+                'premium' => 15,
                 'professionnel' => null, // unlimited
             ];
 

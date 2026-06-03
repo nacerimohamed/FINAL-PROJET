@@ -371,29 +371,29 @@
     "continueShopping": "Continue shopping"
   },
   "contact": {
-  "title": "Contact Us",
-  "subtitle": "A question, a project or a collaboration? Our team is here to listen",
-  "formTitle": "Send us a message",
-  "formSubtitle": "Fill out this form and we'll get back to you as soon as possible",
-  "name": "Full name",
-  "namePlaceholder": "Your full name",
-  "email": "Email",
-  "emailPlaceholder": "your@email.com",
-  "message": "Message",
-  "messagePlaceholder": "Describe your project or question...",
-  "send": "Send message",
-  "sending": "Sending...",
-  "sent": "Message sent successfully! We'll get back to you soon.",
-  "error": "Error sending message. Please try again.",
-  "infoTitle": "Contact Information",
-  "phone": "Phone",
-  "address": "Address",
-  "addressFull": "123 Cooperatives Street\nCasablanca, Morocco",
-  "responseTime": "Response within 24h",
-  "hours": "Mon-Fri: 9am-6pm",
-  "guarantee": "Fast response guaranteed",
-  "guaranteeText": "We commit to responding within 24 business hours"
-},
+    "title": "Contact Us",
+    "subtitle": "A question, a project or a collaboration? Our team is here to listen",
+    "formTitle": "Send us a message",
+    "formSubtitle": "Fill out this form and we'll get back to you as soon as possible",
+    "name": "Full name",
+    "namePlaceholder": "Your full name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "message": "Message",
+    "messagePlaceholder": "Describe your project or question...",
+    "send": "Send message",
+    "sending": "Sending...",
+    "sent": "Message sent successfully! We'll get back to you soon.",
+    "error": "Error sending message. Please try again.",
+    "infoTitle": "Contact Information",
+    "phone": "Phone",
+    "address": "Address",
+    "addressFull": "123 Cooperatives Street\nCasablanca, Morocco",
+    "responseTime": "Response within 24h",
+    "hours": "Mon-Fri: 9am-6pm",
+    "guarantee": "Fast response guaranteed",
+    "guaranteeText": "We commit to responding within 24 business hours"
+  },
   "errors": {
     "required": "This field is required",
     "invalidEmail": "Invalid email address",
@@ -537,5 +537,50 @@
     "a5": "Absolutely! We only work with verified cooperatives. Products are natural, often organic, and come from traditional production methods guaranteeing authenticity and quality.",
     "moreQuestions": "Have more questions?",
     "contactUs": "Contact us"
+  },
+  "plans": {
+    "badge": "Our Offers",
+    "title": "Plans tailored to every cooperative",
+    "subtitle": "Choose the plan that best fits your needs and grow your business with our platform.",
+    "recommended": "Recommended",
+    "free": "Free",
+    "gratuit": {
+      "name": "Free Plan",
+      "description": "Perfect to get started and test the platform.",
+      "badge": "Free",
+      "button": "Get started",
+      "feature1": "1 product maximum",
+      "feature2": "Basic support",
+      "feature3": "Standard visibility"
+    },
+    "standard": {
+      "name": "Standard Plan",
+      "description": "For cooperatives in a growth phase.",
+      "period": "DH / year",
+      "button": "Choose plan",
+      "feature1": "5 products maximum",
+      "feature2": "Priority support",
+      "feature3": "Enhanced visibility"
+    },
+    "premium": {
+      "name": "Premium Plan",
+      "description": "To maximize your sales and visibility.",
+      "period": "DH / year",
+      "button": "Choose plan",
+      "feature1": "15 products maximum",
+      "feature2": "Targeted promotion",
+      "feature3": "Dedicated 24/7 support"
+    },
+    "professionnel": {
+      "name": "Professional Plan",
+      "description": "The complete solution with no limits.",
+      "period": "DH / year",
+      "button": "Choose plan",
+      "feature1": "Unlimited products",
+      "feature2": "Sponsored products (⭐)",
+      "feature3": "VIP coaching"
+    },
+    "currency": "DH",
+    "perYear": "/ year"
   }
 }

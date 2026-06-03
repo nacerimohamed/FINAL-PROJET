@@ -49,6 +49,8 @@ class AuthController extends Controller
                 'tele' => $user->tele,
                 'description' => $user->description,
                 'image' => $user->image,
+                'status' => $user->status,
+                'is_approved' => $user->is_approved,
             ]
         ], 201);
     }
@@ -76,15 +78,9 @@ class AuthController extends Controller
         $plan = $request->plan ?? 'gratuit';
         $data['plan'] = $plan;
 
-        // FREE plan → auto-approved, can login immediately
-        // PAID plans → pending, needs admin approval after payment
-        if ($plan === 'gratuit') {
-            $data['is_approved'] = true;
-            $data['status'] = 'active';
-        } else {
-            $data['is_approved'] = false;
-            $data['status'] = 'pending';
-        }
+        // ALL plans -> pending, needs admin approval
+        $data['is_approved'] = false;
+        $data['status'] = 'pending';
 
         $user = User::create($data);
 
@@ -104,8 +100,8 @@ class AuthController extends Controller
             'success' => true,
             'message' => $isPaid
                 ? 'Inscription réussie. Veuillez procéder au paiement pour activer votre compte.'
-                : 'Inscription réussie ! Vous pouvez maintenant vous connecter.',
-            'pending_approval' => $isPaid,
+                : 'Inscription réussie ! Votre compte est en attente d\'approbation par l\'administrateur.',
+            'pending_approval' => true,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -149,8 +145,8 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // Vérifier si le compte est approuvé (uniquement pour les coopératives PAYANTES)
-            if ($user->role === 'cooperative' && $user->plan !== 'gratuit') {
+            // Vérifier si le compte est approuvé (pour TOUTES les coopératives)
+            if ($user->role === 'cooperative') {
                 if ($user->status === 'rejected') {
                     return response()->json([
                         'success' => false,
@@ -161,7 +157,7 @@ class AuthController extends Controller
                 if (!$user->is_approved || $user->status === 'pending') {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Votre compte est en attente d\'approbation ou de validation de paiement.'
+                        'message' => 'Votre compte est en attente d\'approbation par l\'administrateur.'
                     ], 403);
                 }
             }
@@ -185,6 +181,8 @@ class AuthController extends Controller
                     'tele' => $user->tele,
                     'description' => $user->description,
                     'image' => $user->image,
+                    'status' => $user->status,
+                    'is_approved' => $user->is_approved,
                 ]
             ]);
 
@@ -235,6 +233,8 @@ class AuthController extends Controller
                     'tele' => $user->tele,
                     'description' => $user->description,
                     'image' => $user->image,
+                    'status' => $user->status,
+                    'is_approved' => $user->is_approved,
                 ]
             ]);
         } catch (\Exception $e) {

@@ -81,6 +81,7 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
         $user->is_approved = true;
+        $user->status = 'active';
         $user->save();
 
         return response()->json([

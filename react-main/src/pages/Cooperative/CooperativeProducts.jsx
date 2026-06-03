@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
+// Plan product limits (must match backend)
+const PLAN_LIMITS = {
+  gratuit: 1,
+  standard: 5,
+  premium: 15,
+  professionnel: Infinity
+};
+
 const CooperativeProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +27,11 @@ const CooperativeProducts = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const [user] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
+  const userPlan = user.plan || 'gratuit';
+  const planLimit = PLAN_LIMITS[userPlan] || PLAN_LIMITS.gratuit;
+  const isLimitReached = planLimit !== Infinity && products.length >= planLimit;
 
   useEffect(() => {
     fetchProducts();
@@ -176,6 +189,10 @@ const CooperativeProducts = () => {
   };
 
   const handleAddNew = () => {
+    if (isLimitReached) {
+      alert(`Vous avez atteint la limite de produits pour votre plan (${userPlan}). Veuillez passer à un plan supérieur.`);
+      return;
+    }
     resetForm();
     setShowModal(true);
   };
@@ -204,14 +221,41 @@ const CooperativeProducts = () => {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Gestion des Produits</h1>
               <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">Gérez le catalogue de votre coopérative</p>
+              
+              <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                Plan actuel: <strong className="ml-1 uppercase">{userPlan}</strong> 
+                <span className="mx-2">|</span>
+                Produits: <strong className="ml-1">{products.length} / {planLimit === Infinity ? 'Illimité' : planLimit}</strong>
+              </div>
             </div>
             <button
               onClick={handleAddNew}
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 md:py-3 md:px-6 rounded-lg transition shadow-md text-sm md:text-base"
+              disabled={isLimitReached}
+              className={`w-full sm:w-auto text-white font-semibold py-2.5 px-4 md:py-3 md:px-6 rounded-lg transition shadow-md text-sm md:text-base ${
+                isLimitReached ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+              }`}
             >
               + Ajouter un produit
             </button>
           </div>
+          
+          {isLimitReached && (
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    Vous avez atteint la limite de <strong>{planLimit} produits</strong> de votre forfait <strong>{userPlan}</strong>.
+                    Pour ajouter plus de produits, veuillez contacter l'administrateur pour passer à une offre supérieure.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Products Table - Card View on Mobile, Table on Desktop */}
           {loading ? (
@@ -245,10 +289,10 @@ const CooperativeProducts = () => {
                                 <p className="text-xs md:text-sm text-gray-500 mt-1">{product.description?.substring(0, 50)}...</p>
                               </div>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.quantity > 10
-                                  ? 'bg-green-100 text-green-800'
-                                  : product.quantity > 0
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
+                                ? 'bg-green-100 text-green-800'
+                                : product.quantity > 0
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
                                 }`}>
                                 Stock: {product.quantity}
                               </span>
@@ -320,10 +364,10 @@ const CooperativeProducts = () => {
                             </td>
                             <td className="px-4 md:px-6 py-3 md:py-4">
                               <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${product.quantity > 10
-                                  ? 'bg-green-100 text-green-800'
-                                  : product.quantity > 0
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
+                                ? 'bg-green-100 text-green-800'
+                                : product.quantity > 0
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
                                 }`}>
                                 {product.quantity}
                               </span>

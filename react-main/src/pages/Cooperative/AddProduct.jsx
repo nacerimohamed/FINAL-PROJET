@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+
+// Plan product limits (must match backend)
+const PLAN_LIMITS = {
+  gratuit: 1,
+  standard: 5,
+  premium: 15,
+  professionnel: Infinity
+};
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +21,37 @@ const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isLimitReached, setIsLimitReached] = useState(false);
+  const [limitInfo, setLimitInfo] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkLimit = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const userPlan = user.plan || "gratuit";
+        const planLimit = PLAN_LIMITS[userPlan] || PLAN_LIMITS.gratuit;
+
+        if (planLimit !== Infinity) {
+          const response = await axios.get("http://127.0.0.1:8000/api/cooperative/products", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (response.data.success) {
+            const productCount = response.data.data.length;
+            setLimitInfo({ plan: userPlan, count: productCount, limit: planLimit });
+            if (productCount >= planLimit) {
+              setIsLimitReached(true);
+              setError(`Limite atteinte (${planLimit} produits max pour le plan ${userPlan}). Veuillez passer à une offre supérieure.`);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Erreur lors de la vérification de la limite", err);
+      }
+    };
+    checkLimit();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -71,7 +109,18 @@ const AddProduct = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {isLimitReached ? (
+            <div className="text-center py-10">
+              <p className="text-gray-600 mb-6">Vous ne pouvez plus ajouter de produits avec votre plan actuel.</p>
+              <Link
+                to="/cooperative/products"
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+              >
+                Retour aux produits
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Nom du produit</label>
@@ -159,6 +208,7 @@ const AddProduct = () => {
               </button>
             </div>
           </form>
+          )}
         </div>
       </div>
     </div>

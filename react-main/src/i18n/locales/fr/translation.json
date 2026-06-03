@@ -464,29 +464,29 @@
     "less": "Moins"
   },
   "contact": {
-  "title": "Contactez-Nous",
-  "subtitle": "Une question, un projet ou une collaboration ? Notre équipe est à votre écoute",
-  "formTitle": "Envoyez-nous un message",
-  "formSubtitle": "Remplissez ce formulaire et nous vous répondrons dans les plus brefs délais",
-  "name": "Nom complet",
-  "namePlaceholder": "Votre nom complet",
-  "email": "Email",
-  "emailPlaceholder": "votre@email.com",
-  "message": "Message",
-  "messagePlaceholder": "Décrivez votre projet ou votre question...",
-  "send": "Envoyer le message",
-  "sending": "Envoi en cours...",
-  "sent": "Message envoyé avec succès! Nous vous répondrons bientôt.",
-  "error": "Erreur lors de l'envoi. Veuillez réessayer.",
-  "infoTitle": "Informations de contact",
-  "phone": "Téléphone",
-  "address": "Adresse",
-  "addressFull": "123 Rue des Coopératives\nCasablanca, Maroc",
-  "responseTime": "Réponse sous 24h",
-  "hours": "Lun-Ven : 9h-18h",
-  "guarantee": "Réponse rapide garantie",
-  "guaranteeText": "Nous nous engageons à vous répondre dans les 24 heures ouvrables"
-},
+    "title": "Contactez-Nous",
+    "subtitle": "Une question, un projet ou une collaboration ? Notre équipe est à votre écoute",
+    "formTitle": "Envoyez-nous un message",
+    "formSubtitle": "Remplissez ce formulaire et nous vous répondrons dans les plus brefs délais",
+    "name": "Nom complet",
+    "namePlaceholder": "Votre nom complet",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "message": "Message",
+    "messagePlaceholder": "Décrivez votre projet ou votre question...",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "sent": "Message envoyé avec succès! Nous vous répondrons bientôt.",
+    "error": "Erreur lors de l'envoi. Veuillez réessayer.",
+    "infoTitle": "Informations de contact",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "addressFull": "123 Rue des Coopératives\nCasablanca, Maroc",
+    "responseTime": "Réponse sous 24h",
+    "hours": "Lun-Ven : 9h-18h",
+    "guarantee": "Réponse rapide garantie",
+    "guaranteeText": "Nous nous engageons à vous répondre dans les 24 heures ouvrables"
+  },
   "aboutUs": {
     "badge": "À propos",
     "title": "Qui sommes-nous ?",
@@ -537,5 +537,50 @@
     "a5": "Absolument ! Nous travaillons uniquement avec des coopératives vérifiées. Les produits sont naturels, souvent biologiques, et issus de méthodes de production traditionnelles garantissant authenticité et qualité.",
     "moreQuestions": "Vous avez d'autres questions ?",
     "contactUs": "Contactez-nous"
+  },
+  "plans": {
+    "badge": "Nos Offres",
+    "title": "Des plans adaptés à chaque coopérative",
+    "subtitle": "Choisissez l'offre qui correspond le mieux à vos besoins et développez votre activité avec notre plateforme.",
+    "recommended": "Recommandé",
+    "free": "Gratuit",
+    "gratuit": {
+      "name": "Offre Gratuite",
+      "description": "Idéal pour démarrer et tester la plateforme.",
+      "badge": "Gratuit",
+      "button": "Commencer",
+      "feature1": "1 produit maximum",
+      "feature2": "Support de base",
+      "feature3": "Visibilité standard"
+    },
+    "standard": {
+      "name": "Offre Standard",
+      "description": "Pour les coopératives en pleine croissance.",
+      "period": "DH / an",
+      "button": "Choisir",
+      "feature1": "5 produits maximum",
+      "feature2": "Support prioritaire",
+      "feature3": "Visibilité accrue"
+    },
+    "premium": {
+      "name": "Offre Premium",
+      "description": "Pour maximiser vos ventes et votre visibilité.",
+      "period": "DH / an",
+      "button": "Choisir",
+      "feature1": "15 produits maximum",
+      "feature2": "Mise en avant ciblée",
+      "feature3": "Support dédié 24/7"
+    },
+    "professionnel": {
+      "name": "Offre Professionnelle",
+      "description": "La solution complète sans aucune limite.",
+      "period": "DH / an",
+      "button": "Choisir",
+      "feature1": "Produits illimités",
+      "feature2": "Produits sponsorisés (⭐)",
+      "feature3": "Accompagnement VIP"
+    },
+    "currency": "DH",
+    "perYear": "/ an"
   }
 }

@@ -45,6 +45,13 @@ const ProtectedRoute = ({ children, role }) => {
   if (role && user.role !== role) {
     return <Navigate to="/" replace />;
   }
+
+  // Frontend security check for pending accounts
+  if (user.role === 'cooperative' && (!user.is_approved || user.status === 'pending')) {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    return <Navigate to="/login" replace />;
+  }
   
   return children;
 };
