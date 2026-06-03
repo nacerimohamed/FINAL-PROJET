@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Cooperative;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -81,13 +82,19 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
         $user->is_approved = true;
-        $user->status = 'active';
+        $user->status = 'approved';
         $user->save();
+
+        // Sync the cooperatives table as well (same email = same cooperative)
+        Cooperative::where('email', $user->email)->update([
+            'is_approved' => true,
+            'status'      => 'approved',
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Compte coopérative approuvé avec succès.',
-            'user' => $user
+            'user'    => $user
         ]);
     }
 
@@ -102,6 +109,17 @@ class UserManagementController extends Controller
         // Delete image if exists
         if ($user->image) {
             Storage::disk('public')->delete($user->image);
+        }
+
+        // If the deleted user is a cooperative, delete their cooperative profile too
+        if ($user->role === 'cooperative') {
+            $cooperative = Cooperative::where('email', $user->email)->first();
+            if ($cooperative) {
+                if ($cooperative->image && file_exists(public_path($cooperative->image))) {
+                    @unlink(public_path($cooperative->image));
+                }
+                $cooperative->delete();
+            }
         }
 
         // Delete user record

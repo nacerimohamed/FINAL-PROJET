@@ -62,18 +62,28 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email|unique:users,email|unique:cooperatives,email',
             'password' => 'required|string|min:6',
             'tele' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'plan' => 'nullable|string|in:gratuit,standard,premium,professionnel',
             'ville' => 'required|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/cooperatives'), $name);
+            $imagePath = 'uploads/cooperatives/' . $name;
+        }
 
         $data = $request->only('name', 'email', 'tele', 'address', 'description');
         $data['role'] = 'cooperative';
         $data['password'] = Hash::make($request->password);
+        $data['image'] = $imagePath;
         
         $plan = $request->plan ?? 'gratuit';
         $data['plan'] = $plan;
@@ -92,6 +102,7 @@ class AuthController extends Controller
             'adresse' => $request->address,
             'ville' => $request->ville,
             'tele' => $request->tele,
+            'image' => $imagePath,
         ]);
 
         $isPaid = $plan !== 'gratuit';

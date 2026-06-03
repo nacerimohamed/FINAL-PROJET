@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cooperative;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CooperativeController extends Controller
 {
@@ -15,7 +17,9 @@ class CooperativeController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Cooperative::orderBy('created_at', 'desc');
+            $query = Cooperative::where('is_approved', 1)
+                ->where('status', 'approved')
+                ->orderBy('created_at', 'desc');
 
             // ✅ FILTER BY VILLE (IMPORTANT FIX)
             if ($request->filled('ville')) {
@@ -182,7 +186,16 @@ class CooperativeController extends Controller
             $cooperative = Cooperative::findOrFail($id);
 
             if ($cooperative->image && file_exists(public_path($cooperative->image))) {
-                unlink(public_path($cooperative->image));
+                @unlink(public_path($cooperative->image));
+            }
+
+            // Supprimer également l'utilisateur correspondant (l'email est unique)
+            $user = User::where('email', $cooperative->email)->first();
+            if ($user) {
+                if ($user->image) {
+                    Storage::disk('public')->delete($user->image);
+                }
+                $user->delete(); // Supprime l'utilisateur et cascade vers ses produits
             }
 
             $cooperative->delete();

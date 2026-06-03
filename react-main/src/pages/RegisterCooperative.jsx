@@ -16,6 +16,7 @@ const RegisterCooperative = () => {
     ville: "",
     plan: initialPlan,
   });
+  const [logo, setLogo] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,13 +27,31 @@ const RegisterCooperative = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleLogoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setLogo(e.target.files[0]);
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/register-cooperative", formData);
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+      if (logo) {
+        data.append("logo", logo);
+      }
+
+      const response = await axios.post("http://127.0.0.1:8000/api/register-cooperative", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.data.success) {
         if (response.data.pending_approval && formData.plan !== 'gratuit') {
@@ -240,6 +259,26 @@ const RegisterCooperative = () => {
                   onChange={handleChange}
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all duration-200 shadow-sm"
                 />
+              </div>
+            </div>
+
+            {/* LOGO */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Logo de la coopérative</label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-green-500 transition-colors bg-gray-50">
+                <div className="space-y-1 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <div className="flex text-sm text-gray-600 justify-center">
+                    <label htmlFor="logo-upload" className="relative cursor-pointer bg-white rounded-md font-semibold text-green-600 hover:text-green-500 focus-within:outline-none">
+                      <span>Télécharger un fichier</span>
+                      <input id="logo-upload" name="logo" type="file" accept="image/*" className="sr-only" onChange={handleLogoChange} />
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 2MB</p>
+                  {logo && <p className="text-sm text-green-600 font-medium mt-2">Fichier sélectionné: {logo.name}</p>}
+                </div>
               </div>
             </div>
 
