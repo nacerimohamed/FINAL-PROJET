@@ -118,7 +118,7 @@ const Navbar = () => {
             {/* Logo Section */}
             <Link
               to="/"
-              className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 group flex-shrink-0 relative`}
+              className="flex items-center gap-3 group flex-shrink-0 relative"
               onClick={() => isMobile && setIsMobileMenuOpen(false)}
             >
               <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400/20 to-amber-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
@@ -136,7 +136,7 @@ const Navbar = () => {
               </div>
 
               <div className="flex flex-col overflow-hidden">
-                <div className="flex items-center">
+                <div className="flex items-center" dir="ltr">
                   <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-none">
                     <span className="text-emerald-600 inline-block transition-all duration-300 group-hover:scale-105 origin-left">Agri</span>
                     <span className="text-amber-500 inline-block transition-all duration-300 group-hover:scale-105 origin-left delay-75">Market</span>
@@ -175,11 +175,11 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Action Right Block */}
-            <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 flex-shrink-0`}>
+            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
               <LanguageSwitcher />
 
               {user ? (
-                <div className={`flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-2 animate-fadeIn`}>
+                <div className="flex items-center gap-2 animate-fadeIn">
                   {/* 🔹 رجعنا هاد الجزء عبارة عن Link قابل للضغط كيدي لـ Dashboard */}
                   <Link
                     to={getDashboardPath()}
@@ -244,12 +244,12 @@ const Navbar = () => {
           }`}
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gradient-to-r from-emerald-50/30 to-transparent">
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center space-x-3">
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full overflow-hidden shadow-md ring-2 ring-emerald-500/30">
               <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
             </div>
-            <div>
-              <h2 className="text-lg font-black">
+            <div dir="ltr">
+              <h2 className="text-lg font-black flex items-center">
                 <span className="text-emerald-600">Agri</span>
                 <span className="text-amber-500">Market</span>
               </h2>
@@ -270,7 +270,7 @@ const Navbar = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center ${isRTL ? 'space-x-reverse' : ''} space-x-3 sm:space-x-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300 transform ${isRTL ? 'hover:-translate-x-2' : 'hover:translate-x-2'} hover:shadow-md ${active
+                className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-2xl font-semibold transition-all duration-300 transform ${isRTL ? 'hover:-translate-x-2' : 'hover:translate-x-2'} hover:shadow-md ${active
                   ? 'text-green-700 bg-white shadow-md border-l-4 border-green-600'
                   : 'text-gray-700 hover:text-green-600 hover:bg-white'
                   }`}

@@ -275,7 +275,7 @@ const AdminProducts = () => {
                             <img
                               src={product.image || 'https://via.placeholder.com/50'}
                               alt={product.name}
-                              className="w-12 h-12 object-cover rounded"
+                              className="w-12 h-12 object-contain bg-white border border-gray-100 rounded"
                             />
                           </td>
                           <td className="px-6 py-4">
@@ -465,7 +465,7 @@ const AdminProducts = () => {
                   />
                   {imagePreview && (
                     <div className="mt-2">
-                      <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded-lg shadow-sm" />
+                      <img src={imagePreview} alt="Preview" className="w-32 h-32 object-contain bg-white border border-gray-100 rounded-lg shadow-sm" />
                     </div>
                   )}
                 </div>
@@ -484,7 +484,7 @@ const AdminProducts = () => {
                     <div className="mt-4 flex flex-wrap gap-2">
                       {galleryPreviews.map((src, index) => (
                         <div key={index} className="relative">
-                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-cover rounded-md shadow" />
+                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-contain bg-white border border-gray-100 rounded-md shadow" />
                           <button
                             type="button"
                             onClick={() => removeGalleryImage(index)}

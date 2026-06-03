@@ -16,7 +16,8 @@ class CooperativeProductController extends Controller
     public function index()
     {
         try {
-            $products = Auth::user()->products()
+            $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+            $products = Product::where('cooperative_id', $coopId)
                 ->orderBy('created_at', 'desc')
                 ->get();
             
@@ -68,7 +69,8 @@ class CooperativeProductController extends Controller
 
             $maxProducts = $limits[$plan] ?? 5;
             if ($maxProducts !== null) {
-                $currentCount = $user->products()->count();
+                $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+                $currentCount = Product::where('cooperative_id', $coopId)->count();
                 if ($currentCount >= $maxProducts) {
                     $planLabels = [
                         'gratuit' => 'gratuit',
@@ -92,8 +94,10 @@ class CooperativeProductController extends Controller
                 $imagePath = url('uploads/products/' . $imageName);
             }
 
+            $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+
             $product = Product::create([
-                'cooperative_id' => Auth::id(),
+                'cooperative_id' => $coopId,
                 'name' => $request->name,
                 'description' => $request->description,
                 'category' => $request->category,
@@ -121,7 +125,8 @@ class CooperativeProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Auth::user()->products()->findOrFail($id);
+            $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -141,7 +146,8 @@ class CooperativeProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $product = Auth::user()->products()->findOrFail($id);
+            $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
 
             $validator = Validator::make($request->all(), [
                 'name' => 'sometimes|string|max:255',
@@ -194,7 +200,8 @@ class CooperativeProductController extends Controller
     public function destroy($id)
     {
         try {
-            $product = Auth::user()->products()->findOrFail($id);
+            $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
+            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
             
             if ($product->image && file_exists(public_path(parse_url($product->image, PHP_URL_PATH)))) {
                 @unlink(public_path(parse_url($product->image, PHP_URL_PATH)));

@@ -12,7 +12,7 @@ const CooperativeProducts = () => {
     name: '',
     description: '',
     price: '',
-    category: '', 
+    category: '',
     quantity: '',
     image: ''
   });
@@ -71,15 +71,15 @@ const CooperativeProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       const token = localStorage.getItem('token');
-      const url = editMode 
+      const url = editMode
         ? `http://localhost:8000/api/cooperative/products/${currentProduct.id}`
         : 'http://localhost:8000/api/cooperative/products';
-      
+
       const formData = new FormData();
       formData.append('name', currentProduct.name);
       formData.append('category', currentProduct.category);
@@ -94,9 +94,9 @@ const CooperativeProducts = () => {
       if (editMode) {
         formData.append('_method', 'PUT');
       }
-      
+
       const response = await axios.post(url, formData, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
@@ -196,7 +196,7 @@ const CooperativeProducts = () => {
           </Link>
         </nav>
       </div>
-      
+
       <div className="flex-1 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -235,7 +235,7 @@ const CooperativeProducts = () => {
                           <img
                             src={product.image || 'https://via.placeholder.com/100'}
                             alt={product.name}
-                            className="w-20 h-20 md:w-24 md:h-24 object-cover rounded"
+                            className="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded border border-gray-100"
                             onError={(e) => e.target.src = 'https://via.placeholder.com/100'}
                           />
                           <div className="flex-1">
@@ -244,13 +244,12 @@ const CooperativeProducts = () => {
                                 <h3 className="font-semibold text-gray-800 text-base md:text-lg">{product.name}</h3>
                                 <p className="text-xs md:text-sm text-gray-500 mt-1">{product.description?.substring(0, 50)}...</p>
                               </div>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                product.quantity > 10 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : product.quantity > 0 
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.quantity > 10
+                                  ? 'bg-green-100 text-green-800'
+                                  : product.quantity > 0
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
                                 Stock: {product.quantity}
                               </span>
                             </div>
@@ -308,7 +307,7 @@ const CooperativeProducts = () => {
                               <img
                                 src={product.image || 'https://via.placeholder.com/100'}
                                 alt={product.name}
-                                className="w-12 h-12 md:w-16 md:h-16 object-cover rounded"
+                                className="w-12 h-12 md:w-16 md:h-16 object-contain bg-white rounded border border-gray-100"
                                 onError={(e) => e.target.src = 'https://via.placeholder.com/100'}
                               />
                             </td>
@@ -320,13 +319,12 @@ const CooperativeProducts = () => {
                               {product.price}
                             </td>
                             <td className="px-4 md:px-6 py-3 md:py-4">
-                              <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${
-                                product.quantity > 10 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : product.quantity > 0 
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
+                              <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${product.quantity > 10
+                                  ? 'bg-green-100 text-green-800'
+                                  : product.quantity > 0
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
                                 {product.quantity}
                               </span>
                             </td>
@@ -366,7 +364,7 @@ const CooperativeProducts = () => {
               <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
                 {editMode ? 'Modifier le Produit' : 'Ajouter un Produit'}
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                 {/* Product Name */}
                 <div>
@@ -378,9 +376,8 @@ const CooperativeProducts = () => {
                     name="name"
                     value={currentProduct.name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Nom du produit"
                   />
                   {errors.name && (
@@ -398,9 +395,8 @@ const CooperativeProducts = () => {
                     name="category"
                     value={currentProduct.category}
                     onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.category ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.category ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Choisir ou écrire une catégorie"
                   />
                   <datalist id="categories">
@@ -443,9 +439,8 @@ const CooperativeProducts = () => {
                       onChange={handleInputChange}
                       step="0.01"
                       min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.price ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.price ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0.00"
                     />
                     {errors.price && (
@@ -462,9 +457,8 @@ const CooperativeProducts = () => {
                       value={currentProduct.quantity}
                       onChange={handleInputChange}
                       min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.quantity ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.quantity ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0"
                     />
                     {errors.quantity && (
@@ -486,10 +480,10 @@ const CooperativeProducts = () => {
                   />
                   {imagePreview && (
                     <div className="mt-2 md:mt-3">
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
-                        className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg shadow-sm"
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-24 h-24 md:w-32 md:h-32 object-contain bg-white rounded-lg shadow-sm border border-gray-100"
                       />
                     </div>
                   )}

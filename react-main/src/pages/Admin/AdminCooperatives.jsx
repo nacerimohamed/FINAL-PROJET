@@ -365,7 +365,7 @@ const AdminCooperatives = () => {
                         <div className="flex-shrink-0">
                           {coop.image ? (
                             <img
-                              className="h-12 w-12 rounded-lg object-cover border border-gray-200 shadow-sm"
+                              className="h-12 w-12 rounded-lg object-contain bg-white border border-gray-200 shadow-sm"
                               src={getImageUrl(coop.image)}
                               alt={coop.nom}
                               onError={(e) => {
@@ -451,7 +451,7 @@ const AdminCooperatives = () => {
                                 <img
                                   src={getImageUrl(coop.image)}
                                   alt={coop.name || coop.nom}
-                                  className="h-10 w-10 rounded-lg object-cover mr-3 shadow-sm"
+                                  className="h-10 w-10 rounded-lg object-contain bg-white border border-gray-200 mr-3 shadow-sm"
                                   onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.style.display = 'none';
@@ -839,7 +839,7 @@ const AdminCooperatives = () => {
                       <img
                         src={imagePreview}
                         alt="Preview"
-                        className="w-24 h-24 object-cover rounded-lg"
+                        className="w-24 h-24 object-contain bg-white border border-gray-200 rounded-lg"
                       />
                       <button
                         type="button"

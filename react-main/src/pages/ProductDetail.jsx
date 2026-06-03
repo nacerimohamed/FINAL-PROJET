@@ -126,7 +126,7 @@ const ProductDetail = () => {
               <img
                 src={getProductImage(product)}
                 alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-contain p-2 bg-white transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => { e.target.src = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Produit"; }}
               />
               {(product.category || product.categorie) && (
@@ -145,7 +145,7 @@ const ProductDetail = () => {
                   className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImage === product.image ? 'border-emerald-500 shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                 >
-                  <img src={product.image} alt="Main" className="w-full h-full object-cover" />
+                  <img src={product.image} alt="Main" className="w-full h-full object-contain p-1 bg-white" />
                 </button>
                 {product.images.map((img) => (
                   <button
@@ -154,7 +154,7 @@ const ProductDetail = () => {
                     className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImage === img.url ? 'border-emerald-500 shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'
                       }`}
                   >
-                    <img src={img.url} alt={`Gallery ${img.id}`} className="w-full h-full object-cover" />
+                    <img src={img.url} alt={`Gallery ${img.id}`} className="w-full h-full object-contain p-1 bg-white" />
                   </button>
                 ))}
               </div>

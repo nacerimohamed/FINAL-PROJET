@@ -109,9 +109,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ===== COOPERATIVE ROUTES =====
     Route::middleware('role:cooperative')->prefix('cooperative')->group(function () {
-        Route::get('/dashboard', function () {
-            return response()->json(['success' => true, 'message' => 'Cooperative Dashboard']);
-        });
+        Route::get('/dashboard', [\App\Http\Controllers\Api\Cooperative\CooperativeProfileController::class, 'dashboardStats']);
+        Route::post('/profile', [\App\Http\Controllers\Api\Cooperative\CooperativeProfileController::class, 'updateProfile']);
         Route::apiResource('products', \App\Http\Controllers\Api\Cooperative\CooperativeProductController::class);
     });
 });

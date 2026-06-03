@@ -216,7 +216,7 @@ const Cooperatives = () => {
                         <img 
                           src={img} 
                           alt={coop.nom} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
+                          className="w-full h-full object-contain p-2 bg-white group-hover:scale-105 transition-transform duration-500 ease-out" 
                           onError={(e) => { e.target.style.display = "none"; }} 
                         />
                       ) : (

@@ -61,7 +61,7 @@ const LanguageSwitcher = ({ mobile = false }) => {
             const Flag = flagComponents[lang.code];
             return (
               <button key={lang.code} onClick={() => changeLanguage(lang.code)}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${currentLangCode === lang.code
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${currentLangCode === lang.code
                     ? 'bg-gradient-to-r from-green-100 to-green-50 text-green-700 border-2 border-green-300 shadow-md'
                     : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200'
                   }`}>
@@ -88,7 +88,7 @@ const LanguageSwitcher = ({ mobile = false }) => {
   return (
     <div className="relative" ref={dropdownRef}>
       <button onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 border-2 ${isOpen ? 'bg-green-50 border-green-300 shadow-md' : 'bg-white/80 border-gray-200 hover:border-green-300 hover:bg-green-50/50 hover:shadow-sm'
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border-2 ${isOpen ? 'bg-green-50 border-green-300 shadow-md' : 'bg-white/80 border-gray-200 hover:border-green-300 hover:bg-green-50/50 hover:shadow-sm'
           }`}>
         <CurrentFlag />
         <span className="text-gray-700 font-bold text-sm tracking-wide">{currentLang.label}</span>
@@ -107,7 +107,7 @@ const LanguageSwitcher = ({ mobile = false }) => {
           const Flag = flagComponents[lang.code];
           return (
             <button key={lang.code} onClick={() => changeLanguage(lang.code)}
-              className={`flex items-center space-x-3 w-full px-4 py-3 text-left transition-all duration-200 ${currentLangCode === lang.code ? 'bg-gradient-to-r from-green-50 to-green-100/50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+              className={`flex items-center gap-3 w-full px-4 py-3 text-left transition-all duration-200 ${currentLangCode === lang.code ? 'bg-gradient-to-r from-green-50 to-green-100/50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
                 } ${index < languages.length - 1 ? 'border-b border-gray-50' : ''}`}>
               <Flag />
               <div className="flex-1">

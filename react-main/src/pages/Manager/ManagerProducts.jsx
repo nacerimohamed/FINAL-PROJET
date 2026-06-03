@@ -269,7 +269,7 @@ const ManagerProducts = () => {
                           <img
                             src={product.image || 'https://via.placeholder.com/100'}
                             alt={product.name}
-                            className="w-20 h-20 md:w-24 md:h-24 object-cover rounded"
+                            className="w-20 h-20 md:w-24 md:h-24 object-contain bg-white border border-gray-100 rounded"
                             onError={(e) => e.target.src = 'https://via.placeholder.com/100'}
                           />
                           <div className="flex-1">
@@ -346,7 +346,7 @@ const ManagerProducts = () => {
                               <img
                                 src={product.image || 'https://via.placeholder.com/100'}
                                 alt={product.name}
-                                className="w-12 h-12 md:w-16 md:h-16 object-cover rounded"
+                                className="w-12 h-12 md:w-16 md:h-16 object-contain bg-white border border-gray-100 rounded"
                                 onError={(e) => e.target.src = 'https://via.placeholder.com/100'}
                               />
                             </td>
@@ -552,7 +552,7 @@ const ManagerProducts = () => {
                       <img 
                         src={imagePreview} 
                         alt="Preview" 
-                        className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg shadow-sm"
+                        className="w-24 h-24 md:w-32 md:h-32 object-contain bg-white border border-gray-100 rounded-lg shadow-sm"
                       />
                     </div>
                   )}
@@ -574,7 +574,7 @@ const ManagerProducts = () => {
                     <div className="mt-4 flex flex-wrap gap-2">
                       {galleryPreviews.map((src, index) => (
                         <div key={index} className="relative">
-                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-cover rounded-md shadow" />
+                          <img src={src} alt="Gallery Preview" className="w-20 h-20 object-contain bg-white rounded-md shadow border border-gray-100" />
                           <button
                             type="button"
                             onClick={() => removeGalleryImage(index)}

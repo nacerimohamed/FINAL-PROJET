@@ -123,7 +123,7 @@ const CooperativeDashboard = () => {
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -200,7 +200,7 @@ const CooperativeDashboard = () => {
           </Link>
         </nav>
         <div className="p-4 border-t border-green-700">
-          <button onClick={handleLogout} className="flex items-center gap-2 w-full text-left px-2 py-2 hover:bg-green-700 rounded transition">
+          <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full px-3 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition shadow-sm">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             Déconnexion
           </button>

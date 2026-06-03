@@ -362,14 +362,14 @@ const CooperativeDetail = () => {
                               <img 
                                 src={productImage} 
                                 alt="Main thumbnail" 
-                                className="w-8 h-8 object-cover rounded-md border border-white shadow-sm"
+                                className="w-8 h-8 object-contain bg-white rounded-md border border-white shadow-sm"
                               />
                               {product.images.slice(0, 3).map((img, idx) => (
                                 <img 
                                   key={idx} 
                                   src={img.url} 
                                   alt={`Gallery thumbnail ${idx}`} 
-                                  className="w-8 h-8 object-cover rounded-md border border-white shadow-sm"
+                                  className="w-8 h-8 object-contain bg-white rounded-md border border-white shadow-sm"
                                 />
                               ))}
                               {product.images.length > 3 && (

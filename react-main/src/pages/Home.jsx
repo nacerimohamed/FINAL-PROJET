@@ -197,7 +197,7 @@ const Home = () => {
                     <img
                       src={getProductImage(product)}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                      className="w-full h-full object-contain p-2 bg-white group-hover:scale-105 transition-transform duration-500 ease-out"
                     />
                     {product.price && (
                       <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow-md border border-white/10">
@@ -261,7 +261,7 @@ const Home = () => {
                   <img
                     src={getCooperativeImage(cooperative)}
                     alt={cooperative.nom}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    className="w-full h-full object-contain p-2 bg-white group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                 </div>
 

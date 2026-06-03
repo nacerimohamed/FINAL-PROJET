@@ -66,6 +66,7 @@ class AuthController extends Controller
             'address' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'plan' => 'nullable|string|in:gratuit,standard,premium,professionnel',
+            'ville' => 'required|string',
         ]);
 
         $data = $request->only('name', 'email', 'tele', 'address', 'description');
@@ -87,6 +88,16 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
+        // CREATE COOPERATIVE SO IT SHOWS UP ON MAP AND PUBLIC LISTS
+        \App\Models\Cooperative::create([
+            'nom' => $request->name,
+            'email' => $request->email,
+            'description' => $request->description,
+            'adresse' => $request->address,
+            'ville' => $request->ville,
+            'tele' => $request->tele,
+        ]);
+
         $isPaid = $plan !== 'gratuit';
 
         return response()->json([
@@ -105,6 +116,7 @@ class AuthController extends Controller
                 'description' => $user->description,
                 'plan' => $user->plan,
                 'status' => $user->status,
+                'ville' => $request->ville,
             ]
         ], 201);
     }

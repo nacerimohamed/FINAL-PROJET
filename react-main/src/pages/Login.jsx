@@ -111,29 +111,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center px-4 pt-[10vh] pb-8 relative overflow-hidden bg-white">
+    <div className="h-screen w-screen flex items-center justify-center p-4 sm:p-8 bg-gray-50 overflow-hidden relative">
       {/* CARD PRINCIPALE */}
-      <div className="w-full max-w-md relative z-10">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-          <div className="relative bg-gradient-to-r from-green-600 to-emerald-600 p-8 text-center overflow-hidden">
-            <div className="absolute inset-0 bg-white/5"></div>
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full filter blur-2xl"></div>
-              <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full filter blur-2xl"></div>
-            </div>
+      <div className="w-full max-w-5xl h-[85vh] min-h-[500px] max-h-[800px] bg-white rounded-[2rem] shadow-2xl flex overflow-hidden border border-gray-100 relative z-10">
+        
+        {/* COLONNE GAUCHE: FORMULAIRE */}
+        <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 flex flex-col justify-center h-full overflow-y-auto">
+          <div className="max-w-md w-full mx-auto">
             
-            <div className="relative">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-2xl mb-4 backdrop-blur-sm border border-white/20">
-                <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center lg:text-left mb-10">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-2xl mb-4 text-green-600">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-1">Bienvenue</h1>
-              <p className="text-green-50 text-xs">Connectez-vous pour accéder à votre espace</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Bienvenue</h1>
+              <p className="text-gray-500 text-sm">Connectez-vous pour accéder à votre espace</p>
             </div>
-          </div>
 
-          <div className="p-8">
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -152,7 +147,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 shadow-sm"
                   />
                 </div>
               </div>
@@ -176,7 +171,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading}
-                    className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full pl-10 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 shadow-sm"
                   />
                   <button
                     type="button"
@@ -197,7 +192,18 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="text-right">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember_me"
+                    type="checkbox"
+                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-700">
+                    Se souvenir de moi
+                  </label>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(true)}
@@ -218,18 +224,46 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-green-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 bg-orange-500 text-white font-semibold rounded-full hover:bg-orange-600 hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Connexion en cours..." : "Se connecter"}
               </button>
             </form>
 
-            <div className="mt-6 text-center space-y-4">
+            <div className="mt-8 text-center">
               <p className="text-sm text-gray-600">
-                Vous êtes une coopérative ?{" "}
-                <Link to="/register-cooperative" className="text-green-600 hover:text-green-700 font-semibold transition-colors">
-                  Créez un compte
+                Vous n'avez pas de compte ?{" "}
+                <Link to="/register-cooperative" className="text-gray-900 font-bold hover:underline transition-colors">
+                  S'inscrire
                 </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* COLONNE DROITE: IMAGE DÉCORATIVE */}
+        <div className="hidden lg:block lg:w-1/2 p-3">
+          <div className="w-full h-full rounded-[1.5rem] overflow-hidden relative group">
+            {/* Overlay Gradient (Vert et Jaune) */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-yellow-500/30 z-10 mix-blend-multiply"></div>
+            
+            {/* Image d'agriculture / coopérative */}
+            <img 
+              src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2070&auto=format&fit=crop" 
+              alt="Coopérative agricole marocaine" 
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+            />
+            
+            {/* Texte informatif superposé */}
+            <div className="absolute bottom-12 left-10 right-10 z-20 text-white">
+              <span className="inline-block px-3 py-1 bg-yellow-500/90 text-yellow-50 text-xs font-bold uppercase tracking-wider rounded-full mb-3 backdrop-blur-sm">
+                Réseau Solidaire
+              </span>
+              <h2 className="text-3xl font-bold mb-3 leading-tight text-white drop-shadow-md">
+                Valorisons le travail <br/> des coopératives marocaines.
+              </h2>
+              <p className="text-green-50 text-sm opacity-90 drop-shadow max-w-md">
+                Découvrez et partagez l'excellence des produits du terroir, issus d'une agriculture durable et d'un savoir-faire authentique.
               </p>
             </div>
           </div>

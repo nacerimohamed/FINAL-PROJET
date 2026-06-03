@@ -16,7 +16,8 @@ class CooperativeProfileController extends Controller
      */
     public function dashboardStats()
     {
-        $coopId = Auth::id();
+        $coop = \App\Models\Cooperative::where('email', Auth::user()->email)->first();
+        $coopId = $coop ? $coop->id : Auth::id();
 
         $totalProducts = Product::where('cooperative_id', $coopId)->count();
         $availableProducts = Product::where('cooperative_id', $coopId)->where('quantity', '>', 10)->count();
@@ -72,6 +73,21 @@ class CooperativeProfileController extends Controller
         }
 
         $user->save();
+
+        // SYNCHRONIZE WITH COOPERATIVES TABLE (Use original email to find the record if email changed)
+        $coop = \App\Models\Cooperative::where('email', $user->getOriginal('email'))->first();
+        if ($coop) {
+            $coop->nom = $request->name;
+            $coop->email = $request->email;
+            $coop->tele = $request->tele;
+            $coop->adresse = $request->adresse;
+            $coop->description = $request->description;
+            // Also sync image if needed (Cooperative table stores it differently potentially, but let's sync path)
+            if ($request->hasFile('image') && isset($imagePath)) {
+                $coop->image = 'storage/' . $imagePath;
+            }
+            $coop->save();
+        }
 
         return response()->json([
             'success' => true,

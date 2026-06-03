@@ -284,71 +284,71 @@ const Products = () => {
                 {activeFilterCount > 0 && <button onClick={resetFilters} className="text-green-700 underline hover:text-green-900 font-medium mt-2">{t('products.resetFilters')}</button>}
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredProducts.map((product, i) => (
                   <div
                     key={product.id}
-                    className="product-card-animate group bg-white rounded-2xl border border-emerald-100/60 shadow-sm overflow-hidden hover:shadow-xl hover:border-emerald-300 transition-all duration-300 flex flex-col h-full"
-                    style={{ animation: `fadeUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) ${i * 80}ms both` }}
+                    className="product-card-animate group bg-white rounded-xl border border-emerald-100/60 shadow-sm overflow-hidden hover:shadow-lg hover:border-emerald-300 transition-all duration-300 flex flex-col h-full"
+                    style={{ animation: `fadeUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) ${i * 60}ms both` }}
                   >
-                    {/* Image Wrapper */}
-                    <div className="relative h-52 w-full overflow-hidden bg-emerald-50/50 flex items-center justify-center border-b border-emerald-50">
+                    {/* Image */}
+                    <div className="relative h-40 w-full overflow-hidden bg-emerald-50/50 flex items-center justify-center border-b border-emerald-50">
                       <img
                         src={getProductImage(product)}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500 ease-out bg-white"
                         onError={(e) => {
                           e.target.src = "https://via.placeholder.com/300x200/10b981/ffffff?text=Produit";
                         }}
                       />
 
-                      {/* Floating Price Tag */}
-                      <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow-md border border-white/10">
-                        <FaTag className="text-[10px] text-emerald-200" />
+                      {/* Price Tag */}
+                      <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[11px] px-2 py-1 rounded-md font-bold flex items-center gap-1 shadow-md">
+                        <FaTag className="text-[8px] text-emerald-200" />
                         <span>{product.price} DH</span>
                       </div>
 
                       {(product.category || product.categorie) && (
-                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-green-700 px-2.5 py-1 rounded-md text-xs font-bold border border-green-100">{product.category || product.categorie}</div>
+                        <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-100">{product.category || product.categorie}</div>
                       )}
                     </div>
 
-                    {/* Content Block */}
-                    <div className="p-5 flex flex-col flex-grow justify-between space-y-4">
-                      <div className="space-y-1.5">
-                        <h3 className="text-base font-bold text-gray-800 line-clamp-1 group-hover:text-emerald-700 transition-colors">
+                    {/* Content */}
+                    <div className="p-3 flex flex-col flex-grow justify-between space-y-2">
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-emerald-700 transition-colors">
                           {product.name}
                         </h3>
 
                         {product.description ? (
-                          <p className="text-gray-500 line-clamp-2 text-xs leading-relaxed">
+                          <p className="text-gray-500 line-clamp-2 text-[11px] leading-relaxed">
                             {product.description}
                           </p>
                         ) : (
-                          <p className="text-gray-300 italic text-[11px]">Aucune description disponible</p>
+                          <p className="text-gray-300 italic text-[10px]">Aucune description</p>
                         )}
                       </div>
 
-                      {/* Cooperative Tag Block */}
-                      <div className="bg-emerald-50/50 rounded-xl p-3 border border-emerald-100/50 flex items-start gap-2.5">
-                        <FaStore className="text-emerald-600 text-xs mt-0.5 flex-shrink-0" />
-                        <div className="space-y-0.5">
-                          <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">{t('products.cooperative')}</p>
-                          <p className="text-xs font-bold text-emerald-800 line-clamp-1">
+                      {/* Cooperative Tag */}
+                      <div className="bg-emerald-50/50 rounded-lg p-2 border border-emerald-100/50 flex items-center gap-2">
+                        <FaStore className="text-emerald-600 text-[10px] flex-shrink-0" />
+                        <div>
+                          <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider">{t('products.cooperative')}</p>
+                          <p className="text-[11px] font-bold text-emerald-800 line-clamp-1">
                             {product.cooperative?.name || t('products.unspecified')}
                           </p>
                         </div>
                       </div>
 
-                      {/* Actions Block */}
-                      <div className="mt-auto space-y-3 pt-2">
-                        <div className="flex justify-between items-center text-xs border-b border-emerald-50/60 pb-2">
-                          <span className="text-sm text-green-600">{t('products.stock')}: <span className="font-semibold text-green-700 ml-1">{product.quantity}</span></span>
+                      {/* Actions */}
+                      <div className="mt-auto space-y-2 pt-1">
+                        <div className="flex justify-between items-center text-[11px] border-b border-emerald-50/60 pb-1.5">
+                          <span className="text-green-600">{t('products.stock')}: <span className="font-semibold text-green-700">{product.quantity}</span></span>
                           <Link
                             to={`/products/${product.id}`}
-                            className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-xs transition-colors border border-emerald-200/40"
+                            className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md font-bold text-[11px] transition-colors border border-emerald-200/40"
                           >
-                            <FaEye className="text-[11px]" />
+                            <FaEye className="text-[10px]" />
                             {t('products.viewDetails')}
                           </Link>
                         </div>
@@ -356,9 +356,9 @@ const Products = () => {
                         {(product.cooperative?.whatsapp || product.cooperative?.phone) && (
                           <button
                             onClick={() => handleWhatsAppClick(product)}
-                            className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-emerald-600/10 active:scale-[0.98]"
+                            className="w-full inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-2 rounded-lg text-xs transition-all shadow-md shadow-emerald-600/10 active:scale-[0.98]"
                           >
-                            <FaWhatsapp className="text-base animate-bounce-slow" />
+                            <FaWhatsapp className="text-sm animate-bounce-slow" />
                             {t('products.buyOnWhatsApp')}
                           </button>
                         )}
