@@ -11,12 +11,14 @@ use Illuminate\Http\Request;
 class PublicCooperativeController extends Controller
 {
     /**
-     * Get all cooperatives (public access)
+     * Get all cooperatives (public access - ONLY APPROVED)
      */
     public function index()
     {
         try {
-            $cooperatives = Cooperative::orderBy('created_at', 'desc')
+            // Filtrer pour ne récupérer que les coopératives approuvées
+            $cooperatives = Cooperative::where('status', 'approved')
+                ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function($coop) {
                     return [
@@ -53,12 +55,13 @@ class PublicCooperativeController extends Controller
     }
 
     /**
-     * Get single cooperative details
+     * Get single cooperative details (ONLY IF APPROVED)
      */
     public function show($id)
     {
         try {
-            $cooperative = Cooperative::findOrFail($id);
+            // S'assurer que la coopérative demandée est aussi approuvée
+            $cooperative = Cooperative::where('status', 'approved')->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -84,19 +87,21 @@ class PublicCooperativeController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cooperative not found',
+                'message' => 'Cooperative not found or not approved yet',
                 'error' => $e->getMessage()
             ], 404);
         }
     }
 
     /**
-     * Get featured cooperatives (latest 4)
+     * Get featured cooperatives (latest 4 - ONLY APPROVED)
      */
     public function featured()
     {
         try {
-            $cooperatives = Cooperative::orderBy('created_at', 'desc')
+            // Filtrer aussi ici pour la page d'accueil
+            $cooperatives = Cooperative::where('status', 'approved')
+                ->orderBy('created_at', 'desc')
                 ->limit(4)
                 ->get()
                 ->map(function($coop) {
@@ -130,8 +135,8 @@ class PublicCooperativeController extends Controller
     public function products($id)
     {
         try {
-            // First verify cooperative exists
-            $cooperative = Cooperative::findOrFail($id);
+            // Vérifier que la coopérative existe et est approuvée
+            $cooperative = Cooperative::where('status', 'approved')->findOrFail($id);
             
             // Get products for this cooperative
             $products = Product::where('cooperative_id', $id)

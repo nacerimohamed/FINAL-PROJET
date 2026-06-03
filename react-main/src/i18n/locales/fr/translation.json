@@ -556,7 +556,7 @@
     "standard": {
       "name": "Offre Standard",
       "description": "Pour les coopératives en pleine croissance.",
-      "period": "DH / an",
+      "period": "DH ",
       "button": "Choisir",
       "feature1": "5 produits maximum",
       "feature2": "Support prioritaire",

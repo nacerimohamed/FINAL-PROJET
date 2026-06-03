@@ -13,21 +13,6 @@ const PLAN_LIMITS = {
 const CooperativeProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({
-    id: null,
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    quantity: '',
-    image: ''
-  });
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [errors, setErrors] = useState({});
-
   const [user] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
   const userPlan = user.plan || 'gratuit';
   const planLimit = PLAN_LIMITS[userPlan] || PLAN_LIMITS.gratuit;
@@ -53,106 +38,6 @@ const CooperativeProducts = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentProduct(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!currentProduct.name.trim()) newErrors.name = 'Le nom est requis';
-    if (!currentProduct.price || parseFloat(currentProduct.price) <= 0) newErrors.price = 'Le prix est invalide';
-    if (!currentProduct.quantity || parseInt(currentProduct.quantity) < 0) newErrors.quantity = 'La quantité est invalide';
-    if (!currentProduct.category) newErrors.category = 'La catégorie est requise';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      const url = editMode
-        ? `http://localhost:8000/api/cooperative/products/${currentProduct.id}`
-        : 'http://localhost:8000/api/cooperative/products';
-
-      const formData = new FormData();
-      formData.append('name', currentProduct.name);
-      formData.append('category', currentProduct.category);
-      formData.append('price', currentProduct.price);
-      formData.append('quantity', currentProduct.quantity);
-      if (currentProduct.description) {
-        formData.append('description', currentProduct.description);
-      }
-      if (imageFile) {
-        formData.append('image', imageFile);
-      }
-      if (editMode) {
-        formData.append('_method', 'PUT');
-      }
-
-      const response = await axios.post(url, formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      if (response.data.success) {
-        alert(editMode ? 'Produit modifié avec succès!' : 'Produit ajouté avec succès!');
-        fetchProducts();
-        resetForm();
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error saving product:', error);
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        alert('Erreur: ' + (error.response?.data?.message || error.message));
-      }
-    }
-  };
-
-  const handleEdit = (product) => {
-    setCurrentProduct({
-      id: product.id,
-      name: product.name,
-      description: product.description || '',
-      price: product.price,
-      category: product.category || '',
-      quantity: product.quantity,
-      image: product.image || ''
-    });
-    setImageFile(null);
-    setImagePreview(
-      product.image
-        ? product.image.startsWith('http')
-          ? product.image
-          : `http://localhost:8000/storage/${product.image}`
-        : null
-    );
-    setEditMode(true);
-    setShowModal(true);
-  };
-
   const handleDelete = async (id) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return;
 
@@ -170,31 +55,6 @@ const CooperativeProducts = () => {
       console.error('Error deleting product:', error);
       alert('Erreur lors de la suppression');
     }
-  };
-
-  const resetForm = () => {
-    setCurrentProduct({
-      id: null,
-      name: '',
-      description: '',
-      price: '',
-      category: '',
-      quantity: '',
-      image: ''
-    });
-    setImageFile(null);
-    setImagePreview(null);
-    setEditMode(false);
-    setErrors({});
-  };
-
-  const handleAddNew = () => {
-    if (isLimitReached) {
-      alert(`Vous avez atteint la limite de produits pour votre plan (${userPlan}). Veuillez passer à un plan supérieur.`);
-      return;
-    }
-    resetForm();
-    setShowModal(true);
   };
 
   return (
@@ -228,15 +88,14 @@ const CooperativeProducts = () => {
                 Produits: <strong className="ml-1">{products.length} / {planLimit === Infinity ? 'Illimité' : planLimit}</strong>
               </div>
             </div>
-            <button
-              onClick={handleAddNew}
-              disabled={isLimitReached}
-              className={`w-full sm:w-auto text-white font-semibold py-2.5 px-4 md:py-3 md:px-6 rounded-lg transition shadow-md text-sm md:text-base ${
-                isLimitReached ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+            <Link
+              to="/cooperative/products/add"
+              className={`w-full sm:w-auto text-white font-semibold py-2.5 px-4 md:py-3 md:px-6 rounded-lg transition shadow-md text-sm md:text-base text-center flex items-center justify-center ${
+                isLimitReached ? 'bg-gray-400 cursor-not-allowed pointer-events-none' : 'bg-green-600 hover:bg-green-700'
               }`}
             >
               + Ajouter un produit
-            </button>
+            </Link>
           </div>
           
           {isLimitReached && (
@@ -257,7 +116,7 @@ const CooperativeProducts = () => {
             </div>
           )}
 
-          {/* Products Table - Card View on Mobile, Table on Desktop */}
+          {/* Products Table */}
           {loading ? (
             <div className="text-center py-8 md:py-12">
               <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-green-600 mx-auto"></div>
@@ -303,12 +162,12 @@ const CooperativeProducts = () => {
                               </p>
                             </div>
                             <div className="flex gap-2 mt-3">
-                              <button
-                                onClick={() => handleEdit(product)}
-                                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded text-xs md:text-sm transition"
+                              <Link
+                                to={`/cooperative/products/edit/${product.id}`}
+                                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded text-xs md:text-sm transition text-center flex items-center justify-center font-medium"
                               >
                                 Modifier
-                              </button>
+                              </Link>
                               <button
                                 onClick={() => handleDelete(product.id)}
                                 className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded text-xs md:text-sm transition"
@@ -374,12 +233,12 @@ const CooperativeProducts = () => {
                             </td>
                             <td className="px-4 md:px-6 py-3 md:py-4">
                               <div className="flex justify-center gap-2">
-                                <button
-                                  onClick={() => handleEdit(product)}
-                                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-xs md:text-sm transition"
+                                <Link
+                                  to={`/cooperative/products/edit/${product.id}`}
+                                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-xs md:text-sm transition text-center flex items-center justify-center font-medium"
                                 >
                                   Modifier
-                                </button>
+                                </Link>
                                 <button
                                   onClick={() => handleDelete(product.id)}
                                   className="bg-red-500 hover:bg-red-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded text-xs md:text-sm transition"
@@ -399,164 +258,6 @@ const CooperativeProducts = () => {
           )}
         </div>
       </div>
-
-      {/* Modal - Responsive */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 md:p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-4 md:p-6">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
-                {editMode ? 'Modifier le Produit' : 'Ajouter un Produit'}
-              </h2>
-
-              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
-                {/* Product Name */}
-                <div>
-                  <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                    Nom du Produit *
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={currentProduct.name}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Nom du produit"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs md:text-sm mt-1">{errors.name}</p>
-                  )}
-                </div>
-
-                {/* Category */}
-                <div>
-                  <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                    Catégorie *
-                  </label>
-                  <input
-                    list="categories"
-                    name="category"
-                    value={currentProduct.category}
-                    onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.category ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Choisir ou écrire une catégorie"
-                  />
-                  <datalist id="categories">
-                    <option value="Amandes" />
-                    <option value="Dattes" />
-                    <option value="Miel" />
-                    <option value="Huile d'argan" />
-                    <option value="Safran" />
-                  </datalist>
-                  {errors.category && (
-                    <p className="text-red-500 text-xs md:text-sm mt-1">{errors.category}</p>
-                  )}
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={currentProduct.description}
-                    onChange={handleInputChange}
-                    rows="3"
-                    className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Description du produit"
-                  />
-                </div>
-
-                {/* Price and Quantity */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                  <div>
-                    <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                      Prix (DH) *
-                    </label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={currentProduct.price}
-                      onChange={handleInputChange}
-                      step="0.01"
-                      min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.price ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="0.00"
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 text-xs md:text-sm mt-1">{errors.price}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                      Stock (Quantité) *
-                    </label>
-                    <input
-                      type="number"
-                      name="quantity"
-                      value={currentProduct.quantity}
-                      onChange={handleInputChange}
-                      min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.quantity ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="0"
-                    />
-                    {errors.quantity && (
-                      <p className="text-red-500 text-xs md:text-sm mt-1">{errors.quantity}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Image Upload */}
-                <div>
-                  <label className="block text-sm md:text-base text-gray-700 font-semibold mb-1 md:mb-2">
-                    Image du produit
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-3 md:file:mr-4 file:py-1.5 md:file:py-2 file:px-3 md:file:px-4 file:rounded-lg file:border-0 file:text-xs md:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                  />
-                  {imagePreview && (
-                    <div className="mt-2 md:mt-3">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-24 h-24 md:w-32 md:h-32 object-contain bg-white rounded-lg shadow-sm border border-gray-100"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4 md:mt-6">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      resetForm();
-                    }}
-                    className="w-full sm:w-auto px-4 md:px-6 py-2 text-sm md:text-base border border-gray-300 rounded-lg hover:bg-gray-100 transition"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-4 md:px-6 py-2 text-sm md:text-base bg-green-600 hover:bg-green-700 text-white rounded-lg transition"
-                  >
-                    {editMode ? 'Mettre à jour' : 'Ajouter le produit'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

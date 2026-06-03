@@ -37,16 +37,9 @@ const Statistics = () => {
   return (
     <div className="mt-0">
       <div className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 rounded-2xl p-6 lg:p-10 shadow-lg border-b-4 border-emerald-500 mx-4 sm:mx-6 lg:mx-auto lg:max-w-7xl my-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-4">
 
-          {/* Stat 1: Clients */}
-          <div className="text-center space-y-1">
-            <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaSmile /></div>
-            <div className="text-2xl lg:text-3xl font-black text-white">500+</div>
-            <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-              {t("testimonials.statClients")}
-            </div>
-          </div>
+          
 
           {/* Stat 2: Cooperatives */}
           <div className="text-center space-y-1 border-l border-emerald-700/50">
@@ -70,14 +63,7 @@ const Statistics = () => {
             </div>
           </div>
 
-          {/* Stat 4: Satisfaction */}
-          <div className="text-center space-y-1 border-l border-emerald-700/50">
-            <div className="text-amber-400 text-lg sm:text-xl flex justify-center"><FaStar /></div>
-            <div className="text-2xl lg:text-3xl font-black text-white">98%</div>
-            <div className="text-emerald-100/80 text-[11px] font-bold uppercase tracking-wider">
-              {t("testimonials.statSatisfaction")}
-            </div>
-          </div>
+          
 
         </div>
       </div>

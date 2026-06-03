@@ -11,11 +11,12 @@ const EditProduct = () => {
     quantity: "",
     category: "",
   });
-  const [currentImage, setCurrentImage] = useState(null);
-  const [image, setImage] = useState(null);
+  const [existingImages, setExistingImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState("");
+  const [imageError, setImageError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const EditProduct = () => {
           quantity: product.quantity,
           category: product.category || "",
         });
-        setCurrentImage(product.image);
+        setExistingImages(product.images || []);
       } catch (err) {
         setError("Erreur lors du chargement du produit.");
       } finally {
@@ -48,19 +49,64 @@ const EditProduct = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    setImageError("");
+    const files = Array.from(e.target.files);
+    
+    if (existingImages.length + newImages.length + files.length > 5) {
+      setImageError("Vous ne pouvez pas dépasser 5 images au total.");
+      return;
+    }
+
+    const newImgs = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+
+    setNewImages((prev) => [...prev, ...newImgs]);
+  };
+
+  const removeNewImage = (index) => {
+    setNewImages((prev) => {
+      const updated = [...prev];
+      URL.revokeObjectURL(updated[index].preview);
+      updated.splice(index, 1);
+      return updated;
+    });
+  };
+
+  const removeExistingImage = (idToRemove) => {
+    setImageError("");
+    setExistingImages((prev) => prev.filter((img) => img.id !== idToRemove));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setImageError("");
+
+    const totalCount = existingImages.length + newImages.length;
+    if (totalCount < 3) {
+      setImageError("Le produit doit avoir au moins 3 images (maximum 5).");
+      setLoading(false);
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-      if (image) data.append("image", image);
+      
+      // Append retained images
+      existingImages.forEach((img) => {
+        data.append("retained_images[]", img.id);
+      });
+      
+      // Append new files
+      newImages.forEach((imgObj) => {
+        data.append("images[]", imgObj.file);
+      });
+
       data.append("_method", "PUT");
 
       await axios.post(`http://127.0.0.1:8000/api/cooperative/products/${id}`, data, {
@@ -163,20 +209,90 @@ const EditProduct = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Image du produit</label>
-              {currentImage && (
-                <div className="mb-4">
-                  <p className="text-xs text-gray-500 mb-1">Image actuelle :</p>
-                  <img src={currentImage} alt="Current" className="h-20 w-20 object-cover rounded" />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Images du produit (Min 3, Max 5) *
+              </label>
+
+              {/* Combined Image Gallery (Existing & New) */}
+              {(existingImages.length > 0 || newImages.length > 0) && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-4">
+                  {/* Existing Images */}
+                  {existingImages.map((img, index) => (
+                    <div key={`existing-${img.id}`} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                      <img
+                        src={img.url}
+                        alt="Existing Preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeExistingImage(img.id)}
+                        className="absolute top-1.5 right-1.5 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 shadow-md transition duration-150 ease-in-out"
+                        title="Supprimer cette image"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                      <div className="absolute bottom-0 left-0 right-0 bg-blue-600 bg-opacity-75 text-white text-[10px] py-1 text-center font-medium">
+                        {index === 0 ? "Principale" : `Image ${index + 1}`}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* New Images */}
+                  {newImages.map((img, index) => {
+                    const displayIndex = existingImages.length + index + 1;
+                    const isFirstOverall = existingImages.length === 0 && index === 0;
+                    return (
+                      <div key={`new-${index}`} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-55 font-sans">
+                        <img
+                          src={img.preview}
+                          alt="New Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeNewImage(index)}
+                          className="absolute top-1.5 right-1.5 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 shadow-md transition duration-150 ease-in-out"
+                          title="Supprimer cette image"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-green-600 bg-opacity-75 text-white text-[10px] py-1 text-center font-medium">
+                          {isFirstOverall ? "Principale (Nouvelle)" : `Nouvelle Image ${displayIndex}`}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full rounded-lg border-gray-300 border p-2 focus:ring-green-500 focus:border-green-500"
-              />
-              <p className="text-xs text-gray-500 mt-1">Laissez vide pour conserver l'image actuelle.</p>
+
+              {/* Upload Dropzone */}
+              {existingImages.length + newImages.length < 5 && (
+                <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-green-500 hover:bg-green-50 transition cursor-pointer text-center">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="mt-2 text-sm font-semibold text-gray-700">Ajouter des images</p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Glissez-déposez ou cliquez (Encore {5 - (existingImages.length + newImages.length)} max)
+                  </p>
+                </div>
+              )}
+
+              {imageError && (
+                <p className="text-red-500 text-xs mt-2 font-semibold">{imageError}</p>
+              )}
             </div>
 
             <div className="flex justify-end pt-4 border-t">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Cooperative;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -44,7 +45,8 @@ class CooperativeProductController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'category' => 'nullable|string|max:100',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'images' => 'required|array|min:3|max:5',
+                'images.*' => 'image|mimes:jpg,jpeg,png,gif,webp|max:2048',
                 'price' => 'required|numeric|min:0',
                 'quantity' => 'required|integer|min:0',
             ]);
@@ -87,11 +89,17 @@ class CooperativeProductController extends Controller
             // ========================================
 
             $imagePath = null;
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/products'), $imageName);
-                $imagePath = url('uploads/products/' . $imageName);
+            $uploadedImages = [];
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('uploads/products'), $imageName);
+                    $url = url('uploads/products/' . $imageName);
+                    $uploadedImages[] = $url;
+                    if ($index === 0) {
+                        $imagePath = $url;
+                    }
+                }
             }
 
             $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
@@ -105,6 +113,13 @@ class CooperativeProductController extends Controller
                 'price' => $request->price,
                 'quantity' => $request->quantity,
             ]);
+
+            foreach ($uploadedImages as $url) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'url' => $url,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -126,7 +141,7 @@ class CooperativeProductController extends Controller
     {
         try {
             $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
-            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
+            $product = Product::with('images')->where('cooperative_id', $coopId)->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -147,13 +162,15 @@ class CooperativeProductController extends Controller
     {
         try {
             $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
-            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
+            $product = Product::with('images')->where('cooperative_id', $coopId)->findOrFail($id);
 
             $validator = Validator::make($request->all(), [
                 'name' => 'sometimes|string|max:255',
                 'description' => 'sometimes|nullable|string',
                 'category' => 'sometimes|string|max:100',
-                'image' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'images' => 'sometimes|array',
+                'images.*' => 'image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+                'retained_images' => 'sometimes|array',
                 'price' => 'sometimes|numeric|min:0',
                 'quantity' => 'sometimes|integer|min:0',
             ]);
@@ -166,20 +183,74 @@ class CooperativeProductController extends Controller
                 ], 422);
             }
 
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                // Delete old image if exists
-                if ($product->image && file_exists(public_path(parse_url($product->image, PHP_URL_PATH)))) {
-                    @unlink(public_path(parse_url($product->image, PHP_URL_PATH)));
+            // Handle image updates (retaining + adding new)
+            $hasImageUpdate = $request->has('retained_images') || $request->hasFile('images');
+            if ($hasImageUpdate) {
+                $retainedIds = $request->input('retained_images', []);
+                if (!is_array($retainedIds)) {
+                    $retainedIds = json_decode($retainedIds, true) ?: [];
                 }
                 
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/products'), $imageName);
-                $product->image = url('uploads/products/' . $imageName);
+                // Ensure values are integers
+                $retainedIds = array_map('intval', $retainedIds);
+
+                // Ensure retained images belong to this product
+                $productImageIds = $product->images->pluck('id')->toArray();
+                foreach ($retainedIds as $idVal) {
+                    if (!in_array($idVal, $productImageIds)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Images invalides.',
+                        ], 422);
+                    }
+                }
+
+                $newImagesCount = $request->hasFile('images') ? count($request->file('images')) : 0;
+                $totalCount = count($retainedIds) + $newImagesCount;
+
+                if ($totalCount < 3 || $totalCount > 5) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Le produit doit avoir entre 3 et 5 images.',
+                        'errors' => [
+                            'images' => ['Le produit doit avoir entre 3 et 5 images.']
+                        ]
+                    ], 422);
+                }
+
+                // Delete physical files and records of images that are not retained
+                foreach ($product->images as $img) {
+                    if (!in_array($img->id, $retainedIds)) {
+                        $filePath = public_path(parse_url($img->url, PHP_URL_PATH));
+                        if (file_exists($filePath)) {
+                            @unlink($filePath);
+                        }
+                        $img->delete();
+                    }
+                }
+
+                // Save new images
+                if ($request->hasFile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                        $image->move(public_path('uploads/products'), $imageName);
+                        $url = url('uploads/products/' . $imageName);
+
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'url' => $url,
+                        ]);
+                    }
+                }
+
+                // Refresh images relationship to set first image
+                $product->refresh();
+                $firstImage = $product->images()->first();
+                $product->image = $firstImage ? $firstImage->url : null;
+                $product->save();
             }
 
-            $product->update($request->except(['image', '_method']));
+            $product->update($request->except(['image', 'images', 'retained_images', '_method']));
 
             return response()->json([
                 'success' => true,
@@ -201,8 +272,15 @@ class CooperativeProductController extends Controller
     {
         try {
             $coopId = \App\Models\Cooperative::where('email', Auth::user()->email)->value('id') ?? Auth::id();
-            $product = Product::where('cooperative_id', $coopId)->findOrFail($id);
+            $product = Product::with('images')->where('cooperative_id', $coopId)->findOrFail($id);
             
+            foreach ($product->images as $img) {
+                $filePath = public_path(parse_url($img->url, PHP_URL_PATH));
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+            }
+
             if ($product->image && file_exists(public_path(parse_url($product->image, PHP_URL_PATH)))) {
                 @unlink(public_path(parse_url($product->image, PHP_URL_PATH)));
             }

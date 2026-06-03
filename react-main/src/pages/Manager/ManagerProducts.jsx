@@ -13,7 +13,7 @@ const ManagerProducts = () => {
     name: '',
     description: '',
     price: '',
-    category: '', 
+    category: '',
     quantity: '',
     cooperative_id: '',
     image: ''
@@ -107,15 +107,15 @@ const ManagerProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       const token = localStorage.getItem('token');
-      const url = editMode 
+      const url = editMode
         ? `http://localhost:8000/api/manager/products/${currentProduct.id}`
         : 'http://localhost:8000/api/manager/products';
-      
+
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('name', currentProduct.name);
@@ -135,9 +135,9 @@ const ManagerProducts = () => {
       if (editMode) {
         formData.append('_method', 'PUT');
       }
-      
+
       const response = await axios.post(url, formData, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
@@ -171,13 +171,13 @@ const ManagerProducts = () => {
       image: product.image || ''
     });
     setImageFile(null);
-   setImagePreview(
-  product.image
-    ? product.image.startsWith('http')
-      ? product.image
-      : `http://localhost:8000/storage/${product.image}`
-    : null
-);
+    setImagePreview(
+      product.image
+        ? product.image.startsWith('http')
+          ? product.image
+          : `http://localhost:8000/storage/${product.image}`
+        : null
+    );
     setGalleryFiles([]);
     setGalleryPreviews(product.images ? product.images.map(img => img.url) : []);
     setEditMode(true);
@@ -230,7 +230,7 @@ const ManagerProducts = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       <ManagerSidebar />
-      
+
       <div className="flex-1 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -278,13 +278,12 @@ const ManagerProducts = () => {
                                 <h3 className="font-semibold text-gray-800 text-base md:text-lg">{product.name}</h3>
                                 <p className="text-xs md:text-sm text-gray-500 mt-1">{product.description?.substring(0, 50)}...</p>
                               </div>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                product.quantity > 10 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : product.quantity > 0 
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.quantity > 10
+                                  ? 'bg-green-100 text-green-800'
+                                  : product.quantity > 0
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
                                 Stock: {product.quantity}
                               </span>
                             </div>
@@ -361,13 +360,12 @@ const ManagerProducts = () => {
                               {product.price}
                             </td>
                             <td className="px-4 md:px-6 py-3 md:py-4">
-                              <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${
-                                product.quantity > 10 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : product.quantity > 0 
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
+                              <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm ${product.quantity > 10
+                                  ? 'bg-green-100 text-green-800'
+                                  : product.quantity > 0
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
                                 {product.quantity}
                               </span>
                             </td>
@@ -407,7 +405,7 @@ const ManagerProducts = () => {
               <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
                 {editMode ? 'Edit Product' : 'Add New Product'}
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                 {/* Cooperative Selection */}
                 <div>
@@ -418,9 +416,8 @@ const ManagerProducts = () => {
                     name="cooperative_id"
                     value={currentProduct.cooperative_id}
                     onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.cooperative_id ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.cooperative_id ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   >
                     <option value="">Select a cooperative</option>
                     {cooperatives.map(coop => (
@@ -444,9 +441,8 @@ const ManagerProducts = () => {
                     name="name"
                     value={currentProduct.name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Enter product name"
                   />
                   {errors.name && (
@@ -468,31 +464,31 @@ const ManagerProducts = () => {
                     placeholder="Enter product description"
                   />
                 </div>
- <div>
-  <label className="block font-semibold mb-2">
-    Catégorie *
-  </label>
+                <div>
+                  <label className="block font-semibold mb-2">
+                    Catégorie *
+                  </label>
 
-  <input
-  list="categories"
-  name="category"
-  value={currentProduct.category}
-  onChange={handleInputChange}
-  className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-  placeholder="Choisir ou écrire une catégorie"
-/>
+                  <input
+                    list="categories"
+                    name="category"
+                    value={currentProduct.category}
+                    onChange={handleInputChange}
+                    className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Choisir ou écrire une catégorie"
+                  />
 
-<datalist id="categories">
-  <option value="Amandes" />
-  <option value="Dattes" />
-  <option value="Miel" />
-  <option value="Huile d'argan" />
-  <option value="Safran" />
-</datalist>
-{errors.category && (
-  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.category}</p>
-)}
-</div>
+                  <datalist id="categories">
+                    <option value="Amandes" />
+                    <option value="Dattes" />
+                    <option value="Miel" />
+                    <option value="Huile d'argan" />
+                    <option value="Safran" />
+                  </datalist>
+                  {errors.category && (
+                    <p className="text-red-500 text-xs md:text-sm mt-1">{errors.category}</p>
+                  )}
+                </div>
                 {/* Price and Quantity */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                   <div>
@@ -506,9 +502,8 @@ const ManagerProducts = () => {
                       onChange={handleInputChange}
                       step="0.01"
                       min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.price ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.price ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0.00"
                     />
                     {errors.price && (
@@ -525,9 +520,8 @@ const ManagerProducts = () => {
                       value={currentProduct.quantity}
                       onChange={handleInputChange}
                       min="0"
-                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.quantity ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`w-full px-3 md:px-4 py-2 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.quantity ? 'border-red-500' : 'border-gray-300'
+                        }`}
                       placeholder="0"
                     />
                     {errors.quantity && (
@@ -549,9 +543,9 @@ const ManagerProducts = () => {
                   />
                   {imagePreview && (
                     <div className="mt-2 md:mt-3">
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
                         className="w-24 h-24 md:w-32 md:h-32 object-contain bg-white border border-gray-100 rounded-lg shadow-sm"
                       />
                     </div>
