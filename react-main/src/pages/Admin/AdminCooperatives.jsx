@@ -238,10 +238,10 @@ const AdminCooperatives = () => {
 
   // Filtrer les coopératives
   const filteredCooperatives = cooperatives.filter(coop =>
-    coop.nom?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (coop.name || coop.nom)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     coop.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     coop.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coop.adresse?.toLowerCase().includes(searchTerm.toLowerCase())
+    (coop.address || coop.adresse)?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredCooperatives.length / itemsPerPage);
@@ -584,8 +584,8 @@ const AdminCooperatives = () => {
                     </div>
                     <input
                       type="text"
-                      name="nom"
-                      value={formData.nom}
+                      name="name"
+                      value={formData.name}
                       onChange={handleChange}
                       className="w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all shadow-sm"
                       required
@@ -725,8 +725,8 @@ const AdminCooperatives = () => {
                     </div>
                     <input
                       type="text"
-                      name="adresse"
-                      value={formData.adresse}
+                      name="address"
+                      value={formData.address}
                       onChange={handleChange}
                       className="w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all shadow-sm"
                       placeholder="Adresse complète"

@@ -186,6 +186,7 @@ class ProductController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'cooperative_id' => 'sometimes|exists:cooperatives,id',
+
                 'name'           => 'sometimes|string|max:255',
                 'description'    => 'sometimes|nullable|string',
                 'category'       => 'sometimes|string|max:100',

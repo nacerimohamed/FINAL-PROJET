@@ -15,7 +15,7 @@ class Cooperative extends Model
         'ville',
         'description',
         'adresse',
-        'region',       // ← added for Drâa-Tafilalet map feature
+        'region',
         'image',
         'contact',
         'tele',
@@ -24,6 +24,10 @@ class Cooperative extends Model
         'whatsapp',
         'latitude',
         'longitude',
+        'google_maps_link',
+        'charte',
+        'status',
+        'is_approved',
     ];
 
     /**

@@ -17,11 +17,9 @@ class CooperativeController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Cooperative::where('is_approved', 1)
-                ->where('status', 'approved')
-                ->orderBy('created_at', 'desc');
+            $query = Cooperative::orderBy('created_at', 'desc');
 
-            // ✅ FILTER BY VILLE (IMPORTANT FIX)
+            // Filter by ville if provided (used by public map)
             if ($request->filled('ville')) {
                 $query->whereRaw('LOWER(ville) = ?', [strtolower(trim($request->ville))]);
             }
@@ -48,21 +46,21 @@ class CooperativeController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'nom' => 'required|string|max:255',
-                'email' => 'required|email|unique:cooperatives,email',
+            // Accept both 'name' (React form) and 'nom' (legacy) aliases
+            $nom = $request->input('name') ?? $request->input('nom');
+            $adresse = $request->input('address') ?? $request->input('adresse');
+
+            $validator = Validator::make(array_merge($request->all(), ['nom' => $nom]), [
+                'nom'     => 'required|string|max:255',
+                'email'   => 'required|email|unique:cooperatives,email',
                 'description' => 'nullable|string',
-                'adresse' => 'nullable|string',
-
-                // ✅ IMPORTANT FIELD
-                'ville' => 'nullable|string|max:100',
-
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+                'ville'   => 'nullable|string|max:100',
+                'image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
                 'contact' => 'nullable|string',
-                'tele' => 'nullable|string',
+                'tele'    => 'nullable|string',
                 'instagram' => 'nullable|string',
-                'facebook' => 'nullable|string',
-                'whatsapp' => 'nullable|string',
+                'facebook'  => 'nullable|string',
+                'whatsapp'  => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -81,27 +79,27 @@ class CooperativeController extends Controller
                 $imagePath = 'uploads/cooperatives/' . $name;
             }
 
+            // Admin-created cooperatives are pre-approved
             $cooperative = Cooperative::create([
-                'nom' => $request->nom,
-                'email' => $request->email,
+                'nom'         => $nom,
+                'email'       => $request->email,
                 'description' => $request->description,
-                'adresse' => $request->adresse,
-
-                // ✅ FIXED FIELD
-                'ville' => $request->ville,
-
-                'image' => $imagePath,
-                'contact' => $request->contact,
-                'tele' => $request->tele,
-                'instagram' => $request->instagram,
-                'facebook' => $request->facebook,
-                'whatsapp' => $request->whatsapp,
+                'adresse'     => $adresse,
+                'ville'       => $request->ville,
+                'image'       => $imagePath,
+                'contact'     => $request->contact,
+                'tele'        => $request->tele,
+                'instagram'   => $request->instagram,
+                'facebook'    => $request->facebook,
+                'whatsapp'    => $request->whatsapp,
+                'status'      => 'approved',
+                'is_approved' => true,
             ]);
 
             return response()->json([
                 'success' => true,
                 'data' => $cooperative,
-                'message' => 'Created successfully',
+                'message' => 'Coopérative ajoutée avec succès',
             ], 201);
 
         } catch (\Exception $e) {
@@ -128,16 +126,21 @@ class CooperativeController extends Controller
         try {
             $cooperative = Cooperative::findOrFail($id);
 
+            // Accept both 'name'/'address' (React form) and 'nom'/'adresse' (legacy)
+            $nom    = $request->input('name') ?? $request->input('nom');
+            $adresse = $request->input('address') ?? $request->input('adresse');
+
             $validator = Validator::make($request->all(), [
-                'nom' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:cooperatives,email,' . $id,
+                'email'       => 'sometimes|email|unique:cooperatives,email,' . $id,
                 'description' => 'nullable|string',
-                'adresse' => 'nullable|string',
-
-                // ✅ FIXED
-                'ville' => 'nullable|string|max:100',
-
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+                'ville'       => 'nullable|string|max:100',
+                'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+                'contact'     => 'nullable|string',
+                'tele'        => 'nullable|string',
+                'instagram'   => 'nullable|string',
+                'facebook'    => 'nullable|string',
+                'whatsapp'    => 'nullable|string',
+                'google_maps_link' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -156,17 +159,23 @@ class CooperativeController extends Controller
                 $file = $request->file('image');
                 $name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/cooperatives'), $name);
-
                 $cooperative->image = 'uploads/cooperatives/' . $name;
             }
 
-            // UPDATE DATA
-            $cooperative->update($request->except(['image', '_method']));
+            // Build update data, mapping React field names to DB field names
+            $updateData = $request->except(['image', '_method', 'name', 'address', 'nom', 'adresse']);
+            if ($nom)     $updateData['nom']    = $nom;
+            if ($adresse) $updateData['adresse'] = $adresse;
+
+            $cooperative->update($updateData);
+            if ($request->hasFile('image')) {
+                $cooperative->save();
+            }
 
             return response()->json([
                 'success' => true,
-                'data' => $cooperative,
-                'message' => 'Updated successfully',
+                'data' => $cooperative->fresh(),
+                'message' => 'Coopérative mise à jour avec succès',
             ]);
 
         } catch (\Exception $e) {
@@ -176,6 +185,7 @@ class CooperativeController extends Controller
             ], 500);
         }
     }
+
 
     // =========================================================
     // DELETE
