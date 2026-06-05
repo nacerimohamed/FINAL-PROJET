@@ -25,12 +25,17 @@ const Cooperatives = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
 
+  // ✅ CORRECTION: Utiliser la même URL que votre backend Laravel
+  const API_URL = "http://127.0.0.1:8000"; // Changé de localhost à 127.0.0.1
+
   useEffect(() => { fetchCooperatives(); }, []);
 
   const fetchCooperatives = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:8000/api/cooperatives");
+      // ✅ CORRECTION: Appel à l'API existante (inchangée)
+      const res = await axios.get(`${API_URL}/api/cooperatives`);
+      
       if (res.data.success) {
         const data = res.data.data.map((coop) => {
           let cityId = null;
@@ -55,17 +60,18 @@ const Cooperatives = () => {
         setCooperatives(data);
       }
     } catch (err) {
+      console.error("Error fetching cooperatives:", err);
       setError(t("cooperatives.error"));
     } finally {
       setLoading(false);
     }
   };
 
- const getImage = (coop) => {
-  if (!coop.image) return null;
-
-  return `http://localhost:8000/${coop.image}`;
-};
+  const getImage = (coop) => {
+    if (!coop.image) return null;
+    // ✅ CORRECTION: URL correcte pour les images
+    return `${API_URL}/${coop.image}`;
+  };
 
   // Counts per province
   const counts = {};
@@ -121,7 +127,7 @@ const Cooperatives = () => {
     <>
       <Navbar />
 
-      {/* Hero Header b lkhder lghami9 premium */}
+      {/* Hero Header */}
       <div className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 overflow-hidden py-5 border-b-4 border-emerald-500">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
         
@@ -150,7 +156,7 @@ const Cooperatives = () => {
 
           {/* Action Filter Bar */}
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8 pb-6 border-b border-emerald-100/60">
-            {/* Search Input m3a icon */}
+            {/* Search Input */}
             <div className="relative w-full md:w-96 group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-600">
                 <FaSearch className="text-sm" />
@@ -266,7 +272,7 @@ const Cooperatives = () => {
                         )}
                       </div>
 
-                      {/* CTA Button khder */}
+                      {/* CTA Button */}
                       <Link 
                         to={`/cooperatives/${coop.id}`} 
                         className="inline-flex items-center justify-center gap-1 w-full bg-emerald-50 border border-emerald-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 text-emerald-700 px-4 py-2 rounded-xl transition-all duration-200 font-bold text-xs"

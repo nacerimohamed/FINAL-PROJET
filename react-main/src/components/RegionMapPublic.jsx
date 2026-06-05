@@ -65,7 +65,7 @@ const RegionMapPublic = ({ selected, onSelect, counts = {} }) => {
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Banner */}
       <div style={{ background: "#166141", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 22px" }}>
-        <span style={{ color: "#fff", fontSize: 16, fontWeight: 700 }}>🗺️ Explorer par province</span>
+        <span style={{ color: "#fff", fontSize: 16, fontWeight: 700 }}> Explorer par province</span>
         {selected && (
           <button onClick={() => onSelect(null)} style={{ color: "#d1ce4f", fontSize: 13, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>
             ✕ Réinitialiser

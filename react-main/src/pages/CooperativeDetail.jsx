@@ -215,10 +215,10 @@ const CooperativeDetail = () => {
 
       {/* Breadcrumb */}
       <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center text-sm text-slate-500 gap-2">
-          <Link to="/" className="hover:text-emerald-600 transition-colors">Accueil</Link>
+        <div className={`max-w-7xl mx-auto flex items-center text-sm text-slate-500 gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Link to="/" className="hover:text-emerald-600 transition-colors">{t('productDetail.home')}</Link>
           <span>/</span>
-          <Link to="/cooperatives" className="hover:text-emerald-600 transition-colors">Coopératives</Link>
+          <Link to="/cooperatives" className="hover:text-emerald-600 transition-colors">{t('cooperativeDetail.backToCooperatives')}</Link>
           <span>/</span>
           <span className="font-medium text-slate-800">{cooperative?.nom}</span>
         </div>
@@ -242,89 +242,69 @@ const CooperativeDetail = () => {
 
           {/* Info */}
           <div className="flex-1 flex flex-col w-full z-10">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+            <div className={`flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
               <div>
-                <div className="flex items-center gap-3 mb-2">
+                <div className={`flex items-center gap-3 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{cooperative.nom}</h1>
                 </div>
                 <p className="text-emerald-50/80 text-sm md:text-base max-w-2xl leading-relaxed">
-                  {cooperative.description || "Aucune description fournie pour le moment."}
+                  {cooperative.description || t('cooperativeDetail.noDescription')}
                 </p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2 shrink-0 mt-2 sm:mt-0">
-                {cooperative.whatsapp && (
-                  <button onClick={handleWhatsAppClick} className="bg-amber-400 hover:bg-amber-500 text-amber-950 p-2.5 md:px-4 md:py-2.5 rounded-xl transition shadow-md flex items-center gap-2 font-bold text-sm">
-                    <FaWhatsapp size={18} />
-                    <span className="hidden md:inline">WhatsApp</span>
-                  </button>
-                )}
-                {cooperative.tele && (
-                  <button onClick={handlePhoneClick} className="bg-emerald-700 hover:bg-emerald-600 text-white p-2.5 md:px-4 md:py-2.5 rounded-xl transition shadow-md flex items-center gap-2 font-semibold text-sm border border-emerald-600">
-                    <FaPhone size={16} />
-                    <span className="hidden md:inline">Appeler</span>
-                  </button>
-                )}
-                {cooperative.email && (
-                  <button onClick={handleEmailClick} className="bg-emerald-700 hover:bg-emerald-600 text-white p-2.5 rounded-xl transition shadow-md border border-emerald-600" title="Email">
-                    <FaEnvelope size={16} />
-                  </button>
-                )}
-              </div>
             </div>
 
             {/* Inline key info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6 border-t border-emerald-700/50 pt-5 mt-auto">
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaMapMarkerAlt className="text-amber-400" />
                 </div>
-                <span className="truncate" title={cooperative.adresse}>{cooperative.adresse || "Adresse non renseignée"}</span>
+                <span className="truncate" title={cooperative.adresse}>{cooperative.adresse || t('cooperativeDetail.addressNotProvided')}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaPhone className="text-amber-400" />
                 </div>
-                <span>{cooperative.tele || "Téléphone non renseigné"}</span>
+                <span>{cooperative.tele || t('cooperativeDetail.phoneNotProvided')}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaEnvelope className="text-amber-400" />
                 </div>
-                <span className="truncate" title={cooperative.email}>{cooperative.email || "Email non renseigné"}</span>
+                <span className="truncate" title={cooperative.email}>{cooperative.email || t('cooperativeDetail.emailNotProvided')}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaUser className="text-amber-400" />
                 </div>
-                <span className="truncate" title={cooperative.contact}>{cooperative.contact || "Responsable non défini"}</span>
+                <span className="truncate" title={cooperative.contact}>{cooperative.contact || t('cooperativeDetail.contactNotDefined')}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaBox className="text-amber-400" />
                 </div>
-                <span>{products.length} produit(s)</span>
+                <span>{products.length} {t('cooperativeDetail.products')}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-emerald-50">
+              <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaCalendarAlt className="text-amber-400" />
                 </div>
-                <span>Membre depuis {new Date(cooperative.created_at || Date.now()).getFullYear()}</span>
+                <span>{t('cooperativeDetail.memberSince')} {new Date(cooperative.created_at || Date.now()).getFullYear()}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
 
           {/* Main Left - Products */}
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                <h2 className="text-xl font-bold text-slate-900">Produits de la coopérative</h2>
-                <span className="bg-amber-100 text-amber-900 text-sm font-bold px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">{products.length} Articles</span>
+              <div className={`flex justify-between items-center mb-6 pb-4 border-b border-slate-100 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <h2 className="text-xl font-bold text-slate-900">{t('cooperativeDetail.productsOf')}</h2>
+                <span className="bg-amber-100 text-amber-900 text-sm font-bold px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">{products.length} {t('cooperativeDetail.items')}</span>
               </div>
 
               {products.length === 0 ? (
@@ -332,7 +312,7 @@ const CooperativeDetail = () => {
                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                     <FaBox className="text-slate-300 w-10 h-10" />
                   </div>
-                  <p className="text-slate-500 font-medium">Aucun produit disponible pour le moment.</p>
+                  <p className="text-slate-500 font-medium">{t('cooperativeDetail.noProducts')}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -347,18 +327,18 @@ const CooperativeDetail = () => {
                             <FaBox className="text-slate-300 w-12 h-12" />
                           )}
                           {product.quantity > 0 ? (
-                            <span className="absolute top-3 right-3 bg-amber-400 text-amber-950 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm border border-amber-500/20 z-10">
+                            <span className={`absolute top-3 ${isRTL ? 'left-3' : 'right-3'} bg-amber-400 text-amber-950 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm border border-amber-500/20 z-10`}>
                               {product.price} DH
                             </span>
                           ) : (
-                            <span className="absolute top-3 right-3 bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-red-200 shadow-sm z-10">
-                              Rupture
+                            <span className={`absolute top-3 ${isRTL ? 'left-3' : 'right-3'} bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-red-200 shadow-sm z-10`}>
+                              {t('productDetail.outOfStock')}
                             </span>
                           )}
 
                           {/* Mini Gallery inside Card (Always Visible for better UX) */}
                           {product.images && product.images.length > 0 && (
-                            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-4 z-10">
+                            <div className={`absolute bottom-2 ${isRTL ? 'right-0 left-0' : 'left-0 right-0'} flex justify-center gap-1.5 px-4 z-10 ${isRTL ? 'flex-row-reverse' : ''}`}>
                               <img
                                 src={productImage}
                                 alt="Main thumbnail"
@@ -382,10 +362,13 @@ const CooperativeDetail = () => {
                         </div>
                         <div className="p-4 flex-1 flex flex-col relative bg-white z-20">
                           <h3 className="font-bold text-slate-800 text-sm mb-1 line-clamp-1 group-hover:text-emerald-700 transition-colors">{product.name}</h3>
-                          <p className="text-slate-500 text-xs line-clamp-2 mb-4 leading-relaxed">{product.description || "Aucune description fournie"}</p>
-                          <div className="mt-auto flex items-center justify-between text-xs font-medium border-t border-slate-100 pt-3">
-                            <span className="text-slate-500 flex items-center gap-1"><FaBox className="text-emerald-500 w-3 h-3" /> Stock: {product.quantity}</span>
-                            <span className="text-emerald-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Détails <FaArrowLeft className="w-3 h-3 rotate-180" /></span>
+                          <p className="text-slate-500 text-xs line-clamp-2 mb-4 leading-relaxed">{product.description || t('cooperativeDetail.noDescription')}</p>
+                          <div className={`mt-auto flex items-center justify-between text-xs font-medium border-t border-slate-100 pt-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <span className="text-slate-500 flex items-center gap-1"><FaBox className="text-emerald-500 w-3 h-3" /></span>
+                            <span className="text-emerald-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                              {t('cooperativeDetail.details')} 
+                              <FaArrowLeft className={`w-3 h-3 ${isRTL ? 'rotate-180' : ''}`} />
+                            </span>
                           </div>
                         </div>
                       </Link>
@@ -394,71 +377,38 @@ const CooperativeDetail = () => {
                 </div>
               )}
             </div>
-
-
           </div>
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Localisation */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h2 className="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
-                <FaMapMarkerAlt className="text-emerald-600" /> Localisation
-              </h2>
-
-              {cooperative.latitude && cooperative.longitude ? (
-                <div className="rounded-xl overflow-hidden border border-slate-200">
-                  <MapContainer
-                    center={[cooperative.latitude, cooperative.longitude]}
-                    zoom={13}
-                    style={{ height: "250px", width: "100%" }}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Marker position={[cooperative.latitude, cooperative.longitude]}>
-                      <Popup>
-                        {cooperative.nom}
-                      </Popup>
-                    </Marker>
-                  </MapContainer>
-                </div>
-              ) : (
-                <div className="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-8 text-center">
-                  <FaMapMarkerAlt className="text-slate-300 text-3xl mx-auto mb-3" />
-                  <p className="text-sm text-slate-500 font-medium">
-                    Localisation non renseignée
-                  </p>
-                </div>
-              )}
-            </div>
+            
 
             {/* Réseaux Sociaux */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h2 className="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
-                <FaUser className="text-emerald-600" /> Réseaux Sociaux
+              <h2 className={`text-lg font-bold text-slate-900 mb-5 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <FaUser className="text-emerald-600" /> {t('cooperativeDetail.socialNetworks')}
               </h2>
               <div className="space-y-3">
                 {(cooperative.whatsapp || cooperative.tele) ? (
                   <button onClick={handleWhatsAppClick} className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium py-2.5 rounded-xl transition-colors shadow-sm text-sm">
-                    <FaWhatsapp size={18} /> Discuter sur WhatsApp
+                    <FaWhatsapp size={18} /> {t('cooperativeDetail.chatOnWhatsApp')}
                   </button>
                 ) : null}
 
                 {cooperative.facebook ? (
                   <button onClick={() => handleSocialClick('facebook', cooperative.facebook)} className="w-full flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium py-2.5 rounded-xl transition-colors text-sm shadow-sm">
-                    <FaFacebook size={18} className="text-[#1877F2]" /> Facebook
+                    <FaFacebook size={18} className="text-[#1877F2]" /> {t('cooperativeDetail.facebook')}
                   </button>
                 ) : null}
 
                 {cooperative.instagram ? (
                   <button onClick={() => handleSocialClick('instagram', cooperative.instagram)} className="w-full flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium py-2.5 rounded-xl transition-colors text-sm shadow-sm">
-                    <FaInstagram size={18} className="text-[#E4405F]" /> Instagram
+                    <FaInstagram size={18} className="text-[#E4405F]" /> {t('cooperativeDetail.instagram')}
                   </button>
                 ) : null}
 
                 {!cooperative.facebook && !cooperative.instagram && !cooperative.whatsapp && !cooperative.tele && (
-                  <p className="text-sm text-slate-500 text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">Aucun réseau social lié.</p>
+                  <p className="text-sm text-slate-500 text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">{t('cooperativeDetail.noSocialNetworks')}</p>
                 )}
               </div>
             </div>

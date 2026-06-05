@@ -154,14 +154,14 @@ const Plans = () => {
                 <div className="text-start mb-5 min-h-[64px] flex flex-col justify-center">
                   <div className="flex items-baseline text-slate-900 font-bold">
                     <span className="text-4xl tracking-tight">
-                      {plan.price === '0' ? '$0' : `${plan.price}`}
+                      {plan.price === '0' ? '0' : `${plan.price}`}
                     </span>
                     {plan.price !== '0' && (
                       <span className="text-xl ml-1 font-bold">{t('plans.currency')}</span>
                     )}
                   </div>
                   <span className="text-xs text-gray-400 font-medium block mt-1">
-                    {plan.period ? t('plans.perYear') : 'per month'}
+                    {plan.period ? t('plans.perYear') : ''}
                   </span>
                 </div>
 

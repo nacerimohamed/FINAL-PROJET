@@ -26,6 +26,7 @@ const AdminUsers = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [editPreviewImage, setEditPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true); // Nouvel état pour le chargement initial
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
 
@@ -50,6 +51,8 @@ const AdminUsers = () => {
       console.error("Error fetching users:", err);
       console.error("Error response:", err.response);
       alert("Impossible de récupérer les utilisateurs: " + (err.response?.data?.message || err.message));
+    } finally {
+      setInitialLoading(false); // Arrêter le chargement initial
     }
   };
 
@@ -277,6 +280,66 @@ const AdminUsers = () => {
     }
   };
 
+  // Composant Skeleton Loader pour le chargement initial
+  const SkeletonLoader = () => (
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden">
+      {/* Skeleton pour la version Desktop */}
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gradient-to-r from-green-700 to-green-600 text-white">
+            <tr>
+              <th className="p-3 lg:p-4 text-left">ID</th>
+              <th className="p-3 lg:p-4 text-left">Nom</th>
+              <th className="p-3 lg:p-4 text-left">Email</th>
+              <th className="p-3 lg:p-4 text-left">Rôle</th>
+              <th className="p-3 lg:p-4 text-left">Statut</th>
+              <th className="p-3 lg:p-4 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3, 4, 5].map((item) => (
+              <tr key={item} className="border-b animate-pulse">
+                <td className="p-3 lg:p-4"><div className="h-4 bg-gray-200 rounded w-8"></div></td>
+                <td className="p-3 lg:p-4"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
+                <td className="p-3 lg:p-4"><div className="h-4 bg-gray-200 rounded w-48"></div></td>
+                <td className="p-3 lg:p-4"><div className="h-6 bg-gray-200 rounded-full w-24"></div></td>
+                <td className="p-3 lg:p-4"><div className="h-6 bg-gray-200 rounded-full w-20"></div></td>
+                <td className="p-3 lg:p-4">
+                  <div className="flex gap-2">
+                    <div className="h-8 bg-gray-200 rounded-lg w-20"></div>
+                    <div className="h-8 bg-gray-200 rounded-lg w-20"></div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Skeleton pour la version Mobile */}
+      <div className="block sm:hidden">
+        {[1, 2, 3, 4].map((item) => (
+          <div key={item} className="p-4 border-b animate-pulse">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <div className="h-5 bg-gray-200 rounded w-32 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-48"></div>
+              </div>
+              <div className="h-6 bg-gray-200 rounded-full w-24"></div>
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              <div className="h-3 bg-gray-200 rounded w-16"></div>
+              <div className="flex gap-2">
+                <div className="h-8 bg-gray-200 rounded-lg w-16"></div>
+                <div className="h-8 bg-gray-200 rounded-lg w-16"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <AdminSidebar />
@@ -289,12 +352,12 @@ const AdminUsers = () => {
               Gestion des utilisateurs
             </h1>
             <p className="text-sm sm:text-base text-gray-600 mt-1">
-              {filteredUsers.length} utilisateur{filteredUsers.length !== 1 ? 's' : ''} • Gérez les comptes et les rôles
+              {!initialLoading && `${filteredUsers.length} utilisateur${filteredUsers.length !== 1 ? 's' : ''} • Gérez les comptes et les rôles`}
             </p>
           </div>
           <button
             onClick={() => setShowModal(true)}
-            disabled={loading}
+            disabled={loading || initialLoading}
             className="w-full sm:w-auto group flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 text-sm sm:text-base"
           >
             {loading ? (
@@ -318,156 +381,91 @@ const AdminUsers = () => {
           </button>
         </div>
 
-        {/* Filtres et recherche responsive */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6 lg:mb-8">
-          <div className="flex-1">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Rechercher un utilisateur..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm sm:text-base"
-              />
-              <svg className="absolute left-3 top-3 sm:top-3.5 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
-          <div className="sm:w-48">
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm sm:text-base bg-white"
-            >
-              <option value="all">Tous les rôles</option>
-              <option value="admin">Administrateurs</option>
-              <option value="manager">Managers</option>
-              <option value="cooperative">Coopératives</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Table/Cartes responsive */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden">
-          {filteredUsers.length === 0 ? (
-            <div className="p-8 sm:p-12 lg:p-16 text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        {/* Filtres et recherche responsive - Cachés pendant le chargement initial */}
+        {!initialLoading && (
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 lg:mb-8">
+            <div className="flex-1">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Rechercher un utilisateur..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm sm:text-base"
+                />
+                <svg className="absolute left-3 top-3 sm:top-3.5 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <p className="text-gray-500 text-base sm:text-lg mb-2">Aucun utilisateur trouvé</p>
-              <p className="text-sm sm:text-base text-gray-400">
-                {searchTerm || roleFilter !== 'all' ? 'Essayez de modifier vos filtres' : 'Commencez par ajouter un utilisateur'}
-              </p>
             </div>
-          ) : (
-            <>
-              {/* Version Mobile - Cards */}
-              <div className="block sm:hidden">
-                {filteredUsers.map((user, index) => (
-                  <div key={user.id} className={`p-4 border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                        <p className="text-sm text-gray-600 mt-0.5">{user.email}</p>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role)}`}>
-                          {user.role}
-                        </span>
-                        {user.role === 'cooperative' && (
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-                            user.is_approved 
-                              ? 'bg-green-100 text-green-700 border-green-200' 
-                              : 'bg-orange-100 text-orange-700 border-orange-200'
-                          }`}>
-                            {user.is_approved ? 'Approuvé' : 'En attente'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                      <span className="text-xs text-gray-500">ID: {user.id}</span>
-                      <div className="flex gap-2">
-                        {user.role === 'cooperative' && !user.is_approved && (
-                          <button
-                            onClick={() => handleApprove(user.id)}
-                            disabled={loading}
-                            className="px-3 py-1.5 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
-                          >
-                            Approuver
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleEdit(user)}
-                          disabled={loading}
-                          className="px-3 py-1.5 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50"
-                        >
-                          Modifier
-                        </button>
-                        <button
-                          onClick={() => handleDelete(user.id)}
-                          disabled={loading}
-                          className="px-3 py-1.5 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-colors font-medium disabled:opacity-50"
-                        >
-                          Supprimer
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="sm:w-48">
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="w-full px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm sm:text-base bg-white"
+              >
+                <option value="all">Tous les rôles</option>
+                <option value="admin">Administrateurs</option>
+                <option value="manager">Managers</option>
+                <option value="cooperative">Coopératives</option>
+              </select>
+            </div>
+          </div>
+        )}
 
-              {/* Version Desktop - Table */}
-              <div className="hidden sm:block overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gradient-to-r from-green-700 to-green-600 text-white">
-                    <tr>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">ID</th>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Nom</th>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Email</th>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Rôle</th>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Statut</th>
-                      <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+        {/* Affichage conditionnel : Skeleton loader ou contenu réel */}
+        {initialLoading ? (
+          <SkeletonLoader />
+        ) : (
+          <>
+            {/* Table/Cartes responsive */}
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden">
+              {filteredUsers.length === 0 ? (
+                <div className="p-8 sm:p-12 lg:p-16 text-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 text-base sm:text-lg mb-2">Aucun utilisateur trouvé</p>
+                  <p className="text-sm sm:text-base text-gray-400">
+                    {searchTerm || roleFilter !== 'all' ? 'Essayez de modifier vos filtres' : 'Commencez par ajouter un utilisateur'}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Version Mobile - Cards */}
+                  <div className="block sm:hidden">
                     {filteredUsers.map((user, index) => (
-                      <tr key={user.id} className={`border-b hover:bg-green-50 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                        <td className="p-3 lg:p-4 text-gray-600 text-sm lg:text-base">{user.id}</td>
-                        <td className="p-3 lg:p-4 font-medium text-gray-800 text-sm lg:text-base">{user.name}</td>
-                        <td className="p-3 lg:p-4 text-gray-600 text-sm lg:text-base break-all">{user.email}</td>
-                        <td className="p-3 lg:p-4">
-                          <span className={`inline-flex items-center px-2.5 lg:px-3 py-1 lg:py-1.5 rounded-full text-xs lg:text-sm font-medium border ${getRoleBadgeColor(user.role)}`}>
-                            {user.role}
-                          </span>
-                        </td>
-                        <td className="p-3 lg:p-4">
-                          {user.role === 'cooperative' ? (
-                            user.is_approved ? (
-                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
-                                Approuvé
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-orange-100 text-orange-700 border-orange-200">
-                                En attente
-                              </span>
-                            )
-                          ) : (
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
-                              Actif
+                      <div key={user.id} className={`p-4 border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                            <p className="text-sm text-gray-600 mt-0.5">{user.email}</p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role)}`}>
+                              {user.role}
                             </span>
-                          )}
-                        </td>
-                        <td className="p-3 lg:p-4">
+                            {user.role === 'cooperative' && (
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
+                                user.is_approved 
+                                  ? 'bg-green-100 text-green-700 border-green-200' 
+                                  : 'bg-orange-100 text-orange-700 border-orange-200'
+                              }`}>
+                                {user.is_approved ? 'Approuvé' : 'En attente'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                          <span className="text-xs text-gray-500">ID: {user.id}</span>
                           <div className="flex gap-2">
                             {user.role === 'cooperative' && !user.is_approved && (
                               <button
                                 onClick={() => handleApprove(user.id)}
                                 disabled={loading}
-                                className="px-3 lg:px-4 py-1.5 lg:py-2 bg-green-600 text-white text-xs lg:text-sm rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                                className="px-3 py-1.5 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
                               >
                                 Approuver
                               </button>
@@ -475,43 +473,117 @@ const AdminUsers = () => {
                             <button
                               onClick={() => handleEdit(user)}
                               disabled={loading}
-                              className="px-3 lg:px-4 py-1.5 lg:py-2 bg-blue-500 text-white text-xs lg:text-sm rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50"
+                              className="px-3 py-1.5 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50"
                             >
                               Modifier
                             </button>
                             <button
                               onClick={() => handleDelete(user.id)}
                               disabled={loading}
-                              className="px-3 lg:px-4 py-1.5 lg:py-2 bg-red-500 text-white text-xs lg:text-sm rounded-lg hover:bg-red-600 transition-colors font-medium disabled:opacity-50"
+                              className="px-3 py-1.5 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-colors font-medium disabled:opacity-50"
                             >
                               Supprimer
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-        </div>
+                  </div>
 
-        {/* Pagination simple */}
-        {filteredUsers.length > 0 && (
-          <div className="mt-4 sm:mt-6 flex justify-between items-center">
-            <p className="text-xs sm:text-sm text-gray-600">
-              Affichage de <span className="font-medium">1</span> à <span className="font-medium">{filteredUsers.length}</span> sur <span className="font-medium">{users.length}</span> utilisateurs
-            </p>
-            <div className="flex gap-2">
-              <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
-                Précédent
-              </button>
-              <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
-                Suivant
-              </button>
+                  {/* Version Desktop - Table */}
+                  <div className="hidden sm:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gradient-to-r from-green-700 to-green-600 text-white">
+                        <tr>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">ID</th>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Nom</th>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Email</th>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Rôle</th>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Statut</th>
+                          <th className="p-3 lg:p-4 text-left font-semibold text-sm lg:text-base">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredUsers.map((user, index) => (
+                          <tr key={user.id} className={`border-b hover:bg-green-50 transition-colors ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                            <td className="p-3 lg:p-4 text-gray-600 text-sm lg:text-base">{user.id}</td>
+                            <td className="p-3 lg:p-4 font-medium text-gray-800 text-sm lg:text-base">{user.name}</td>
+                            <td className="p-3 lg:p-4 text-gray-600 text-sm lg:text-base break-all">{user.email}</td>
+                            <td className="p-3 lg:p-4">
+                              <span className={`inline-flex items-center px-2.5 lg:px-3 py-1 lg:py-1.5 rounded-full text-xs lg:text-sm font-medium border ${getRoleBadgeColor(user.role)}`}>
+                                {user.role}
+                              </span>
+                            </td>
+                            <td className="p-3 lg:p-4">
+                              {user.role === 'cooperative' ? (
+                                user.is_approved ? (
+                                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
+                                    Approuvé
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-orange-100 text-orange-700 border-orange-200">
+                                    En attente
+                                  </span>
+                                )
+                              ) : (
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">
+                                  Actif
+                                </span>
+                              )}
+                            </td>
+                            <td className="p-3 lg:p-4">
+                              <div className="flex gap-2">
+                                {user.role === 'cooperative' && !user.is_approved && (
+                                  <button
+                                    onClick={() => handleApprove(user.id)}
+                                    disabled={loading}
+                                    className="px-3 lg:px-4 py-1.5 lg:py-2 bg-green-600 text-white text-xs lg:text-sm rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                                  >
+                                    Approuver
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleEdit(user)}
+                                  disabled={loading}
+                                  className="px-3 lg:px-4 py-1.5 lg:py-2 bg-blue-500 text-white text-xs lg:text-sm rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50"
+                                >
+                                  Modifier
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(user.id)}
+                                  disabled={loading}
+                                  className="px-3 lg:px-4 py-1.5 lg:py-2 bg-red-500 text-white text-xs lg:text-sm rounded-lg hover:bg-red-600 transition-colors font-medium disabled:opacity-50"
+                                >
+                                  Supprimer
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
+
+            {/* Pagination simple */}
+            {filteredUsers.length > 0 && (
+              <div className="mt-4 sm:mt-6 flex justify-between items-center">
+                <p className="text-xs sm:text-sm text-gray-600">
+                  Affichage de <span className="font-medium">1</span> à <span className="font-medium">{filteredUsers.length}</span> sur <span className="font-medium">{users.length}</span> utilisateurs
+                </p>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
+                    Précédent
+                  </button>
+                  <button className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50" disabled>
+                    Suivant
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
