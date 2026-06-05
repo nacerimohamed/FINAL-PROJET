@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import CooperativeSidebar from './CooperativeSidebar';
 
 // Plan product limits (must match backend)
 const PLAN_LIMITS = {
@@ -60,19 +61,7 @@ const CooperativeProducts = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       {/* Sidebar for Cooperative */}
-      <div className="w-full md:w-64 bg-green-800 text-white min-h-screen">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold">Coopérative</h2>
-        </div>
-        <nav className="mt-6">
-          <Link to="/cooperative/dashboard" className="block px-6 py-3 hover:bg-green-700 transition">
-            Tableau de bord
-          </Link>
-          <Link to="/cooperative/products" className="block px-6 py-3 bg-green-900 border-l-4 border-green-400">
-            Mes Produits
-          </Link>
-        </nav>
-      </div>
+      <CooperativeSidebar />
 
       <div className="flex-1 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
