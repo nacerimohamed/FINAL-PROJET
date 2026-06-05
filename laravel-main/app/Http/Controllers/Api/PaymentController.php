@@ -52,36 +52,18 @@ class PaymentController extends Controller
 
     // Admin: Accept or Reject Payment
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|string|in:accepted,rejected'
-        ]);
+{
+    $request->validate([
+        'status' => 'required|string|in:accepted,rejected'
+    ]);
 
-        $payment = Payment::findOrFail($id);
-        $payment->status = $request->status;
-        $payment->save();
+    $payment = Payment::findOrFail($id);
+    $payment->status = $request->status;
+    $payment->save();
 
-        $user = User::findOrFail($payment->user_id);
-
-        if ($request->status === 'accepted') {
-            $user->status = 'active';
-            $user->is_approved = true;
-            $user->plan = $payment->plan;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Paiement accepté et compte activé avec succès.'
-            ]);
-        } else {
-            $user->status = 'rejected';
-            $user->is_approved = false;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Paiement refusé et compte désactivé.'
-            ]);
-        }
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Statut de paiement mis à jour avec succès.'
+    ]);
+}
 }
