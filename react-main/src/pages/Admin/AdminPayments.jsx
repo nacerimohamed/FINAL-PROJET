@@ -36,11 +36,9 @@ const AdminPayments = () => {
       const response = await axios.put(`http://localhost:8000/api/admin/payments/${id}/status`, { status }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       if (response.data.success) {
         alert(response.data.message);
         fetchPayments();
-
         if (status === 'accepted' && phone) {
           const message = encodeURIComponent("Félicitations ! Votre paiement a été validé et votre compte coopérative est maintenant actif sur notre plateforme.");
           const cleanPhone = phone.replace(/\D/g, '');
@@ -52,6 +50,7 @@ const AdminPayments = () => {
       alert('Erreur lors de la mise à jour du statut.');
     }
   };
+
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">

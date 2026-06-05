@@ -266,7 +266,7 @@ const CooperativeDetail = () => {
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">
                   <FaPhone className="text-amber-400" />
                 </div>
-                <span>{cooperative.tele || t('cooperativeDetail.phoneNotProvided')}</span>
+              <span>{cooperative.tele || t('cooperativeDetail.phoneNotProvided')}</span>
               </div>
               <div className={`flex items-center gap-3 text-sm text-emerald-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-emerald-800/50 flex items-center justify-center shrink-0 border border-emerald-700/30">

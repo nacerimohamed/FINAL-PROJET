@@ -26,7 +26,6 @@ const AdminCooperatives = () => {
     whatsapp: "",
     latitude: "",
     longitude: "",
-    google_maps_link: "",
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -114,7 +113,6 @@ const AdminCooperatives = () => {
       whatsapp: "",
       latitude: "",
       longitude: "",
-      google_maps_link: "",
       image: null,
     });
 
@@ -140,7 +138,6 @@ const AdminCooperatives = () => {
       whatsapp: cooperative.whatsapp || "",
       latitude: cooperative.latitude || "",
       longitude: cooperative.longitude || "",
-      google_maps_link: cooperative.google_maps_link || "",
       image: null,
     });
 
@@ -201,7 +198,6 @@ const AdminCooperatives = () => {
         whatsapp: "",
         latitude: "",
         longitude: "",
-        google_maps_link: "",
         image: null,
       });
 
@@ -544,32 +540,34 @@ const AdminCooperatives = () => {
         </div>
       </div>
 
-      {/* Modal responsive */}
+      {/* Modal responsive - CORRIGÉ */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-          <div className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in">
-            {/* En-tête sticky */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 rounded-t-xl flex justify-between items-center">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate pr-4">
-                {editingCooperative ? "Modifier la Coopérative" : "Ajouter une Coopérative"}
-              </h3>
-              <button
-                onClick={() => {
-                  if (imagePreview && !imagePreview.startsWith(API_URL)) {
-                    URL.revokeObjectURL(imagePreview);
-                  }
-                  setModalOpen(false);
-                }}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-lg flex-shrink-0"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+          <div className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto">
+            {/* En-tête sticky - CORRIGÉ */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 rounded-t-xl z-10">
+              <div className="flex justify-between items-center">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                  {editingCooperative ? "Modifier la Coopérative" : "Ajouter une Coopérative"}
+                </h3>
+                <button
+                  onClick={() => {
+                    if (imagePreview && !imagePreview.startsWith(API_URL)) {
+                      URL.revokeObjectURL(imagePreview);
+                    }
+                    setModalOpen(false);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-lg flex-shrink-0"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {/* Formulaire */}
-            <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5">
+            {/* Formulaire - CORRIGÉ avec padding-top pour éviter chevauchement */}
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 pt-4 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 {/* Nom */}
                 <div className="sm:col-span-1 group">
@@ -786,29 +784,6 @@ const AdminCooperatives = () => {
                       onChange={handleChange}
                       className="w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                       placeholder="Lien de la page Facebook"
-                    />
-                  </div>
-                </div>
-
-
-                {/* Google Maps Link */}
-                <div className="sm:col-span-2 group">
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 group-focus-within:text-green-600 transition-colors">
-                    Lien Google Maps
-                  </label>
-                  <div className="relative shadow-sm rounded-xl">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      name="google_maps_link"
-                      value={formData.google_maps_link}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                      placeholder="URL Google Maps"
                     />
                   </div>
                 </div>

@@ -276,24 +276,7 @@ const RegisterCooperative = () => {
               </div>
             </div>
 
-           <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100/80">
-  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-    Localisation Google Maps *
-  </label>
 
-  <input
-    type="text"
-    name="map_link"
-    placeholder="https://www.google.com/maps/..."
-    value={formData.map_link}
-    onChange={handleChange}
-    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-  />
-
-  <p className="text-xs text-gray-500 mt-2">
-    Copiez le lien depuis Google Maps
-  </p>
-</div>
 
             {/* LOGO */}
             <div>
