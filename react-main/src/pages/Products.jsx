@@ -343,7 +343,7 @@ const Products = () => {
                       {/* Actions */}
                       <div className="mt-auto space-y-2 pt-1">
                         <div className="flex justify-between items-center text-[11px] border-b border-emerald-50/60 pb-1.5">
-                          <span className="text-green-600">{t('products.stock')}: <span className="font-semibold text-green-700">{product.quantity}</span></span>
+                         
                           <Link
                             to={`/products/${product.id}`}
                             className="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md font-bold text-[11px] transition-colors border border-emerald-200/40"

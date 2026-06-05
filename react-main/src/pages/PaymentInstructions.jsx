@@ -121,13 +121,14 @@ const PaymentInstructions = () => {
               <div className="space-y-6">
                 <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl">
                   <h3 className="font-bold text-blue-900 mb-2"> Virement Bancaire (CIH)</h3>
-                  <p className="text-sm text-blue-800 mb-1">Nom: <span className="font-semibold">Coop Platform SARL</span></p>
+                  <p className="text-sm text-blue-800 mb-1">Nom: <span className="font-semibold">Coop Platform</span></p>
                   <p className="text-sm text-blue-800 font-mono">RIB: 230 000 0000000000000000 00</p>
                 </div>
 
+
                 <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
                   <h3 className="font-bold text-yellow-900 mb-2"> Wafacash / Cash Plus</h3>
-                  <p className="text-sm text-yellow-800 mb-1">Nom complet: <span className="font-semibold">Mohamed Alami</span></p>
+                  <p className="text-sm text-yellow-800 mb-1">Nom complet: <span className="font-semibold">Mohamed ELMA</span></p>
                   <p className="text-sm text-yellow-800 mb-1">CIN: <span className="font-semibold">AB123456</span></p>
                   <p className="text-sm text-yellow-800">Tél: <span className="font-semibold">06 00 00 00 00</span></p>
                 </div>
