@@ -61,11 +61,11 @@ const Cooperatives = () => {
     }
   };
 
-  const getImage = (coop) => {
-    if (!coop.image) return null;
-    const name = coop.image.startsWith("uploads/") ? coop.image.replace("uploads/", "") : coop.image;
-    return `http://localhost:8000/uploads/${name}`;
-  };
+ const getImage = (coop) => {
+  if (!coop.image) return null;
+
+  return `http://localhost:8000/${coop.image}`;
+};
 
   // Counts per province
   const counts = {};

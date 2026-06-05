@@ -15,8 +15,7 @@ const RegisterCooperative = () => {
     description: "",
     ville: "",
     plan: initialPlan,
-    latitude: "",      // ZEDNA HAD CHAMP
-    longitude: "",     // ZEDNA HAD CHAMP
+    map_link: "",
   });
   const [logo, setLogo] = useState(null);
   const [error, setError] = useState("");
@@ -277,35 +276,24 @@ const RegisterCooperative = () => {
               </div>
             </div>
 
-            {/* GOOGLE MAPS (LATITUDE & LONGITUDE) */}
-            <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100/80 space-y-4">
-              <span className="text-xs font-bold text-green-800 uppercase tracking-wider block mb-1">Localisation Google Maps</span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Latitude</label>
-                  <input
-                    type="text"
-                    name="latitude"
-                    placeholder="Ex: 31.5134"
-                    value={formData.latitude}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm shadow-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Longitude</label>
-                  <input
-                    type="text"
-                    name="longitude"
-                    placeholder="Ex: -5.5321"
-                    value={formData.longitude}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm shadow-sm"
-                  />
-                </div>
-              </div>
-              <p className="text-xs text-gray-500 italic">Vous pouvez copier ces valeurs depuis l'URL de votre position sur Google Maps.</p>
-            </div>
+           <div className="bg-green-50/50 p-4 rounded-2xl border border-green-100/80">
+  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+    Localisation Google Maps *
+  </label>
+
+  <input
+    type="text"
+    name="map_link"
+    placeholder="https://www.google.com/maps/..."
+    value={formData.map_link}
+    onChange={handleChange}
+    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+  />
+
+  <p className="text-xs text-gray-500 mt-2">
+    Copiez le lien depuis Google Maps
+  </p>
+</div>
 
             {/* LOGO */}
             <div>

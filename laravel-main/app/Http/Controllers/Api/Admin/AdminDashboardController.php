@@ -16,7 +16,7 @@ class AdminDashboardController extends Controller
                 'total_users' => User::count(),
                 'admins' => User::where('role', 'admin')->count(),
                 'manager' => User::where('role', 'manager')->count(),
-                
+                'cooperatives_count' => User::where('role', 'cooperative')->count(),
             ],
             'message' => 'Bienvenue dans le dashboard Admin'
         ]);

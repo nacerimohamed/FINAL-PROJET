@@ -14,7 +14,10 @@ class PublicProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with(['cooperative' => function($query) {
+            $products = Product::whereHas('cooperative', function($q) {
+                $q->where('is_approved', true);
+            })
+            ->with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele');
             }, 'images'])
             ->orderBy('created_at', 'desc')
@@ -64,7 +67,9 @@ class PublicProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with(['cooperative' => function($query) {
+            $product = Product::whereHas('cooperative', function($q) {
+                $q->where('is_approved', true);
+            })->with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele', 'description', 'image');
             }, 'images'])->findOrFail($id);
 
@@ -111,7 +116,10 @@ class PublicProductController extends Controller
     public function featured()
     {
         try {
-            $products = Product::with(['cooperative' => function($query) {
+            $products = Product::whereHas('cooperative', function($q) {
+                $q->where('is_approved', true);
+            })
+            ->with(['cooperative' => function($query) {
                 $query->select('id', 'nom', 'email', 'tele');
             }, 'images'])
             ->orderBy('created_at', 'desc')

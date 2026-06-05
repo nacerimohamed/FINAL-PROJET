@@ -51,6 +51,7 @@ class AuthController extends Controller
                 'image' => $user->image,
                 'status' => $user->status,
                 'is_approved' => $user->is_approved,
+                'plan' => $user->plan,
             ]
         ], 201);
     }
@@ -194,6 +195,7 @@ class AuthController extends Controller
                     'image' => $user->image,
                     'status' => $user->status,
                     'is_approved' => $user->is_approved,
+                    'plan' => $user->plan,
                 ]
             ]);
 
@@ -246,6 +248,7 @@ class AuthController extends Controller
                     'image' => $user->image,
                     'status' => $user->status,
                     'is_approved' => $user->is_approved,
+                    'plan' => $user->plan,
                 ]
             ]);
         } catch (\Exception $e) {

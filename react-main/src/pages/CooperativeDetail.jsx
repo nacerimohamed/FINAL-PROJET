@@ -359,16 +359,16 @@ const CooperativeDetail = () => {
                           {/* Mini Gallery inside Card (Always Visible for better UX) */}
                           {product.images && product.images.length > 0 && (
                             <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-4 z-10">
-                              <img 
-                                src={productImage} 
-                                alt="Main thumbnail" 
+                              <img
+                                src={productImage}
+                                alt="Main thumbnail"
                                 className="w-8 h-8 object-contain bg-white rounded-md border border-white shadow-sm"
                               />
                               {product.images.slice(0, 3).map((img, idx) => (
-                                <img 
-                                  key={idx} 
-                                  src={img.url} 
-                                  alt={`Gallery thumbnail ${idx}`} 
+                                <img
+                                  key={idx}
+                                  src={img.url}
+                                  alt={`Gallery thumbnail ${idx}`}
                                   className="w-8 h-8 object-contain bg-white rounded-md border border-white shadow-sm"
                                 />
                               ))}
@@ -405,25 +405,30 @@ const CooperativeDetail = () => {
               <h2 className="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
                 <FaMapMarkerAlt className="text-emerald-600" /> Localisation
               </h2>
-              {cooperative.google_maps_link ? (
-                <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 text-center">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mx-auto mb-3">
-                    <FaMapMarkerAlt className="text-emerald-500 text-xl" />
-                  </div>
-                  <p className="text-sm text-slate-600 font-medium mb-4">Voir l'emplacement exact de la coopérative</p>
-                  <a
-                    href={cooperative.google_maps_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
+
+              {cooperative.latitude && cooperative.longitude ? (
+                <div className="rounded-xl overflow-hidden border border-slate-200">
+                  <MapContainer
+                    center={[cooperative.latitude, cooperative.longitude]}
+                    zoom={13}
+                    style={{ height: "250px", width: "100%" }}
                   >
-                    Ouvrir Google Maps <FaExternalLinkAlt size={12} />
-                  </a>
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <Marker position={[cooperative.latitude, cooperative.longitude]}>
+                      <Popup>
+                        {cooperative.nom}
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
                 </div>
               ) : (
                 <div className="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-8 text-center">
                   <FaMapMarkerAlt className="text-slate-300 text-3xl mx-auto mb-3" />
-                  <p className="text-sm text-slate-500 font-medium">Localisation non renseignée</p>
+                  <p className="text-sm text-slate-500 font-medium">
+                    Localisation non renseignée
+                  </p>
                 </div>
               )}
             </div>

@@ -54,10 +54,10 @@ const AdminPayments = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <AdminSidebar />
       
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-800">Validation des Paiements</h1>
@@ -70,8 +70,8 @@ const AdminPayments = () => {
               <p className="text-gray-600 mt-4">Chargement des paiements...</p>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="overflow-x-auto">
+            <div className="bg-white rounded-lg shadow-md h-full flex flex-col">
+              <div className="flex-1 overflow-x-auto overflow-y-auto">
                 <table className="w-full">
                   <thead className="bg-green-600 text-white">
                     <tr>

@@ -16,8 +16,7 @@ class PublicCooperativeController extends Controller
     public function index()
     {
         try {
-            // Filtrer pour ne récupérer que les coopératives approuvées
-            $cooperatives = Cooperative::where('status', 'approved')
+            $cooperatives = Cooperative::where('is_approved', true)
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function($coop) {
@@ -60,8 +59,8 @@ class PublicCooperativeController extends Controller
     public function show($id)
     {
         try {
-            // S'assurer que la coopérative demandée est aussi approuvée
-            $cooperative = Cooperative::where('status', 'approved')->findOrFail($id);
+            // Récupérer la coopérative uniquement si elle est approuvée
+            $cooperative = Cooperative::where('is_approved', true)->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -99,8 +98,8 @@ class PublicCooperativeController extends Controller
     public function featured()
     {
         try {
-            // Filtrer aussi ici pour la page d'accueil
-            $cooperatives = Cooperative::where('status', 'approved')
+            // Récupérer les coopératives récentes approuvées
+            $cooperatives = Cooperative::where('is_approved', true)
                 ->orderBy('created_at', 'desc')
                 ->limit(4)
                 ->get()
@@ -136,7 +135,7 @@ class PublicCooperativeController extends Controller
     {
         try {
             // Vérifier que la coopérative existe et est approuvée
-            $cooperative = Cooperative::where('status', 'approved')->findOrFail($id);
+            $cooperative = Cooperative::where('is_approved', true)->findOrFail($id);
             
             // Get products for this cooperative
             $products = Product::where('cooperative_id', $id)
