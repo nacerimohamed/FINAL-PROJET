@@ -74,9 +74,7 @@ const Hero = () => {
             >
               <span className="relative z-10 flex items-center">
                 {t('hero.discoverProducts')}
-                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+               
               </span>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             </Link>
@@ -87,9 +85,7 @@ const Hero = () => {
             >
               <span className="flex items-center">
                 {t('hero.ourCooperatives')}
-                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+
               </span>
             </Link>
           </div>

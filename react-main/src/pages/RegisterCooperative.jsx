@@ -212,7 +212,7 @@ const RegisterCooperative = () => {
                   <input
                     type="text"
                     name="tele"
-                    placeholder="06 00 00 00 00"
+                    placeholder="212 6 00 00 00 00"
                     value={formData.tele}
                     onChange={handleChange}
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all duration-200 shadow-sm"
