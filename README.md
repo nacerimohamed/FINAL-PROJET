@@ -1,25 +1,26 @@
 # FINAL-PROJET
 
-مشروع ويب لإدارة المنتجات مع نظام اشتراكات و لوحات تحكم.
+A web application for product management with a subscription system and admin dashboards.
 
-## ✨ الميزات
+## ✨ Features
 
-- تسجيل و تسجيل دخول المستخدمين
-- إدارة المنتجات (إضافة، تعديل، حذف)
-- نظام البلانات / الاشتراكات مع حدود المنتجات
-- طلب زيادة عدد المنتجات من طرف المستخدم + موافقة الأدمن
-- لوحة تحكم الأدمن و المدير
-- التحكم فالمنتجات المميزة اللي كيبانو فالصفحة الرئيسية
-- إشعارات للمستخدمين
+- User registration and login
+- Product management (create, edit, delete)
+- Plans / subscriptions system with product limits
+- Users can request a product limit increase + admin approval
+- Admin and Manager dashboards
+- Control over featured products shown on the homepage
+- User notifications
 
-## 🛠️ التقنيات
+## 🛠️ Tech Stack
 
 - Laravel (PHP)
 - MySQL
 - Blade + Bootstrap
+- 
 - Vite (CSS/JS)
 
-## 🚀 التثبيت
+## 🚀 Installation
 
 ```bash
 git clone https://github.com/nacerimohamed/FINAL-PROJET.git
@@ -28,3 +29,4 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
+```
